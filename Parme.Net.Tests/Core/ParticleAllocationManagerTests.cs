@@ -1,4 +1,5 @@
-﻿using Parme.Net.Core;
+﻿using System.Collections.Generic;
+using Parme.Net.Core;
 using Shouldly;
 using Xunit;
 
@@ -23,6 +24,7 @@ namespace Parme.Net.Tests.Core
             var allocator = new ParticleAllocator(10);
             var reservation = allocator.Reserve(11);
             
+            allocator.Capacity.ShouldBeGreaterThan(10);
             reservation.Length.ShouldBe(11);
             reservation.StartIndex.ShouldBe(0);
             reservation.LastUsedIndex.ShouldBe(10);
@@ -65,7 +67,7 @@ namespace Parme.Net.Tests.Core
         {
             var allocator = new ParticleAllocator(10);
             allocator.Reserve(3);
-            var second = allocator.Reserve(2);
+            var second = allocator.Reserve(1);
             allocator.Reserve(3);
             
             second.Dispose();
@@ -75,14 +77,49 @@ namespace Parme.Net.Tests.Core
         }
 
         [Fact]
-        public void Can_Reserve_When_Enough_Free_Space_Exists()
+        public void Defrag_Occurs_When_2x_Free_Space_Exists_But_No_Wide_Enough_Gaps()
+        {
+            var allocator = new ParticleAllocator(15);
+            var first = allocator.Reserve(3);
+            var second = allocator.Reserve(2);
+            var third = allocator.Reserve(3);
+            var fourth = allocator.Reserve(2);
+            var fifth = allocator.Reserve(3);
+            
+            second.Dispose();
+            fourth.Dispose();
+
+            var sixth = allocator.Reserve(3);
+            
+            allocator.Capacity.ShouldBe(15); // No increase in capacity in a defrag
+            VerifyAllAreConsecutive(first, third, fifth, sixth);
+        }
+
+        [Fact]
+        public void Can_Reserve_When_Not_Enough_Free_Space_Exists()
         {
             var allocator = new ParticleAllocator(10);
             allocator.Reserve(3);
             allocator.Reserve(2);
             allocator.Reserve(3);
             var fourth = allocator.Reserve(3);
+
             fourth.Length.ShouldBe(3);
+            allocator.Capacity.ShouldBeGreaterThan(10);
+        }
+
+        private static void VerifyAllAreConsecutive(params ParticleAllocator.Reservation[] reservations)
+        {
+            var sortedSet = new SortedSet<ParticleAllocator.Reservation>(reservations, new ParticleAllocator.ReservationComparer());
+
+            var prevIndex = -1;
+            var idx = 0;
+            foreach (var reservation in sortedSet)
+            {
+                reservation.StartIndex.ShouldBe(prevIndex + 1, $"Reservation #{idx + 1} had an unexpected start index");
+                prevIndex = reservation.LastUsedIndex;
+                idx++;
+            }
         }
     }
 }

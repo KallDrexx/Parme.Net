@@ -31,13 +31,13 @@ namespace Parme.Net.Core
         private const float GrowBy = 1.2f;
         
         private readonly SortedSet<Reservation> _reservations = new(new ReservationComparer());
-        private Dictionary<Type, Dictionary<string, Array>> _particleProperties = new ();
-        private int _capacity;
+        private readonly Dictionary<Type, Dictionary<string, Array>> _particleProperties = new ();
         private int _freeSpaceAvailable;
 
+        internal int Capacity { get; private set; }
         public ParticleAllocator(int initialCapacity)
         {
-            _capacity = initialCapacity;
+            Capacity = initialCapacity;
             _freeSpaceAvailable = initialCapacity;
         }
 
@@ -53,8 +53,8 @@ namespace Parme.Net.Core
                     // Not enough free space, so expand the number of particles we are managing and try again
                     // Make sure we not only grow the capacity, but grow it with enough room that we won't be likely
                     // to have to immediately re-grow it next reservation
-                    var growthByRequiredCapacity = (capacityRequested - _freeSpaceAvailable + _capacity) * GrowBy;
-                    var newCapacity = (int) Math.Max(_capacity * GrowBy, growthByRequiredCapacity);
+                    var growthByRequiredCapacity = (capacityRequested - _freeSpaceAvailable + Capacity) * GrowBy;
+                    var newCapacity = (int) Math.Max(Capacity * GrowBy, growthByRequiredCapacity);
                     ExpandAllocatorCapacity(newCapacity);
 
                     continue;
@@ -78,16 +78,26 @@ namespace Parme.Net.Core
                 if (!spotFound)
                 {
                     // Is there enough room at the end?
-                    if (_capacity - startIndex < capacityRequested)
+                    if (Capacity - startIndex < capacityRequested)
                     {
                         // No suitable gaps anywhere.  We have two options here, we can either defrag the current 
                         // set of reservations, or we can grow the capacity (which will also defrag as a by-product).  
                         // Defrag is a good option as it doesn't require any new allocations.  However, we also don't want
                         // to defrag if it won't leave us with much free space, as that likely means we are going to have
                         // to expand capacity anyway.
-                        // TODO: Add defrag logic.
+                        
+                        // Assume we might get another reservation of the same size in the future.  If we have enough
+                        // free space for another similar allocation request than defrag the allocator, otherwise
+                        // expand.
+                        if (_freeSpaceAvailable - capacityRequested < capacityRequested)
+                        {
+                            ExpandAllocatorCapacity((int) (Capacity * GrowBy));
+                        }
+                        else
+                        {
+                            DefragAllocator();
+                        }
 
-                        ExpandAllocatorCapacity((int) (_capacity * GrowBy));
                         continue;
                     }
                 }
@@ -108,7 +118,7 @@ namespace Parme.Net.Core
         internal void RegisterProperty<T>(string propertyName)
         {
             _particleProperties.TryAdd(typeof(T), new Dictionary<string, Array>());
-            _particleProperties[typeof(T)].TryAdd(propertyName, new T[_capacity]);
+            _particleProperties[typeof(T)].TryAdd(propertyName, new T[Capacity]);
         }
 
         private void ExpandReservationCapacity(Reservation reservation, int additionalRequested)
@@ -187,9 +197,63 @@ namespace Parme.Net.Core
                 reservationIdx++;
             }
 
-            var additionalCapacity = capacityAfterExpansion - _capacity;
+            var additionalCapacity = capacityAfterExpansion - Capacity;
             _freeSpaceAvailable += additionalCapacity;
-            _capacity = capacityAfterExpansion;
+            Capacity = capacityAfterExpansion;
+        }
+
+        /// <summary>
+        /// Shifts all reservations so there are no gaps in between.  Used when adequate free space exists but
+        /// due to fragmentation there aren't any gaps large enough for a new reservation request. 
+        /// </summary>
+        /// <returns>Returns the last index used by the last reservation.</returns>
+        private int DefragAllocator()
+        {
+            // Defrag by figuring out the indices of each reservation if it's shifted towards the beginning without
+            // any gaps.
+            
+            var newLocations = new List<(int start, int lastUsedIndex)>(_reservations.Count);
+            var startIndex = 0;
+            int lastIndex = 0;
+            foreach (var reservation in _reservations)
+            {
+                lastIndex = startIndex + reservation.Length - 1;
+                newLocations.Add((startIndex, lastIndex));
+                startIndex = lastIndex + 1;
+            }
+
+            int idx;
+            foreach (var (_, dictionary) in _particleProperties)
+            foreach (var (_, array) in dictionary)
+            {
+                idx = 0;
+                foreach (var reservation in _reservations)
+                {
+                    var (start, _) = newLocations[idx];
+                    Array.ConstrainedCopy(array, 
+                        reservation.StartIndex, 
+                        array, 
+                        start, 
+                        reservation.Length);
+
+                    idx++;
+                }
+                
+            }
+            
+            // Now that we've shifted everything over in all the arrays we can assign the new indices
+            // to their respective reservations
+            idx = 0;
+            foreach (var reservation in _reservations)
+            {
+                var (start, lastIndexUsed) = newLocations[idx];
+                reservation.StartIndex = start;
+                reservation.LastUsedIndex = lastIndexUsed;
+
+                idx++;
+            }
+
+            return lastIndex;
         }
 
         /// <summary>
@@ -236,11 +300,13 @@ namespace Parme.Net.Core
                 {
                     _particleAllocator.Release(this);
                     IsDisposed = true;
+                    StartIndex = -1;
+                    LastUsedIndex = -1;
                 }
             }
         }
         
-        private class ReservationComparer : IComparer<Reservation>
+        internal class ReservationComparer : IComparer<Reservation>
         {
             public int Compare(Reservation x, Reservation y)
             {

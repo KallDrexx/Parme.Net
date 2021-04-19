@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parme.Net", "Parme.Net\Parme.Net.csproj", "{C61A7DEE-7AEC-4E7F-89A9-DDA8A5860592}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parme.Net.Tests", "Parme.Net.Tests\Parme.Net.Tests.csproj", "{AFDCD039-20C9-49D6-B3E0-86C4FC2A34FD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C61A7DEE-7AEC-4E7F-89A9-DDA8A5860592}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C61A7DEE-7AEC-4E7F-89A9-DDA8A5860592}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C61A7DEE-7AEC-4E7F-89A9-DDA8A5860592}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C61A7DEE-7AEC-4E7F-89A9-DDA8A5860592}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFDCD039-20C9-49D6-B3E0-86C4FC2A34FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFDCD039-20C9-49D6-B3E0-86C4FC2A34FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFDCD039-20C9-49D6-B3E0-86C4FC2A34FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFDCD039-20C9-49D6-B3E0-86C4FC2A34FD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

@@ -30,11 +30,16 @@ namespace Parme.Net.Core
         /// </summary>
         private const float GrowBy = 1.2f;
         
-        private readonly SortedSet<Reservation> _reservations = new(new ReservationComparer());
         private readonly Dictionary<Type, Dictionary<string, Array>> _particleProperties = new ();
+        private SortedSet<Reservation> _reservations = new(new ReservationComparer());
         private int _freeSpaceAvailable;
 
-        internal int Capacity { get; private set; }
+        /// <summary>
+        /// The current number of particles the allocator can handle.  This can be useful to know in games to
+        /// get an idea of how much to set initial capacity values for minimal allocations at gametime.
+        /// </summary>
+        public int Capacity { get; private set; }
+        
         public ParticleAllocator(int initialCapacity)
         {
             Capacity = initialCapacity;
@@ -123,7 +128,45 @@ namespace Parme.Net.Core
 
         private void ExpandReservationCapacity(Reservation reservation, int additionalRequested)
         {
-            throw new NotImplementedException();
+            if (_freeSpaceAvailable < additionalRequested)
+            {
+                // Not enough free space, so expand the number of particles we are managing and try again
+                // Make sure we not only grow the capacity, but grow it with enough room that we won't be likely
+                // to have to immediately re-grow it next reservation
+                var growthByRequiredCapacity = (additionalRequested - _freeSpaceAvailable + Capacity) * GrowBy;
+                var newCapacity = (int) Math.Max(Capacity * GrowBy, growthByRequiredCapacity);
+                ExpandAllocatorCapacity(newCapacity, reservation);
+            }
+            else
+            {
+                // We have enough free space, but do we have a gap next to it wide enough?
+                var expandingReservationFound = false;
+                foreach (var otherReservation in _reservations)
+                {
+                    if (otherReservation == reservation)
+                    {
+                        expandingReservationFound = true;
+                        continue;
+                    }
+
+                    if (expandingReservationFound)
+                    {
+                        var gap = otherReservation.StartIndex - reservation.LastUsedIndex - 1;
+                        if (gap < additionalRequested)
+                        {
+                            DefragAllocator(reservation);
+                        }
+
+                        break;
+                    }
+                }
+            }
+            
+            // At this point we've either verified that a large enough gap exists, we've defragmented in a way that
+            // created a gap, or we've extended the capacity to allow the expansion.  So now we should be able to just
+            // push out the last used index and be good.
+            reservation.LastUsedIndex += additionalRequested;
+            _freeSpaceAvailable -= additionalRequested;
         }
 
         private void Release(Reservation reservation)
@@ -145,7 +188,7 @@ namespace Parme.Net.Core
             return array.AsSpan().Slice(reservation.StartIndex, reservation.Length);
         }
 
-        private void ExpandAllocatorCapacity(int capacityAfterExpansion)
+        private void ExpandAllocatorCapacity(int capacityAfterExpansion, Reservation? moveToEnd = null)
         {
             // We need to create a whole new set of arrays for every single existing particle property,
             // then loop through each reservation and move its existing properties from the old array to the
@@ -156,12 +199,27 @@ namespace Parme.Net.Core
 
             var newLocations = new List<(int start, int lastUsedIndex)>(_reservations.Count);
             var currentIndex = 0;
+            var moveToEndIndex = (int?) null;
             foreach (var reservation in _reservations)
             {
-                var lastIndex = currentIndex + reservation.Length - 1;
-                newLocations.Add((currentIndex, lastIndex));
+                if (reservation == moveToEnd)
+                {
+                    // If this is the reservation we want moved to the end, put a temporary start and last index
+                    // and fill it in after we have catalogued the last current index.
+                    newLocations.Add((-1, -1));
+                    moveToEndIndex = newLocations.Count - 1;
+                }
+                else
+                {
+                    var lastIndex = currentIndex + reservation.Length - 1;
+                    newLocations.Add((currentIndex, lastIndex));
+                    currentIndex = lastIndex + 1;
+                }
+            }
 
-                currentIndex = lastIndex + 1;
+            if (moveToEndIndex != null)
+            {
+                newLocations[moveToEndIndex.Value] = (currentIndex, currentIndex + moveToEnd!.Length - 1);
             }
             
             foreach (var (type, dictionary) in _particleProperties)
@@ -200,45 +258,90 @@ namespace Parme.Net.Core
             var additionalCapacity = capacityAfterExpansion - Capacity;
             _freeSpaceAvailable += additionalCapacity;
             Capacity = capacityAfterExpansion;
+            
+            RefreshReservationOrdering();
         }
 
         /// <summary>
         /// Shifts all reservations so there are no gaps in between.  Used when adequate free space exists but
         /// due to fragmentation there aren't any gaps large enough for a new reservation request. 
         /// </summary>
-        /// <returns>Returns the last index used by the last reservation.</returns>
-        private int DefragAllocator()
+        /// <param name="moveToEnd">
+        /// If specified, this reservation will be moved to the end of the particle list during the defragmentation
+        /// process.  This is mostly used if we need to grow this particular reservation
+        /// </param>
+        private void DefragAllocator(Reservation? moveToEnd = null)
         {
             // Defrag by figuring out the indices of each reservation if it's shifted towards the beginning without
             // any gaps.
             
             var newLocations = new List<(int start, int lastUsedIndex)>(_reservations.Count);
             var startIndex = 0;
-            int lastIndex = 0;
+            var moveToEndIndex = (int?) null;
             foreach (var reservation in _reservations)
             {
-                lastIndex = startIndex + reservation.Length - 1;
-                newLocations.Add((startIndex, lastIndex));
-                startIndex = lastIndex + 1;
+                if (moveToEnd == reservation)
+                {
+                    // This reservation is being moved to the end of the collection, but we don't know where that is
+                    // yet.  So hold off on exact placement.
+                    newLocations.Add((-1, -1));
+                    moveToEndIndex = newLocations.Count - 1;
+                }
+                else
+                {
+                    var lastIndex = startIndex + reservation.Length - 1;
+                    newLocations.Add((startIndex, lastIndex));
+                    startIndex = lastIndex + 1;
+                }
+            }
+
+            if (moveToEndIndex != null)
+            {
+                newLocations[moveToEndIndex.Value] = (startIndex, startIndex + moveToEnd!.Length - 1);
             }
 
             int idx;
-            foreach (var (_, dictionary) in _particleProperties)
+            foreach (var (type, dictionary) in _particleProperties)
             foreach (var (_, array) in dictionary)
             {
+                Array? moveToEndHolder = null;
                 idx = 0;
                 foreach (var reservation in _reservations)
                 {
-                    var (start, _) = newLocations[idx];
-                    Array.ConstrainedCopy(array, 
-                        reservation.StartIndex, 
-                        array, 
-                        start, 
-                        reservation.Length);
+                    if (reservation == moveToEnd)
+                    {
+                        // This reservation is being moved to the end, but we can't move it yet as it will overwrite
+                        // properties for another reservation later on that hasn't yet been shifted.  So we need to
+                        // hold it in temporary storage and process it after all other defragmentation has finished.
+                        moveToEndHolder = Array.CreateInstance(type, reservation.Length);
+                        Array.ConstrainedCopy(array, 
+                            reservation.StartIndex,
+                            moveToEndHolder,
+                            0,
+                            reservation.Length);
+                    }
+                    else
+                    {
+                        var (start, _) = newLocations[idx];
+                        Array.ConstrainedCopy(array, 
+                            reservation.StartIndex, 
+                            array, 
+                            start, 
+                            reservation.Length);
+                    }
 
                     idx++;
                 }
-                
+
+                if (moveToEnd != null)
+                {
+                    var (start, _) = newLocations[moveToEndIndex!.Value];
+                    Array.ConstrainedCopy(moveToEndHolder, 
+                        0, 
+                        array,
+                        start,
+                        moveToEnd.Length);
+                }
             }
             
             // Now that we've shifted everything over in all the arrays we can assign the new indices
@@ -252,8 +355,18 @@ namespace Parme.Net.Core
 
                 idx++;
             }
+            
+            RefreshReservationOrdering();
+        }
 
-            return lastIndex;
+        /// <summary>
+        /// Resets the ordering of the ordering of reservations in the sorted set.  This is required anytime any
+        /// reservation inside the set has it's starting index changed, as the C# SortedSet type will not automatically
+        /// know the start index has changed to update its internal data structures.
+        /// </summary>
+        private void RefreshReservationOrdering()
+        {
+            _reservations = new SortedSet<Reservation>(_reservations, new ReservationComparer());
         }
 
         /// <summary>

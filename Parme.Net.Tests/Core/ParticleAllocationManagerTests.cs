@@ -266,6 +266,59 @@ namespace Parme.Net.Tests.Core
             }
         }
 
+        [Fact]
+        public void Can_Expand_Reservation_When_Its_The_Only_Reservation()
+        {
+            var allocator = new ParticleAllocator(10);
+            var reservation = allocator.Reserve(5);
+            reservation.Expand(3);
+            
+            reservation.Length.ShouldBe(8);
+            reservation.StartIndex.ShouldBe(0);
+            reservation.LastUsedIndex.ShouldBe(7);
+        }
+
+        [Fact]
+        public void Can_Expand_Reservation_Into_Disposed_Gap()
+        {
+            var allocator = new ParticleAllocator(10);
+            var first = allocator.Reserve(5);
+            var second = allocator.Reserve(3);
+            allocator.Reserve(2);
+            
+            second.Dispose();
+            first.Expand(3);
+            
+            first.Length.ShouldBe(8);
+            first.StartIndex.ShouldBe(0);
+            first.LastUsedIndex.ShouldBe(7);
+        }
+
+        [Fact]
+        public void Can_Expand_When_Not_Enough_Free_Space_Exists()
+        {
+            var allocator = new ParticleAllocator(10);
+            allocator.Reserve(3);
+            var reservation = allocator.Reserve(5);
+            reservation.Expand(10);
+            
+            reservation.Length.ShouldBe(15);
+        }
+
+        [Fact]
+        public void Can_Expand_When_Free_Space_Exists_But_No_Big_Enough_Gaps()
+        {
+            var allocator = new ParticleAllocator(10);
+            var first = allocator.Reserve(3);
+            var second = allocator.Reserve(2);
+            allocator.Reserve(3);
+            second.Dispose();
+            
+            first.Expand(3);
+            
+            first.Length.ShouldBe(6);
+        }
+
         private static void VerifyAllAreConsecutive(params ParticleAllocator.Reservation[] reservations)
         {
             var sortedSet = new SortedSet<ParticleAllocator.Reservation>(reservations, new ParticleAllocator.ReservationComparer());

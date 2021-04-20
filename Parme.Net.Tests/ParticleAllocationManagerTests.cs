@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using Parme.Net.Core;
 using Shouldly;
 using Xunit;
 
-namespace Parme.Net.Tests.Core
+namespace Parme.Net.Tests
 {
     public class ParticleAllocationManagerTests
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Parme.Net.Core
+namespace Parme.Net
 {
     /// <summary>
     /// Manages the allocation of particles and their associated properties.  This is designed to provide minimal

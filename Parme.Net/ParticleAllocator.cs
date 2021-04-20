@@ -120,10 +120,10 @@ namespace Parme.Net
         /// <summary>
         /// Registers a new property that should be managed for all particles in the allocator
         /// </summary>
-        internal void RegisterProperty<T>(string propertyName)
+        internal void RegisterProperty(Type type, string propertyName)
         {
-            _particleProperties.TryAdd(typeof(T), new Dictionary<string, Array>());
-            _particleProperties[typeof(T)].TryAdd(propertyName, new T[Capacity]);
+            _particleProperties.TryAdd(type, new Dictionary<string, Array>());
+            _particleProperties[type].TryAdd(propertyName, Array.CreateInstance(type, Capacity));
         }
 
         private void ExpandReservationCapacity(Reservation reservation, int additionalRequested)

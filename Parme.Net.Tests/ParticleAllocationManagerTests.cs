@@ -121,7 +121,7 @@ namespace Parme.Net.Tests
         {
             var allocator = new ParticleAllocator(10);
             var reservation = allocator.Reserve(5);
-            allocator.RegisterProperty<float>("Something");
+            allocator.RegisterProperty(typeof(float), "Something");
 
             Assert.Throws<KeyNotFoundException>(() => reservation.GetPropertyValues<bool>("Something"));
         }
@@ -131,7 +131,7 @@ namespace Parme.Net.Tests
         {
             var allocator = new ParticleAllocator(10);
             var reservation = allocator.Reserve(5);
-            allocator.RegisterProperty<float>("Something");
+            allocator.RegisterProperty(typeof(float), "Something");
 
             var values = reservation.GetPropertyValues<float>("Something");
             
@@ -156,8 +156,8 @@ namespace Parme.Net.Tests
         {
             var allocator = new ParticleAllocator(10);
             var reservation = allocator.Reserve(5);
-            allocator.RegisterProperty<bool>("Something");
-            allocator.RegisterProperty<float>("Something");
+            allocator.RegisterProperty(typeof(bool) , "Something");
+            allocator.RegisterProperty(typeof(float), "Something");
 
             var boolValues = reservation.GetPropertyValues<bool>("Something");
             var floatValues = reservation.GetPropertyValues<float>("Something");
@@ -167,7 +167,7 @@ namespace Parme.Net.Tests
         public void Property_Values_Remain_After_A_Defrag()
         {
             var allocator = new ParticleAllocator(15);
-            allocator.RegisterProperty<float>("Something");
+            allocator.RegisterProperty(typeof(float), "Something");
             
             var first = allocator.Reserve(3);
             var second = allocator.Reserve(2);
@@ -202,7 +202,7 @@ namespace Parme.Net.Tests
         public void Property_Values_Remain_After_Expansion()
         {
             var allocator = new ParticleAllocator(5);
-            allocator.RegisterProperty<float>("Something");
+            allocator.RegisterProperty(typeof(float), "Something");
 
             var first = allocator.Reserve(3);
             {
@@ -226,7 +226,7 @@ namespace Parme.Net.Tests
         public void Multiple_Reservations_Have_Distinct_Property_Values()
         {
             var allocator = new ParticleAllocator(8);
-            allocator.RegisterProperty<float>("Something");
+            allocator.RegisterProperty(typeof(float), "Something");
 
             var first = allocator.Reserve(3);
             var second = allocator.Reserve(2);

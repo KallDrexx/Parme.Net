@@ -9,11 +9,12 @@ namespace Parme.Net
 {
     public class ParticleEmitter
     {
-        private readonly ParticleAllocator.Reservation _reservation;
         private readonly ParticleCollection _particleCollection;
         private readonly Dictionary<ParticleBehavior, HashSet<ParticleProperty>> _initializedProperties = new();
         private readonly Dictionary<ParticleBehavior, HashSet<ParticleProperty>> _modifiedProperties = new();
         private readonly List<int> _newParticleIndices = new();
+        
+        internal ParticleAllocator.Reservation Reservation { get; } // internal for test simplification 
         
         /// <summary>
         /// The set of behaviors this emitter is using.  Behaviors will be executed in the order they are passed in by
@@ -40,12 +41,12 @@ namespace Parme.Net
             IEnumerable<ParticleBehavior> behaviors, 
             int? initialCapacity = null)
         {
-            initialCapacity ??= 50; // TODO: attempt to estimate based on behaviors
+            initialCapacity ??= 50; // TODO: attempt to estimate based on behaviors and triggers
 
             Trigger = trigger;
             Behaviors = new List<ParticleBehavior>(behaviors);
-            _reservation = particleAllocator.Reserve(initialCapacity.Value);
-            _particleCollection = new ParticleCollection(_reservation);
+            Reservation = particleAllocator.Reserve(initialCapacity.Value);
+            _particleCollection = new ParticleCollection(Reservation);
 
             foreach (var behavior in Behaviors)
             {
@@ -72,7 +73,9 @@ namespace Parme.Net
             var standardProperties = new[]
             {
                 StandardParmeProperties.IsAlive,
-                StandardParmeProperties.TimeAlive
+                StandardParmeProperties.TimeAlive,
+                StandardParmeProperties.PositionX,
+                StandardParmeProperties.PositionY,
             };
 
             foreach (var property in standardProperties)
@@ -91,42 +94,48 @@ namespace Parme.Net
 
             if (IsEmittingNewParticles)
             {
-                var particlesToCreate = Trigger.DetermineNumberOfParticlesToCreate(this, timeSinceLastFrame);
-                if (particlesToCreate > 0)
+                CreateNewParticles(timeSinceLastFrame);
+            }
+        }
+
+        private void CreateNewParticles(float timeSinceLastFrame)
+        {
+            var particlesToCreate = Trigger.DetermineNumberOfParticlesToCreate(this, timeSinceLastFrame);
+            if (particlesToCreate > 0)
+            {
+                _newParticleIndices.Clear();
+                var particleIndex = 0;
+
+                while (particlesToCreate > 0)
                 {
-                    _newParticleIndices.Clear();
-                    var particleIndex = 0;
-
-                    while (particlesToCreate > 0)
+                    var isAliveValues = Reservation.GetPropertyValues<bool>(StandardParmeProperties.IsAlive.Name);
+                    for (; particleIndex < isAliveValues.Length; particleIndex++)
                     {
-                        var isAliveValues = _reservation.GetPropertyValues<bool>(StandardParmeProperties.IsAlive.Name);
-                        for (; particleIndex < isAliveValues.Length; particleIndex++)
+                        if (!isAliveValues[particleIndex])
                         {
-                            if (!isAliveValues[particleIndex])
-                            {
-                                _newParticleIndices.Add(particleIndex);
-                                particlesToCreate--;
+                            _newParticleIndices.Add(particleIndex);
+                            isAliveValues[particleIndex] = true;
+                            particlesToCreate--;
 
-                                if (particlesToCreate <= 0)
-                                {
-                                    break;
-                                }
+                            if (particlesToCreate <= 0)
+                            {
+                                break;
                             }
                         }
+                    }
 
-                        if (particlesToCreate > 0)
-                        {
-                            // We still need to create more particles, but we ran out of room
-                            var newSize = (int) Math.Ceiling(_reservation.Length * 1.5 - _reservation.Length);
-                            _reservation.Expand(newSize);
-                        }
-                    }
-                    
-                    foreach (var (behavior, properties) in _initializedProperties)
+                    if (particlesToCreate > 0)
                     {
-                        _particleCollection.ValidProperties = properties;
-                        behavior.InitializeCreatedParticles(this, _particleCollection, _newParticleIndices);
+                        // We still need to create more particles, but we ran out of room
+                        var additionalRequested = (int) Math.Ceiling(Reservation.Length * 1.5 - Reservation.Length);
+                        Reservation.Expand(additionalRequested);
                     }
+                }
+
+                foreach (var (behavior, properties) in _initializedProperties)
+                {
+                    _particleCollection.ValidProperties = properties;
+                    behavior.InitializeCreatedParticles(this, _particleCollection, _newParticleIndices);
                 }
             }
         }

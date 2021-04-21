@@ -4,7 +4,7 @@ namespace Parme.Net.Behaviors
 {
     /// <summary>
     /// Represents a composable behavior that modifies how particles are created or modified each update.  Behaviors
-    /// are meant to be composable, and a single emitter may have many of them active at once.
+    /// are meant to be composable, and a single particle emitter may have many of them active at once.
     /// </summary>
     public abstract class ParticleBehavior
     {
@@ -17,7 +17,7 @@ namespace Parme.Net.Behaviors
         /// <summary>
         /// Initializes property values for newly created particles. 
         /// </summary>
-        /// <param name="emitter">The emitter these created particles are a part of</param>
+        /// <param name="particleEmitter">The particle emitter these created particles are a part of</param>
         /// <param name="particles">
         /// The collection of all particles (not just new ones).  Care should be taken to not change values of
         /// existing particles, unless it is intentional
@@ -25,14 +25,14 @@ namespace Parme.Net.Behaviors
         /// <param name="createdParticleIndices">
         /// Indices of particles that have been created, and are ready for initialization
         /// </param>
-        public abstract void InitializeCreatedParticles(Emitter emitter, ParticleCollection particles, IReadOnlyList<int> createdParticleIndices);
+        public abstract void InitializeCreatedParticles(ParticleEmitter particleEmitter, ParticleCollection particles, IReadOnlyList<int> createdParticleIndices);
 
         /// <summary>
         /// Updates property values for existing particles based on a time step.
         /// </summary>
-        /// <param name="emitter">The emitter the particles belong to</param>
+        /// <param name="particleEmitter">The particle emitter the particles belong to</param>
         /// <param name="particles">The collection of particles available to be modified</param>
         /// <param name="timeSinceLastFrame">How many seconds since the last frame</param>
-        public abstract void UpdateParticles(Emitter emitter, ParticleCollection particles, float timeSinceLastFrame);
+        public abstract void UpdateParticles(ParticleEmitter particleEmitter, ParticleCollection particles, float timeSinceLastFrame);
     }
 }

@@ -7,7 +7,7 @@ using Parme.Net.Triggers;
 
 namespace Parme.Net
 {
-    public class Emitter
+    public class ParticleEmitter
     {
         private readonly ParticleAllocator.Reservation _reservation;
         private readonly ParticleCollection _particleCollection;
@@ -29,13 +29,13 @@ namespace Parme.Net
         /// Where the emitter is in world space.
         /// </summary>
         public Vector2 WorldCoordinates { get; set; }
-        
+
         /// <summary>
         /// Determines if the emitter is actively creating new particles or not
         /// </summary>
-        public bool IsEmittingNewParticles { get; set; }
+        public bool IsEmittingNewParticles { get; set; } = true;
 
-        public Emitter(ParticleAllocator particleAllocator,
+        public ParticleEmitter(ParticleAllocator particleAllocator,
             ParticleTrigger trigger,
             IEnumerable<ParticleBehavior> behaviors, 
             int? initialCapacity = null)
@@ -49,13 +49,15 @@ namespace Parme.Net
 
             foreach (var behavior in Behaviors)
             {
-                var initializedProperties = behavior.InitializedProperties;
+                // ReSharper disable once ConstantNullCoalescingCondition (due to consumer code without nullable refs)
+                var initializedProperties = behavior.InitializedProperties ?? new HashSet<ParticleProperty>();
                 if (initializedProperties.Any())
                 {
                     _initializedProperties.Add(behavior, initializedProperties);
                 }
                 
-                var modifiedProperties = behavior.ModifiedProperties;
+                // ReSharper disable once ConstantNullCoalescingCondition (due to consumer code without nullable refs)
+                var modifiedProperties = behavior.ModifiedProperties ?? new HashSet<ParticleProperty>();
                 if (modifiedProperties.Any())
                 {
                     _modifiedProperties.Add(behavior, modifiedProperties);

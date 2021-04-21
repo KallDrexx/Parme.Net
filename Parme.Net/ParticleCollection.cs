@@ -23,7 +23,12 @@ namespace Parme.Net
         }
 
         /// <summary>
-        /// Gets the values of a specific property for this set of particles
+        /// Gets the values of a specific property for this set of particles.
+        ///
+        /// The collection of properties should *NOT* be stored for more than the current scope of operation.  The
+        /// underlying collection of particle properties can (and will) be moved to new memory locations at any time,
+        /// and when this happens the result of this method call will point to old values in memory.  Not only will
+        /// this cause memory leaks, any updates will not affect the real particles.
         /// </summary>
         /// <param name="propertyName">Name of the property to get values for</param>
         /// <typeparam name="T">The type for the property.  This must match the type the property was registered with</typeparam>

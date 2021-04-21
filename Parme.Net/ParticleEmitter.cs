@@ -10,8 +10,8 @@ namespace Parme.Net
     public class ParticleEmitter
     {
         private readonly ParticleCollection _particleCollection;
-        private readonly Dictionary<ParticleBehavior, HashSet<ParticleProperty>> _initializedProperties = new();
-        private readonly Dictionary<ParticleBehavior, HashSet<ParticleProperty>> _modifiedProperties = new();
+        private readonly Dictionary<IParticleBehavior, HashSet<ParticleProperty>> _initializedProperties = new();
+        private readonly Dictionary<IParticleBehavior, HashSet<ParticleProperty>> _modifiedProperties = new();
         private readonly List<int> _newParticleIndices = new();
         
         internal ParticleAllocator.Reservation Reservation { get; } // internal for test simplification 
@@ -19,12 +19,12 @@ namespace Parme.Net
         /// <summary>
         /// The set of behaviors this emitter is using.  Behaviors will be executed in the order they are passed in by
         /// </summary>
-        public IReadOnlyList<ParticleBehavior> Behaviors { get; }
+        public IReadOnlyList<IParticleBehavior> Behaviors { get; }
         
         /// <summary>
         /// Defines how new particles are created
         /// </summary>
-        public ParticleTrigger Trigger { get; } 
+        public IParticleTrigger Trigger { get; } 
         
         /// <summary>
         /// Where the emitter is in world space.
@@ -37,14 +37,14 @@ namespace Parme.Net
         public bool IsEmittingNewParticles { get; set; } = true;
 
         public ParticleEmitter(ParticleAllocator particleAllocator,
-            ParticleTrigger trigger,
-            IEnumerable<ParticleBehavior> behaviors, 
+            IParticleTrigger trigger,
+            IEnumerable<IParticleBehavior> behaviors, 
             int? initialCapacity = null)
         {
             initialCapacity ??= 50; // TODO: attempt to estimate based on behaviors and triggers
 
             Trigger = trigger;
-            Behaviors = new List<ParticleBehavior>(behaviors);
+            Behaviors = new List<IParticleBehavior>(behaviors);
             Reservation = particleAllocator.Reserve(initialCapacity.Value);
             _particleCollection = new ParticleCollection(Reservation);
 

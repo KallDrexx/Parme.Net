@@ -6,6 +6,16 @@
     public interface IParticleTrigger
     {
         /// <summary>
+        /// Inclusive minimum number of particles to emit
+        /// </summary>
+        int MinParticlesToEmit { get; set; }
+        
+        /// <summary>
+        /// Inclusive maximum number of particles to emit
+        /// </summary>
+        int MaxParticlesToEmit { get; set; }
+        
+        /// <summary>
         /// Determines how many particles should be created
         /// </summary>
         /// <param name="particleEmitter">The particle emitter the trigger is tied to</param>

@@ -19,7 +19,7 @@ namespace Parme.Net.Tests.Triggers
             };
 
             var allocator = new ParticleAllocator(10);
-            var emitter = new ParticleEmitter(allocator, trigger, ArraySegment<IParticleBehavior>.Empty);
+            var emitter = new ParticleEmitter(allocator, trigger, ArraySegment<ParticleBehavior>.Empty);
             
             trigger.DetermineNumberOfParticlesToCreate(emitter, 0.90f).ShouldBe(0);
             trigger.DetermineNumberOfParticlesToCreate(emitter, 0.05f).ShouldBe(0);
@@ -37,7 +37,7 @@ namespace Parme.Net.Tests.Triggers
             };
 
             var allocator = new ParticleAllocator(10);
-            var emitter = new ParticleEmitter(allocator, trigger, ArraySegment<IParticleBehavior>.Empty);
+            var emitter = new ParticleEmitter(allocator, trigger, ArraySegment<ParticleBehavior>.Empty);
             
             trigger.DetermineNumberOfParticlesToCreate(emitter, 1.05f).ShouldBeInRange(5, 10);
             trigger.DetermineNumberOfParticlesToCreate(emitter, 0.16f).ShouldBe(0);
@@ -54,7 +54,7 @@ namespace Parme.Net.Tests.Triggers
             };
 
             var allocator = new ParticleAllocator(10);
-            var emitter = new ParticleEmitter(allocator, trigger, ArraySegment<IParticleBehavior>.Empty);
+            var emitter = new ParticleEmitter(allocator, trigger, ArraySegment<ParticleBehavior>.Empty);
             
             trigger.DetermineNumberOfParticlesToCreate(emitter, 5.0f).ShouldBe(5);
         }

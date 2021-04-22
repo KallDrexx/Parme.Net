@@ -10,8 +10,8 @@ namespace Parme.Net
     public class ParticleEmitter
     {
         private readonly ParticleCollection _particleCollection;
-        private readonly Dictionary<IParticleBehavior, HashSet<ParticleProperty>> _initializedProperties = new();
-        private readonly Dictionary<IParticleBehavior, HashSet<ParticleProperty>> _modifiedProperties = new();
+        private readonly Dictionary<ParticleBehavior, HashSet<ParticleProperty>> _initializedProperties = new();
+        private readonly Dictionary<ParticleBehavior, HashSet<ParticleProperty>> _modifiedProperties = new();
         private readonly List<int> _newParticleIndices = new();
         
         internal ParticleAllocator.Reservation Reservation { get; } // internal for test simplification 
@@ -19,7 +19,7 @@ namespace Parme.Net
         /// <summary>
         /// The set of behaviors this emitter is using.  Behaviors will be executed in the order they are passed in by
         /// </summary>
-        public IReadOnlyList<IParticleBehavior> Behaviors { get; }
+        public IReadOnlyList<ParticleBehavior> Behaviors { get; }
         
         /// <summary>
         /// Defines how new particles are created
@@ -38,13 +38,13 @@ namespace Parme.Net
 
         public ParticleEmitter(ParticleAllocator particleAllocator,
             IParticleTrigger trigger,
-            IEnumerable<IParticleBehavior> behaviors, 
+            IEnumerable<ParticleBehavior> behaviors, 
             int? initialCapacity = null)
         {
             initialCapacity ??= 50; // TODO: attempt to estimate based on behaviors and triggers
 
             Trigger = trigger;
-            Behaviors = new List<IParticleBehavior>(behaviors);
+            Behaviors = new List<ParticleBehavior>(behaviors);
             Reservation = particleAllocator.Reserve(initialCapacity.Value);
             _particleCollection = new ParticleCollection(Reservation);
 
@@ -76,6 +76,8 @@ namespace Parme.Net
                 StandardParmeProperties.TimeAlive,
                 StandardParmeProperties.PositionX,
                 StandardParmeProperties.PositionY,
+                StandardParmeProperties.CurrentHeight,
+                StandardParmeProperties.CurrentWidth,
             };
 
             foreach (var property in standardProperties)

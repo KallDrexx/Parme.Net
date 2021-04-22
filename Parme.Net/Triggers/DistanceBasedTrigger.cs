@@ -6,7 +6,7 @@ namespace Parme.Net.Triggers
     /// <summary>
     /// Emits particles after the emitter has moved a specified distance
     /// </summary>
-    public class DistanceBasedTrigger : IParticleTrigger
+    public class DistanceBasedTrigger : ParticleTrigger
     {
         private readonly Random _random;
         private Vector2? _previousEmitterPosition;
@@ -21,10 +21,16 @@ namespace Parme.Net.Triggers
         /// How far the emitter should travel before particles are emitted
         /// </summary>
         public float DistanceBetweenEmissions { get; set; }
-        public int MinParticlesToEmit { get; set; }
-        public int MaxParticlesToEmit { get; set; }
-        
-        public int DetermineNumberOfParticlesToCreate(ParticleEmitter particleEmitter, float timeSinceLastFrame)
+
+        public override ParticleTrigger Clone()
+        {
+            return new DistanceBasedTrigger(_random)
+            {
+                DistanceBetweenEmissions = DistanceBetweenEmissions,
+            };
+        }
+
+        public override int DetermineNumberOfParticlesToCreate(ParticleEmitter particleEmitter, float timeSinceLastFrame)
         {
             var result = 0;
             if (_previousEmitterPosition != null)

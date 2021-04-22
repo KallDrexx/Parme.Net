@@ -14,7 +14,7 @@ namespace Parme.Net.Tests.Behaviors
         [Fact]
         public void Behavior_Initialization_Assigns_Position_Relative_To_Emitter()
         {
-            var trigger = new Mock<IParticleTrigger>();
+            var trigger = new Mock<ParticleTrigger>();
             var behavior = new InitialPositionBehavior(new Random())
             {
                 MinPositionRelativeToEmitter = new Vector2(2, 3),
@@ -22,7 +22,14 @@ namespace Parme.Net.Tests.Behaviors
             };
 
             var allocator = new ParticleAllocator(10);
-            var emitter = new ParticleEmitter(allocator, trigger.Object, new[] {behavior}, 5)
+            var config = new EmitterConfig
+            {
+                Trigger = trigger.Object,
+                Behaviors = { behavior },
+                InitialCapacity = 10,
+            };
+            
+            var emitter = new ParticleEmitter(allocator, config)
             {
                 WorldCoordinates = new Vector2(5, 7),
             };
@@ -48,7 +55,7 @@ namespace Parme.Net.Tests.Behaviors
         [Fact]
         public void Behavior_initialization_Does_Not_Assign_To_Non_New_Particles()
         {
-            var trigger = new Mock<IParticleTrigger>();
+            var trigger = new Mock<ParticleTrigger>();
             var behavior = new InitialPositionBehavior(new Random())
             {
                 MinPositionRelativeToEmitter = new Vector2(2, 3),
@@ -56,7 +63,13 @@ namespace Parme.Net.Tests.Behaviors
             };
 
             var allocator = new ParticleAllocator(10);
-            var emitter = new ParticleEmitter(allocator, trigger.Object, new[] {behavior}, 5)
+            var config = new EmitterConfig
+            {
+                Trigger = trigger.Object,
+                Behaviors = { behavior },
+                InitialCapacity = 5,
+            };
+            var emitter = new ParticleEmitter(allocator, config)
             {
                 WorldCoordinates = new Vector2(5, 7),
             };
@@ -82,6 +95,22 @@ namespace Parme.Net.Tests.Behaviors
                 positionX[index].ShouldBe(0);
                 positionY[index].ShouldBe(0);
             }
+        }
+
+        [Fact]
+        public void Can_Clone_Behavior()
+        {
+            var behavior = new InitialPositionBehavior(new Random())
+            {
+                MinPositionRelativeToEmitter = new Vector2(2, 3),
+                MaxPositionRelativeToEmitter = new Vector2(2, 3),
+            };
+
+            var clone = (InitialPositionBehavior) behavior.Clone();
+
+            clone.ShouldNotBeNull();
+            clone.MinPositionRelativeToEmitter.ShouldBe(behavior.MinPositionRelativeToEmitter);
+            clone.MaxPositionRelativeToEmitter.ShouldBe(behavior.MaxPositionRelativeToEmitter);
         }
     }
 }

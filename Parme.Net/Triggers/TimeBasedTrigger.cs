@@ -2,7 +2,7 @@
 
 namespace Parme.Net.Triggers
 {
-    public class TimeBasedTrigger : IParticleTrigger
+    public class TimeBasedTrigger : ParticleTrigger
     {
         private readonly Random _random;
         private float _timeSinceLastEmission;
@@ -17,10 +17,15 @@ namespace Parme.Net.Triggers
         /// </summary>
         public float SecondsBetweenEmissions { get; set; }
 
-        public int MinParticlesToEmit { get; set; }
-        public int MaxParticlesToEmit { get; set; }
-        
-        public int DetermineNumberOfParticlesToCreate(ParticleEmitter particleEmitter, float timeSinceLastFrame)
+        public override ParticleTrigger Clone()
+        {
+            return new TimeBasedTrigger(_random)
+            {
+                SecondsBetweenEmissions = SecondsBetweenEmissions,
+            };
+        }
+
+        public override int DetermineNumberOfParticlesToCreate(ParticleEmitter particleEmitter, float timeSinceLastFrame)
         {
             var result = 0;
             

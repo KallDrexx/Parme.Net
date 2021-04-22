@@ -19,6 +19,13 @@ namespace Parme.Net.Behaviors
         public virtual HashSet<ParticleProperty>? ModifiedProperties => null;
 
         /// <summary>
+        /// Creates a copy of the behavior so that it may be attached to a new emitter.  All data for the behavior
+        /// is copied *except* data tracked against a specific emitter, all emitter specific data will be reset. 
+        /// </summary>
+        /// <returns></returns>
+        public abstract ParticleBehavior Clone();
+
+        /// <summary>
         /// Initializes property values for newly created particles. 
         /// </summary>
         /// <param name="particleEmitter">The particle emitter these created particles are a part of</param>

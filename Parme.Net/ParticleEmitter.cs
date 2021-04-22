@@ -24,7 +24,7 @@ namespace Parme.Net
         /// <summary>
         /// Defines how new particles are created
         /// </summary>
-        public IParticleTrigger Trigger { get; } 
+        public ParticleTrigger Trigger { get; } 
         
         /// <summary>
         /// Where the emitter is in world space.
@@ -36,16 +36,18 @@ namespace Parme.Net
         /// </summary>
         public bool IsEmittingNewParticles { get; set; } = true;
 
-        public ParticleEmitter(ParticleAllocator particleAllocator,
-            IParticleTrigger trigger,
-            IEnumerable<ParticleBehavior> behaviors, 
-            int? initialCapacity = null)
+        public ParticleEmitter(ParticleAllocator particleAllocator, EmitterConfig config)
         {
-            initialCapacity ??= 50; // TODO: attempt to estimate based on behaviors and triggers
+            var initialCapacity = config?.InitialCapacity ?? 50; // TODO: attempt to estimate based on behaviors and triggers
 
-            Trigger = trigger;
-            Behaviors = new List<ParticleBehavior>(behaviors);
-            Reservation = particleAllocator.Reserve(initialCapacity.Value);
+            if (config?.Trigger == null)
+            {
+                throw new ArgumentException("Emitter config did not have a trigger, but one is required");
+            }
+
+            Trigger = config.Trigger.Clone();
+            Behaviors = config.Behaviors.Select(x => x.Clone()).ToArray();
+            Reservation = particleAllocator.Reserve(initialCapacity);
             _particleCollection = new ParticleCollection(Reservation);
 
             foreach (var behavior in Behaviors)

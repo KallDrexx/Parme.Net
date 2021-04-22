@@ -9,15 +9,13 @@ namespace Parme.Net.Behaviors
     /// </summary>
     public class InitialPositionBehavior : ParticleBehavior
     {
-        private static readonly HashSet<ParticleProperty> PropertiesToInitialize = new(new[]
+        private readonly Random _random;
+
+        public override HashSet<ParticleProperty> InitializedProperties { get; } = new(new[]
         {
             StandardParmeProperties.PositionX,
             StandardParmeProperties.PositionY,
         });
-
-        private readonly Random _random;
-
-        public override HashSet<ParticleProperty> InitializedProperties => PropertiesToInitialize;
 
         /// <summary>
         /// The lower bound of positions the particle can start at relative to the emitter's position
@@ -32,6 +30,15 @@ namespace Parme.Net.Behaviors
         public InitialPositionBehavior(Random random)
         {
             _random = random;
+        }
+
+        public override ParticleBehavior Clone()
+        {
+            return new InitialPositionBehavior(_random)
+            {
+                MinPositionRelativeToEmitter = MinPositionRelativeToEmitter,
+                MaxPositionRelativeToEmitter = MaxPositionRelativeToEmitter,
+            };
         }
 
         public override void InitializeCreatedParticles(ParticleEmitter particleEmitter, 

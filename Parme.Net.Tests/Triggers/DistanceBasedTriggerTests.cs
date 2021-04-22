@@ -20,7 +20,12 @@ namespace Parme.Net.Tests.Triggers
             };
             
             var allocator = new ParticleAllocator(10);
-            var emitter = new ParticleEmitter(allocator, trigger, ArraySegment<ParticleBehavior>.Empty);
+            var config = new EmitterConfig
+            {
+                Trigger = trigger,
+                InitialCapacity = 10,
+            };
+            var emitter = new ParticleEmitter(allocator, config);
 
             emitter.WorldCoordinates = Vector2.Zero;
             trigger.DetermineNumberOfParticlesToCreate(emitter, 0.16f).ShouldBe(0);
@@ -43,7 +48,13 @@ namespace Parme.Net.Tests.Triggers
             };
             
             var allocator = new ParticleAllocator(10);
-            var emitter = new ParticleEmitter(allocator, trigger, ArraySegment<ParticleBehavior>.Empty);
+            var config = new EmitterConfig
+            {
+                Trigger = trigger,
+                InitialCapacity = 10,
+            };
+            
+            var emitter = new ParticleEmitter(allocator, config);
 
             emitter.WorldCoordinates = Vector2.Zero;
             trigger.DetermineNumberOfParticlesToCreate(emitter, 0.16f).ShouldBe(0);

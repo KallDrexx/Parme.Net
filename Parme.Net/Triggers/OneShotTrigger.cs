@@ -5,7 +5,7 @@ namespace Parme.Net.Triggers
     /// <summary>
     /// Triggers particles once, and then tells the emitter to stop emitting
     /// </summary>
-    public class OneShotTrigger : IParticleTrigger
+    public class OneShotTrigger : ParticleTrigger
     {
         private readonly Random _random;
 
@@ -13,12 +13,13 @@ namespace Parme.Net.Triggers
         {
             _random = random;
         }
-        
-        public int MinParticlesToEmit { get; set; }
-        
-        public int MaxParticlesToEmit { get; set; }
-        
-        public int DetermineNumberOfParticlesToCreate(ParticleEmitter particleEmitter, float timeSinceLastFrame)
+
+        public override ParticleTrigger Clone()
+        {
+            return new OneShotTrigger(_random);
+        }
+
+        public override int DetermineNumberOfParticlesToCreate(ParticleEmitter particleEmitter, float timeSinceLastFrame)
         {
             particleEmitter.IsEmittingNewParticles = false;
 

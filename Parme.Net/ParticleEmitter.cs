@@ -14,7 +14,7 @@ namespace Parme.Net
         private readonly Dictionary<ParticleBehavior, HashSet<ParticleProperty>> _modifiedProperties = new();
         private readonly List<int> _newParticleIndices = new();
         
-        internal ParticleAllocator.Reservation Reservation { get; } // internal for test simplification 
+        internal ParticleAllocator.Reservation Reservation { get; } // internal for test purposes 
         
         /// <summary>
         /// The set of behaviors this emitter is using.  Behaviors will be executed in the order they are passed in by
@@ -35,6 +35,11 @@ namespace Parme.Net
         /// Determines if the emitter is actively creating new particles or not
         /// </summary>
         public bool IsEmittingNewParticles { get; set; } = true;
+        
+        /// <summary>
+        /// How many seconds a single particle is expected to be alive for
+        /// </summary>
+        public float MaxParticleLifetime { get; set; }
 
         public ParticleEmitter(ParticleAllocator particleAllocator, EmitterConfig config)
         {
@@ -47,6 +52,8 @@ namespace Parme.Net
 
             Trigger = config.Trigger.Clone();
             Behaviors = config.Behaviors.Select(x => x.Clone()).ToArray();
+            MaxParticleLifetime = config.MaxParticleLifetime;
+            
             Reservation = particleAllocator.Reserve(initialCapacity);
             _particleCollection = new ParticleCollection(Reservation);
 

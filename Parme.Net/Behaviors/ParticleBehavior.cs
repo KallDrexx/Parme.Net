@@ -9,6 +9,11 @@ namespace Parme.Net.Behaviors
     public abstract class ParticleBehavior
     {
         /// <summary>
+        /// Gets the nearest multiple of the given number.  Useful for SIMD scenarios
+        /// </summary>
+        protected static int NearestMultiple(int number, int multiple) => ((number - 1) | (multiple - 1)) + 1 - multiple;
+        
+        /// <summary>
         /// Properties that this behavior will set an initial value for when a new particle is created.. 
         /// </summary>
         public virtual HashSet<ParticleProperty>? InitializedProperties => null;

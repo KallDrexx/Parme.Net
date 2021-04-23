@@ -336,7 +336,7 @@ namespace Parme.Net
                 if (moveToEnd != null)
                 {
                     var (start, _) = newLocations[moveToEndIndex!.Value];
-                    Array.ConstrainedCopy(moveToEndHolder, 
+                    Array.ConstrainedCopy(moveToEndHolder!, 
                         0, 
                         array,
                         start,
@@ -421,7 +421,7 @@ namespace Parme.Net
         
         internal class ReservationComparer : IComparer<Reservation>
         {
-            public int Compare(Reservation x, Reservation y)
+            public int Compare(Reservation? x, Reservation? y)
             {
                 if (ReferenceEquals(x, y)) return 0;
                 if (ReferenceEquals(null, y)) return 1;

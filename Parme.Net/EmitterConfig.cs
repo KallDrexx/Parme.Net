@@ -14,6 +14,11 @@ namespace Parme.Net
         public List<ParticleBehavior> Behaviors { get; } = new();
         
         /// <summary>
+        /// How many seconds a single particle should stay alive for
+        /// </summary>
+        public float MaxParticleLifetime { get; set; }
+        
+        /// <summary>
         /// The starting capacity of emitters created with this configuration.  If `null` then the emitter will try
         /// to estimate its own capacity requirements.
         /// </summary>

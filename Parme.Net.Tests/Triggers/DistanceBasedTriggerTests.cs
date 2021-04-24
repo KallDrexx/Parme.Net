@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Numerics;
-using Parme.Net.Behaviors;
 using Parme.Net.Triggers;
 using Shouldly;
 using Xunit;

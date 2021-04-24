@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using Parme.Net.Behaviors;
+using Parme.Net.Initializers;
+using Parme.Net.Modifiers;
 using Parme.Net.Triggers;
 
 namespace Parme.Net
@@ -10,21 +11,28 @@ namespace Parme.Net
     public class ParticleEmitter
     {
         private readonly ParticleCollection _particleCollection;
-        private readonly Dictionary<ParticleBehavior, HashSet<ParticleProperty>> _initializedProperties = new();
-        private readonly Dictionary<ParticleBehavior, HashSet<ParticleProperty>> _modifiedProperties = new();
+        private readonly Dictionary<IParticleInitializer, IReadOnlySet<ParticleProperty>> _initializerProperties = new();
+        private readonly Dictionary<IParticleModifier, IReadOnlySet<ParticleProperty>> _modifierUpdatedProperties = new();
+        private readonly Dictionary<IParticleModifier, IReadOnlySet<ParticleProperty>> _modifierReadableProperties = new();
+        
         private readonly List<int> _newParticleIndices = new();
         
         internal ParticleAllocator.Reservation Reservation { get; } // internal for test purposes 
         
         /// <summary>
-        /// The set of behaviors this emitter is using.  Behaviors will be executed in the order they are passed in by
-        /// </summary>
-        public IReadOnlyList<ParticleBehavior> Behaviors { get; }
-        
-        /// <summary>
         /// Defines how new particles are created
         /// </summary>
         public ParticleTrigger Trigger { get; } 
+        
+        /// <summary>
+        /// The set of initializers the emitter uses.  Initializers will be executed in the order they appear
+        /// </summary>
+        public IReadOnlyList<IParticleInitializer> Initializers { get; }
+        
+        /// <summary>
+        /// The set of modifiers the emitter uses.  Modifiers will be executed in collection order
+        /// </summary>
+        public IReadOnlyList<IParticleModifier> Modifiers { get; }
         
         /// <summary>
         /// Where the emitter is in world space.
@@ -51,29 +59,36 @@ namespace Parme.Net
             }
 
             Trigger = config.Trigger.Clone();
-            Behaviors = config.Behaviors.Select(x => x.Clone()).ToArray();
+            Initializers = config.Initializers.Select(x => x.Clone()).ToArray();
+            Modifiers = config.Modifiers.Select(x => x.Clone()).ToArray();
             MaxParticleLifetime = config.MaxParticleLifetime;
             
             Reservation = particleAllocator.Reserve(initialCapacity);
             _particleCollection = new ParticleCollection(Reservation);
 
-            foreach (var behavior in Behaviors)
+            foreach (var initializer in Initializers)
             {
                 // ReSharper disable once ConstantNullCoalescingCondition (due to consumer code without nullable refs)
-                var initializedProperties = behavior.InitializedProperties ?? new HashSet<ParticleProperty>();
-                if (initializedProperties.Any())
-                {
-                    _initializedProperties.Add(behavior, initializedProperties);
-                }
-                
-                // ReSharper disable once ConstantNullCoalescingCondition (due to consumer code without nullable refs)
-                var modifiedProperties = behavior.ModifiedProperties ?? new HashSet<ParticleProperty>();
-                if (modifiedProperties.Any())
-                {
-                    _modifiedProperties.Add(behavior, modifiedProperties);
-                }
+                var properties = initializer.PropertiesISet ?? new HashSet<ParticleProperty>();
+                _initializerProperties.Add(initializer, properties);
 
-                foreach (var property in initializedProperties.Concat(modifiedProperties))
+                foreach (var property in properties)
+                {
+                    particleAllocator.RegisterProperty(property.Type, property.Name);
+                }
+            }
+
+            foreach (var modifier in Modifiers)
+            {
+                // ReSharper disable once ConstantNullCoalescingCondition
+                var propertiesToUpdate = modifier.PropertiesIUpdate ?? new HashSet<ParticleProperty>();
+                _modifierUpdatedProperties.Add(modifier, propertiesToUpdate);
+                
+                // ReSharper disable once ConstantNullCoalescingCondition
+                var propertiesToRead = modifier.PropertiesIRead ?? new HashSet<ParticleProperty>();
+                _modifierReadableProperties.Add(modifier, propertiesToRead);
+
+                foreach (var property in propertiesToUpdate.Concat(propertiesToRead))
                 {
                     particleAllocator.RegisterProperty(property.Type, property.Name);
                 }
@@ -97,10 +112,15 @@ namespace Parme.Net
 
         public void Update(float timeSinceLastFrame)
         {
-            foreach (var (behavior, properties) in _modifiedProperties)
+            foreach (var modifier in Modifiers)
             {
-                _particleCollection.ValidProperties = properties;
-                behavior.UpdateParticles(this, _particleCollection, timeSinceLastFrame);
+                _modifierReadableProperties.TryGetValue(modifier, out var readableProperties);
+                _modifierUpdatedProperties.TryGetValue(modifier, out var updateableProperties);
+
+                _particleCollection.ValidPropertiesToRead = readableProperties;
+                _particleCollection.ValidPropertiesToSet = updateableProperties;
+                
+                modifier.Update(this, _particleCollection, timeSinceLastFrame);
             }
 
             if (IsEmittingNewParticles)
@@ -143,10 +163,13 @@ namespace Parme.Net
                     }
                 }
 
-                foreach (var (behavior, properties) in _initializedProperties)
+                foreach (var initializer in Initializers)
                 {
-                    _particleCollection.ValidProperties = properties;
-                    behavior.InitializeCreatedParticles(this, _particleCollection, _newParticleIndices);
+                    _initializerProperties.TryGetValue(initializer, out var properties);
+                    _particleCollection.ValidPropertiesToSet = properties;
+                    _particleCollection.ValidPropertiesToRead = null;
+                    
+                    initializer.InitializeParticles(this, _particleCollection, _newParticleIndices);
                 }
             }
         }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
-using Parme.Net.Behaviors;
+using Parme.Net.Initializers;
+using Parme.Net.Modifiers;
 using Parme.Net.Triggers;
 
 namespace Parme.Net
@@ -11,8 +12,9 @@ namespace Parme.Net
     public class EmitterConfig
     {
         public ParticleTrigger? Trigger { get; set; }
-        public List<ParticleBehavior> Behaviors { get; } = new();
-        
+        public List<IParticleInitializer> Initializers { get; } = new();
+        public List<IParticleModifier> Modifiers { get; } = new();
+
         /// <summary>
         /// How many seconds a single particle should stay alive for
         /// </summary>

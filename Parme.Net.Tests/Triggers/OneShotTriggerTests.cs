@@ -1,5 +1,4 @@
 ﻿using System;
-using Parme.Net.Behaviors;
 using Parme.Net.Triggers;
 using Shouldly;
 using Xunit;

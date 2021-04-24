@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.VisualBasic;
+﻿using System.Collections.Generic;
 using Moq;
-using Parme.Net.Behaviors;
-using Parme.Net.Triggers;
 using Shouldly;
 using Xunit;
 
@@ -82,61 +78,75 @@ namespace Parme.Net.Tests
         public void Initializer_Properties_Are_Registered()
         {
             var trigger = MockTrigger();
-            var behavior = MockBehavior();
-            behavior.Setup(x => x.InitializedProperties)
+            var initializer = MockInitializer();
+            initializer.Setup(x => x.PropertiesISet)
                 .Returns(new HashSet<ParticleProperty>(new[] {new ParticleProperty(typeof(bool), "Test1")}));
 
             var allocator = new ParticleAllocator(10);
             var config = new EmitterConfig
             {
                 Trigger = trigger.Object,
-                Behaviors = { behavior.Object },
+                Initializers = { initializer.Object },
                 InitialCapacity = 10,
             };
             
             var emitter = new ParticleEmitter(allocator, config);
 
-            var reservation = allocator.Reserve(1);
-            reservation.GetPropertyValues<bool>("Test1");
+            emitter.Reservation.GetPropertyValues<bool>("Test1");
         }
 
         [Fact]
-        public void Modifier_Properties_Are_Registered()
+        public void Modifier_Properties_To_Update_Are_Registered()
         {
             var trigger = MockTrigger();
-            var behavior = MockBehavior();
-            behavior.Setup(x => x.ModifiedProperties)
+            var modifier = MockModifier();
+            modifier.Setup(x => x.PropertiesIUpdate)
                 .Returns(new HashSet<ParticleProperty>(new[] {new ParticleProperty(typeof(bool), "Test1")}));
 
             var allocator = new ParticleAllocator(10);
             var config = new EmitterConfig
             {
                 Trigger = trigger.Object,
-                Behaviors = { behavior.Object },
+                Modifiers = { modifier.Object },
                 InitialCapacity = 10,
             };
             
             var emitter = new ParticleEmitter(allocator, config);
-
-            var reservation = allocator.Reserve(1);
-            reservation.GetPropertyValues<bool>("Test1");
+            emitter.Reservation.GetPropertyValues<bool>("Test1");
         }
 
         [Fact]
-        public void Behavior_Initialization_Method_Called_When_Trigger_Returns_A_Positive_Number_And_Initializer_Properties_Specified()
+        public void Modifier_Properties_To_Read_Are_Registered()
+        {
+            var trigger = MockTrigger();
+            var modifier = MockModifier();
+            modifier.Setup(x => x.PropertiesIUpdate)
+                .Returns(new HashSet<ParticleProperty>(new[] {new ParticleProperty(typeof(bool), "Test1")}));
+
+            var allocator = new ParticleAllocator(10);
+            var config = new EmitterConfig
+            {
+                Trigger = trigger.Object,
+                Modifiers = { modifier.Object },
+                InitialCapacity = 10,
+            };
+            
+            var emitter = new ParticleEmitter(allocator, config);
+            emitter.Reservation.GetPropertyValues<bool>("Test1");
+        }
+
+        [Fact]
+        public void Behavior_Initialization_Method_Called_When_Trigger_Returns_A_Positive_Number()
         {
             const int newParticleCount = 5;
             
             var trigger = MockTrigger();
-            var behavior = MockBehavior();
-            behavior.Setup(x => x.InitializedProperties)
-                .Returns(new HashSet<ParticleProperty>(new[] {new ParticleProperty(typeof(bool), "Test1")}));
-            
+            var initializer = MockInitializer();
             var allocator = new ParticleAllocator(10);
             var config = new EmitterConfig
             {
                 Trigger = trigger.Object,
-                Behaviors = { behavior.Object },
+                Initializers = { initializer.Object },
                 InitialCapacity = 10,
             };
             
@@ -147,130 +157,31 @@ namespace Parme.Net.Tests
             
             emitter.Update(0.16f);
             
-            behavior.Verify(x => 
-                x.InitializeCreatedParticles(
+            initializer.Verify(x => 
+                x.InitializeParticles(
                     emitter, 
                     It.IsAny<ParticleCollection>(),
                     It.Is<IReadOnlyList<int>>(y => y.Count == newParticleCount)),
                 Times.Once);
         }
-        
-        [Fact]
-        public void Behavior_Initialization_Method_Not_Called_When_Trigger_Returns_Zero_And_Initializer_Properties_Specified()
-        {
-            const int newParticleCount = 0;
-            
-            var trigger = MockTrigger();
-            var behavior = MockBehavior();
-            behavior.Setup(x => x.InitializedProperties)
-                .Returns(new HashSet<ParticleProperty>(new[] {new ParticleProperty(typeof(bool), "Test1")}));
-            
-            var allocator = new ParticleAllocator(10);
-            var config = new EmitterConfig
-            {
-                Trigger = trigger.Object,
-                Behaviors = { behavior.Object },
-                InitialCapacity = 10,
-            };
-            
-            var emitter = new ParticleEmitter(allocator, config);
-            
-            trigger.Setup(x => x.DetermineNumberOfParticlesToCreate(emitter, 0.16f))
-                .Returns(newParticleCount);
-            
-            emitter.Update(0.16f);
-            
-            behavior.Verify(x => 
-                    x.InitializeCreatedParticles(
-                        emitter, 
-                        It.IsAny<ParticleCollection>(),
-                        It.Is<IReadOnlyList<int>>(y => y.Count == newParticleCount)),
-                Times.Never);
-        }
-        
-        [Fact]
-        public void Behavior_Initialization_Method_Not_Called_When_Trigger_Returns_A_Positive_Number_And_Initializer_Properties_Not_Specified()
-        {
-            const int newParticleCount = 5;
-            
-            var trigger = MockTrigger();
-            var behavior = MockBehavior();
-            behavior.Setup(x => x.InitializedProperties)
-                .Returns(new HashSet<ParticleProperty>(Array.Empty<ParticleProperty>()));
-            
-            behavior.Setup(x => x.ModifiedProperties)
-                .Returns(new HashSet<ParticleProperty>(new[] {new ParticleProperty(typeof(bool), "Test1")}));
-            
-            var allocator = new ParticleAllocator(10);
-            var config = new EmitterConfig
-            {
-                Trigger = trigger.Object,
-                Behaviors = { behavior.Object },
-                InitialCapacity = 10,
-            };
-            
-            var emitter = new ParticleEmitter(allocator, config);
-            
-            trigger.Setup(x => x.DetermineNumberOfParticlesToCreate(emitter, 0.16f))
-                .Returns(newParticleCount);
-            
-            emitter.Update(0.16f);
-            
-            behavior.Verify(x => 
-                    x.InitializeCreatedParticles(
-                        emitter, 
-                        It.IsAny<ParticleCollection>(),
-                        It.Is<IReadOnlyList<int>>(y => y.Count == newParticleCount)),
-                Times.Never);
-        }
 
         [Fact]
-        public void Behavior_Modifier_Method_Called_When_Modifier_Properties_Specified()
+        public void Modifier_Method_Called()
         {
             var trigger = MockTrigger();
-            var behavior = MockBehavior();
-            behavior.Setup(x => x.ModifiedProperties)
-                .Returns(new HashSet<ParticleProperty>(new[] {new ParticleProperty(typeof(bool), "Test1")}));
-            
+            var modifier = MockModifier();
             var allocator = new ParticleAllocator(10);
             var config = new EmitterConfig
             {
                 Trigger = trigger.Object,
-                Behaviors = { behavior.Object },
+                Modifiers = { modifier.Object },
                 InitialCapacity = 10,
             };
             
             var emitter = new ParticleEmitter(allocator, config);
 
             emitter.Update(0.16f);
-
-            behavior.Verify(x => x.UpdateParticles(emitter, It.IsAny<ParticleCollection>(), 0.16f), Times.Once);
-        }
-        
-        [Fact]
-        public void Behavior_Modifier_Method_Not_Called_When_No_Modifier_Properties_Specified()
-        {
-            var trigger = MockTrigger();
-            var behavior = MockBehavior();
-            behavior.Setup(x => x.InitializedProperties)
-                .Returns(new HashSet<ParticleProperty>(new[] {new ParticleProperty(typeof(bool), "Test1")}));
-            
-            behavior.Setup(x => x.ModifiedProperties)
-                .Returns(new HashSet<ParticleProperty>(Array.Empty<ParticleProperty>()));
-            
-            var allocator = new ParticleAllocator(10);
-            var config = new EmitterConfig
-            {
-                Trigger = trigger.Object,
-                Behaviors = { behavior.Object },
-                InitialCapacity = 10,
-            };
-            
-            var emitter = new ParticleEmitter(allocator, config);
-
-            emitter.Update(0.16f);
-
-            behavior.Verify(x => x.UpdateParticles(emitter, It.IsAny<ParticleCollection>(), 0.16f), Times.Never);
+            modifier.Verify(x => x.Update(emitter, It.IsAny<ParticleCollection>(), 0.16f), Times.Once);
         }
 
         [Fact]
@@ -282,15 +193,12 @@ namespace Parme.Net.Tests
             trigger.Setup(x => x.DetermineNumberOfParticlesToCreate(It.IsAny<ParticleEmitter>(), 0.16f))
                 .Returns(newParticleCount);
             
-            var behavior = MockBehavior();
-            behavior.Setup(x => x.InitializedProperties)
-                .Returns(new HashSet<ParticleProperty>(new[] {new ParticleProperty(typeof(bool), "Test1")}));
-
+            var initializer = MockInitializer();
             var allocator = new ParticleAllocator(10);
             var config = new EmitterConfig
             {
                 Trigger = trigger.Object,
-                Behaviors = { behavior.Object },
+                Initializers = { initializer.Object },
                 InitialCapacity = 10,
             };
             
@@ -304,8 +212,8 @@ namespace Parme.Net.Tests
             values[9] = true;
             
             IReadOnlyList<int>? newParticleIndices = null;
-            behavior.Setup(x =>
-                    x.InitializeCreatedParticles(
+            initializer.Setup(x =>
+                    x.InitializeParticles(
                         It.IsAny<ParticleEmitter>(),
                         It.IsAny<ParticleCollection>(),
                         It.IsAny<IReadOnlyList<int>>()))
@@ -329,15 +237,12 @@ namespace Parme.Net.Tests
             trigger.Setup(x => x.DetermineNumberOfParticlesToCreate(It.IsAny<ParticleEmitter>(), 0.16f))
                 .Returns(newParticleCount);
             
-            var behavior = MockBehavior();
-            behavior.Setup(x => x.InitializedProperties)
-                .Returns(new HashSet<ParticleProperty>(new[] {new ParticleProperty(typeof(bool), "Test1")}));
-
+            var initializer = MockInitializer();
             var allocator = new ParticleAllocator(10);
             var config = new EmitterConfig
             {
                 Trigger = trigger.Object,
-                Behaviors = { behavior.Object },
+                Initializers = { initializer.Object },
                 InitialCapacity = 10,
             };
             
@@ -350,7 +255,6 @@ namespace Parme.Net.Tests
             }
             
             emitter.Update(0.16f);
-            
             emitter.Reservation.Length.ShouldBeGreaterThan(10);
         }
 
@@ -363,15 +267,12 @@ namespace Parme.Net.Tests
             trigger.Setup(x => x.DetermineNumberOfParticlesToCreate(It.IsAny<ParticleEmitter>(), 0.16f))
                 .Returns(newParticleCount);
             
-            var behavior = MockBehavior();
-            behavior.Setup(x => x.InitializedProperties)
-                .Returns(new HashSet<ParticleProperty>(new[] {new ParticleProperty(typeof(bool), "Test1")}));
-
+            var initializer = MockInitializer();
             var allocator = new ParticleAllocator(10);
             var config = new EmitterConfig
             {
                 Trigger = trigger.Object,
-                Behaviors = { behavior.Object },
+                Initializers = { initializer.Object },
                 InitialCapacity = 10,
             };
             
@@ -387,8 +288,8 @@ namespace Parme.Net.Tests
             }
 
             IReadOnlyList<int>? newParticleIndices = null;
-            behavior.Setup(x =>
-                    x.InitializeCreatedParticles(
+            initializer.Setup(x =>
+                    x.InitializeParticles(
                         It.IsAny<ParticleEmitter>(),
                         It.IsAny<ParticleCollection>(),
                         It.IsAny<IReadOnlyList<int>>()))

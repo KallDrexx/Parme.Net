@@ -1,5 +1,6 @@
 ﻿using Moq;
-using Parme.Net.Behaviors;
+using Parme.Net.Initializers;
+using Parme.Net.Modifiers;
 using Parme.Net.Triggers;
 
 namespace Parme.Net.Tests
@@ -15,13 +16,22 @@ namespace Parme.Net.Tests
             return trigger;
         }
 
-        protected static Mock<ParticleBehavior> MockBehavior()
+        protected static Mock<IParticleInitializer> MockInitializer()
         {
-            var behavior = new Mock<ParticleBehavior>();
-            behavior.Setup(x => x.Clone())
-                .Returns(behavior.Object);
+            var initializer = new Mock<IParticleInitializer>();
+            initializer.Setup(x => x.Clone())
+                .Returns(initializer.Object);
 
-            return behavior;
+            return initializer;
+        }
+
+        protected static Mock<IParticleModifier> MockModifier()
+        {
+            var modifier = new Mock<IParticleModifier>();
+            modifier.Setup(x => x.Clone())
+                .Returns(modifier.Object);
+
+            return modifier;
         }
     }
 }

@@ -4,8 +4,8 @@ namespace Parme.Net
 {
     public readonly struct ParticleProperty : IEquatable<ParticleProperty>
     {
-        public Type Type { get; init; }
-        public string Name { get; init; }
+        public Type Type { get; }
+        public string Name { get; }
 
         public ParticleProperty(Type type, string name)
         {

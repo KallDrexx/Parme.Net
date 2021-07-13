@@ -24,6 +24,7 @@ namespace Parme.Net.Tests.Triggers
                 Trigger = trigger,
                 InitialCapacity = 10,
             };
+            
             var emitter = new ParticleEmitter(allocator, config);
 
             emitter.WorldCoordinates = Vector2.Zero;

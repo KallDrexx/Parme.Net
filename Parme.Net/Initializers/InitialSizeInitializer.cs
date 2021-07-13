@@ -4,6 +4,9 @@ using System.Numerics;
 
 namespace Parme.Net.Initializers
 {
+    /// <summary>
+    /// Initializes the height and width of newly created particles
+    /// </summary>
     public class InitialSizeInitializer : IParticleInitializer
     {
         private readonly Random _random;

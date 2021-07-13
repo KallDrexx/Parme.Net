@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Numerics;
 using Parme.Net.Initializers;
 using Shouldly;
@@ -31,23 +32,8 @@ namespace Parme.Net.Tests.Initializers
                 MinSize = new Vector2(10, 20),
                 MaxSize = new Vector2(15, 25),
             };
-            
-            var config = new EmitterConfig
-            {
-                Initializers = {initializer},
-                Trigger = MockTrigger().Object,
-                InitialCapacity = 10,
-            };
 
-            var allocator = new ParticleAllocator(100);
-            var emitter = new ParticleEmitter(allocator, config);
-            var collection = new ParticleCollection(emitter.Reservation)
-            {
-                ValidPropertiesToSet = initializer.PropertiesISet,
-            };
-            
-            var newIndices = new[] {1, 3, 5, 7};
-            initializer.InitializeParticles(emitter, collection, newIndices);
+            var (collection, newIndices) = RunInitializer(initializer);
 
             var initialHeight = collection.GetPropertyValues<float>(StandardParmeProperties.InitialHeight.Name);
             var initialWidth = collection.GetPropertyValues<float>(StandardParmeProperties.InitialWidth.Name);
@@ -59,6 +45,30 @@ namespace Parme.Net.Tests.Initializers
                 initialWidth[index].ShouldBeInRange(10, 15);
                 currentHeight[index].ShouldBe(initialHeight[index]);
                 currentWidth[index].ShouldBe(initialWidth[index]);
+            }
+        }
+
+        [Fact]
+        public void Non_New_Particles_Do_Not_Have_Values_Set()
+        {
+            var initializer = new InitialSizeInitializer(new Random())
+            {
+                MinSize = new Vector2(10, 20),
+                MaxSize = new Vector2(15, 25),
+            };
+            
+            var (collection, newIndices) = RunInitializer(initializer);
+
+            var initialHeight = collection.GetPropertyValues<float>(StandardParmeProperties.InitialHeight.Name);
+            var initialWidth = collection.GetPropertyValues<float>(StandardParmeProperties.InitialWidth.Name);
+            var currentHeight = collection.GetPropertyValues<float>(StandardParmeProperties.CurrentHeight.Name);
+            var currentWidth = collection.GetPropertyValues<float>(StandardParmeProperties.CurrentWidth.Name);
+            foreach (var index in Enumerable.Range(0, collection.Count).Where(x => !newIndices.Contains(x)))
+            {
+                initialHeight[index].ShouldBe(0);
+                initialWidth[index].ShouldBe(0);
+                currentHeight[index].ShouldBe(0);
+                currentWidth[index].ShouldBe(0);
             }
         }
     }

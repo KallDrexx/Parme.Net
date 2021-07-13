@@ -33,5 +33,26 @@ namespace Parme.Net.Tests
 
             return modifier;
         }
+
+        protected static (ParticleCollection collection, int[] newIndices) RunInitializer(IParticleInitializer initializer)
+        {
+            var config = new EmitterConfig
+            {
+                Initializers = {initializer},
+                Trigger = MockTrigger().Object,
+                InitialCapacity = 10,
+            };
+
+            var allocator = new ParticleAllocator(100);
+            var emitter = new ParticleEmitter(allocator, config);
+            var collection = new ParticleCollection(emitter.Reservation)
+            {
+                ValidPropertiesToSet = initializer.PropertiesISet,
+            };
+
+            var newIndices = new[] {1, 3, 5, 7};
+            initializer.InitializeParticles(emitter, collection, newIndices);
+            return (collection, newIndices);
+        }
     }
 }

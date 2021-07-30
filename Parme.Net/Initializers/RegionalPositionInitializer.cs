@@ -52,8 +52,8 @@ namespace Parme.Net.Initializers
                 var x = MinRelativePosition.X + _random.NextDouble() * (MaxRelativePosition.X - MinRelativePosition.X);
                 var y = MinRelativePosition.Y + _random.NextDouble() * (MaxRelativePosition.Y - MinRelativePosition.Y);
 
-                positionX[index] = emitter.WorldCoordinates.X + (float) x;
-                positionY[index] = emitter.WorldCoordinates.Y + (float) y;
+                positionX[index] = (float) x;
+                positionY[index] = (float) y;
             }
         }
     }

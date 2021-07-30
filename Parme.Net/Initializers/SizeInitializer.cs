@@ -7,7 +7,7 @@ namespace Parme.Net.Initializers
     /// <summary>
     /// Initializes the height and width of newly created particles
     /// </summary>
-    public class InitialSizeInitializer : IParticleInitializer
+    public class SizeInitializer : IParticleInitializer
     {
         private readonly Random _random;
         
@@ -29,14 +29,14 @@ namespace Parme.Net.Initializers
             StandardParmeProperties.CurrentWidth,
         });
 
-        public InitialSizeInitializer(Random random)
+        public SizeInitializer(Random random)
         {
             _random = random;
         }
         
         public IParticleInitializer Clone()
         {
-            return new InitialSizeInitializer(_random)
+            return new SizeInitializer(_random)
             {
                 MinSize = MinSize,
             };

@@ -35,9 +35,16 @@ namespace Parme.Net
         public IReadOnlyList<IParticleModifier> Modifiers { get; }
         
         /// <summary>
-        /// Where the emitter is in world space.
+        /// Where the emitter is in world space.  This will cause new particles to start relative to these X and Y
+        /// values.
         /// </summary>
         public Vector2 WorldCoordinates { get; set; }
+        
+        /// <summary>
+        /// The angle in which the emitter is currently rotated by.  Newly emitted particles will start with a
+        /// rotation relative to this angle.
+        /// </summary>
+        public float RotationInRadians { get; set; }
 
         /// <summary>
         /// Determines if the emitter is actively creating new particles or not

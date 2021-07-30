@@ -51,5 +51,15 @@
         /// How many units per second the particle is moving along the Y axis
         /// </summary>
         public static readonly ParticleProperty VelocityY = new ParticleProperty(typeof(float), "VelocityY");
+
+        /// <summary>
+        /// The rotation (in radians) of the particle
+        /// </summary>
+        public static readonly ParticleProperty RotationInRadians = new ParticleProperty(typeof(float), "RotationInRadians");
+        
+        /// <summary>
+        /// How fast (in radians) the particle should be rotating
+        /// </summary>
+        public static readonly ParticleProperty RotationalVelocity = new ParticleProperty(typeof(float), "RotationalVelocity");
     }
 }

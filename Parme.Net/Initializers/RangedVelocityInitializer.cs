@@ -12,10 +12,13 @@ namespace Parme.Net.Initializers
         private readonly Random _random;
         
         /// <summary>
-        /// The minimum X and Y velocity values that 
+        /// The minimum X and Y velocity values that a particle should get
         /// </summary>
         public Vector2 MinVelocity { get; set; }
         
+        /// <summary>
+        /// The maximum X and Y velocity values that a particle should get
+        /// </summary>
         public Vector2 MaxVelocity { get; set; }
 
         public HashSet<ParticleProperty> PropertiesISet { get; } = new(new[]
@@ -31,12 +34,23 @@ namespace Parme.Net.Initializers
         
         public IParticleInitializer Clone()
         {
-            throw new System.NotImplementedException();
+            return new RangedVelocityInitializer(_random)
+            {
+                MinVelocity = MinVelocity,
+                MaxVelocity = MaxVelocity,
+            };
         }
 
         public void InitializeParticles(ParticleEmitter emitter, ParticleCollection particles, IReadOnlyList<int> newParticleIndices)
         {
-            throw new System.NotImplementedException();
+            var velocityX = particles.GetPropertyValues<float>(StandardParmeProperties.VelocityX.Name);
+            var velocityY = particles.GetPropertyValues<float>(StandardParmeProperties.VelocityY.Name);
+            
+            foreach (var index in newParticleIndices)
+            {
+                velocityX[index] = (float) (MinVelocity.X + _random.NextDouble() * (MaxVelocity.X - MinVelocity.X));
+                velocityY[index] = (float) (MinVelocity.Y + _random.NextDouble() * (MaxVelocity.Y - MinVelocity.Y));
+            }
         }
     }
 }

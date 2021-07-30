@@ -24,7 +24,7 @@ namespace Parme.Net.Tests.Initializers
         }
         
         [Fact]
-        public void Sets_Initialized_Position_For_New_Particles_Based_On_Emitter_Coordinates()
+        public void Sets_Initialized_Position_For_New_Particles()
         {
             var initializer = new RegionalPositionInitializer(new Random())
             {

@@ -7,18 +7,18 @@ using Xunit;
 
 namespace Parme.Net.Tests.Initializers
 {
-    public class InitialSizeInitializerTests : TestBase
+    public class SizeInitializerTests : TestBase
     {
         [Fact]
         public void Can_Be_Cloned()
         {
-            var initializer = new InitialSizeInitializer(new Random())
+            var initializer = new SizeInitializer(new Random())
             {
                 MinSize = new Vector2(0, 1),
                 MaxSize = new Vector2(2, 3),
             };
 
-            var cloned = (InitialSizeInitializer) initializer.Clone();
+            var cloned = (SizeInitializer) initializer.Clone();
 
             cloned.MinSize = initializer.MinSize;
             cloned.MaxSize = initializer.MaxSize;
@@ -27,7 +27,7 @@ namespace Parme.Net.Tests.Initializers
         [Fact]
         public void Sets_Initial_Size_Values()
         {
-            var initializer = new InitialSizeInitializer(new Random())
+            var initializer = new SizeInitializer(new Random())
             {
                 MinSize = new Vector2(10, 20),
                 MaxSize = new Vector2(15, 25),
@@ -51,7 +51,7 @@ namespace Parme.Net.Tests.Initializers
         [Fact]
         public void Non_New_Particles_Do_Not_Have_Values_Set()
         {
-            var initializer = new InitialSizeInitializer(new Random())
+            var initializer = new SizeInitializer(new Random())
             {
                 MinSize = new Vector2(10, 20),
                 MaxSize = new Vector2(15, 25),

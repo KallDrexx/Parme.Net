@@ -38,7 +38,6 @@ namespace Parme.Net.Triggers
                 var distance = (particleEmitter.WorldCoordinates - _previousEmitterPosition.Value).Length();
                 _distanceSinceLastEmission += distance;
 
-
                 if (_distanceSinceLastEmission >= DistanceBetweenEmissions)
                 {
                     result = _random.Next(MinParticlesToEmit, MaxParticlesToEmit + 1);

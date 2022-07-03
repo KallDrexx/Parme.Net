@@ -93,5 +93,17 @@ namespace Parme.Net
 
             return _reservation.GetPropertyValues<T>(propertyName);
         }
+
+        /// <summary>
+        /// Expands the number of particles in this collection.
+        ///
+        /// Any time expand has been called, the particles have a chance to be shuffled around.  Any individual
+        /// particle indexes being tracked can no longer be relied upon.
+        /// </summary>
+        /// <param name="additionalCount">How many particles to add</param>
+        public void Expand(int additionalCount)
+        {
+            _reservation.Expand(additionalCount);
+        }
     }
 }

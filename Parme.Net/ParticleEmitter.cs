@@ -14,8 +14,10 @@ namespace Parme.Net
         private readonly Dictionary<IParticleInitializer, IReadOnlySet<ParticleProperty>> _initializerProperties = new();
         private readonly Dictionary<IParticleModifier, IReadOnlySet<ParticleProperty>> _modifierUpdatedProperties = new();
         private readonly Dictionary<IParticleModifier, IReadOnlySet<ParticleProperty>> _modifierReadableProperties = new();
-        
-        private readonly List<int> _newParticleIndices = new();
+
+        private bool _hasAnyLiveParticles;
+        private int _firstAliveIndex;
+        private int _lastAliveIndex;
         
         internal ParticleAllocator.Reservation Reservation { get; } // internal for test purposes 
         
@@ -139,6 +141,20 @@ namespace Parme.Net
         private void CreateNewParticles(float timeSinceLastFrame)
         {
             var particlesToCreate = Trigger.DetermineNumberOfParticlesToCreate(this, timeSinceLastFrame);
+            if (particlesToCreate == 0)
+            {
+                return;
+            }
+
+            int newParticleStartIndex;
+            if (!_hasAnyLiveParticles)
+            {
+                if (particlesToCreate > _particleCollection.Count)
+                {
+                }
+            }
+            
+            
             if (particlesToCreate > 0)
             {
                 _newParticleIndices.Clear();
@@ -177,6 +193,37 @@ namespace Parme.Net
                     _particleCollection.ValidPropertiesToRead = null;
                     
                     initializer.InitializeParticles(this, _particleCollection, _newParticleIndices);
+                }
+            }
+        }
+
+        private void UpdateLiveParticleBounds()
+        {
+            _hasAnyLiveParticles = false;
+            _firstAliveIndex = 0;
+            _lastAliveIndex = 0;
+            
+            var isAliveValues = Reservation.GetPropertyValues<bool>(StandardParmeProperties.IsAlive.Name);
+            for (var index = 0; index < isAliveValues.Length; index++)
+            {
+                if (isAliveValues[index])
+                {
+                    _hasAnyLiveParticles = true;
+                    _firstAliveIndex = index;
+                    break;
+                }
+            }
+
+            if (_hasAnyLiveParticles)
+            {
+                // Find the last alive particle
+                for (var index = isAliveValues.Length - 1; index >= 0; index--)
+                {
+                    if (isAliveValues[index])
+                    {
+                        _lastAliveIndex = index;
+                        break;
+                    }
                 }
             }
         }

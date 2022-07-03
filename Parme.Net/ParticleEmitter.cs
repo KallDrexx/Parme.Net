@@ -146,86 +146,111 @@ namespace Parme.Net
                 return;
             }
 
-            int newParticleStartIndex;
-            if (!_hasAnyLiveParticles)
+            var firstNewIndex = GetFirstNewParticleIndex(particlesToCreate);
+            var isAliveValues = Reservation.GetPropertyValues<bool>(StandardParmeProperties.IsAlive.Name);
+            
+            // First set all new particles to alive.  
+            for (var count = 0; count < particlesToCreate; count++)
             {
-                if (particlesToCreate > _particleCollection.Count)
-                {
-                }
+                isAliveValues[firstNewIndex + count] = true;
             }
             
-            
-            if (particlesToCreate > 0)
+            foreach (var initializer in Initializers)
             {
-                _newParticleIndices.Clear();
-                var particleIndex = 0;
-
-                while (particlesToCreate > 0)
-                {
-                    var isAliveValues = Reservation.GetPropertyValues<bool>(StandardParmeProperties.IsAlive.Name);
-                    for (; particleIndex < isAliveValues.Length; particleIndex++)
-                    {
-                        if (!isAliveValues[particleIndex])
-                        {
-                            _newParticleIndices.Add(particleIndex);
-                            isAliveValues[particleIndex] = true;
-                            particlesToCreate--;
-
-                            if (particlesToCreate <= 0)
-                            {
-                                break;
-                            }
-                        }
-                    }
-
-                    if (particlesToCreate > 0)
-                    {
-                        // We still need to create more particles, but we ran out of room
-                        var additionalRequested = (int) Math.Ceiling(Reservation.Length * 1.5 - Reservation.Length);
-                        Reservation.Expand(additionalRequested);
-                    }
-                }
-
-                foreach (var initializer in Initializers)
-                {
-                    _initializerProperties.TryGetValue(initializer, out var properties);
-                    _particleCollection.ValidPropertiesToSet = properties;
-                    _particleCollection.ValidPropertiesToRead = null;
-                    
-                    initializer.InitializeParticles(this, _particleCollection, _newParticleIndices);
-                }
+                _initializerProperties.TryGetValue(initializer, out var properties);
+                _particleCollection.ValidPropertiesToSet = properties;
+                _particleCollection.ValidPropertiesToRead = null;
+            
+                initializer.InitializeParticles(this, _particleCollection, TODO, TODO);
             }
         }
 
         private void UpdateLiveParticleBounds()
         {
-            _hasAnyLiveParticles = false;
-            _firstAliveIndex = 0;
-            _lastAliveIndex = 0;
+            if (!_hasAnyLiveParticles)
+            {
+                // Nothing to update since we shouldn't have been any particles since we know they aren't alive
+                return;
+            }
             
             var isAliveValues = Reservation.GetPropertyValues<bool>(StandardParmeProperties.IsAlive.Name);
-            for (var index = 0; index < isAliveValues.Length; index++)
+
+            var foundLiveParticle = false;
+            for (var index = _lastAliveIndex; index <= _lastAliveIndex; index++)
             {
                 if (isAliveValues[index])
                 {
-                    _hasAnyLiveParticles = true;
                     _firstAliveIndex = index;
+                    foundLiveParticle = true;
                     break;
                 }
             }
 
-            if (_hasAnyLiveParticles)
+            if (!foundLiveParticle)
             {
-                // Find the last alive particle
-                for (var index = isAliveValues.Length - 1; index >= 0; index--)
+                _hasAnyLiveParticles = false;
+                _firstAliveIndex = 0;
+                _lastAliveIndex = 0;
+
+                return;
+            }
+            
+            // We definitely have at least one live particle, so bring in the tail end
+            for (var index = _lastAliveIndex; index > _firstAliveIndex; index--)
+            {
+                if (isAliveValues[index])
                 {
-                    if (isAliveValues[index])
-                    {
-                        _lastAliveIndex = index;
-                        break;
-                    }
+                    _lastAliveIndex = index;
+                    return;
                 }
             }
+        }
+
+        private int GetFirstNewParticleIndex(int amountToAdd)
+        {
+            UpdateLiveParticleBounds();
+            
+            if (!_hasAnyLiveParticles)
+            {
+                if (_particleCollection.Count < amountToAdd)
+                {
+                    GrowWithMinimum(amountToAdd);
+                }
+
+                return 0;
+            }
+            
+            // Do we have enough space at the tail end?
+            if (_lastAliveIndex + 1 + amountToAdd <= _particleCollection.Count)
+            {
+                return _lastAliveIndex + 1;
+            }
+            
+            // do we have enough space at the head?
+            if (_firstAliveIndex <= amountToAdd)
+            {
+                return _firstAliveIndex - amountToAdd;
+            }
+            
+            // Not enough contiguous room at either end, so grow the collection
+            GrowWithMinimum(amountToAdd);
+            
+            // Since our particles were shuffled around, we need to find the new bounds for them
+            _firstAliveIndex = 0;
+            _lastAliveIndex = _particleCollection.Count - 1;
+            UpdateLiveParticleBounds();
+
+            return GetFirstNewParticleIndex(amountToAdd);
+        }
+
+        private void GrowWithMinimum(int minimumToAdd)
+        {
+            const float GrowthFactor = 1.2f;
+
+            var growByGrowthFactor = (int)Math.Ceiling(_particleCollection.Count * GrowthFactor);
+            var growBy = Math.Max(growByGrowthFactor, minimumToAdd);
+            
+            _particleCollection.Expand(growBy);
         }
     }
 }

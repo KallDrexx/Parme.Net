@@ -39,7 +39,8 @@ namespace Parme.Net.Initializers
             };
         }
 
-        public void InitializeParticles(ParticleEmitter emitter, ParticleCollection particles, IReadOnlyList<int> newParticleIndices)
+        public void InitializeParticles(ParticleEmitter emitter, ParticleCollection particles, int firstIndex,
+            int lastIndex)
         {
             var speed = particles.GetPropertyValues<float>(StandardParmeProperties.RotationalVelocity.Name);
 

@@ -43,7 +43,8 @@ namespace Parme.Net.Initializers
             };
         }
 
-        public void InitializeParticles(ParticleEmitter emitter, ParticleCollection particles, IReadOnlyList<int> newParticleIndices)
+        public void InitializeParticles(ParticleEmitter emitter, ParticleCollection particles, int firstIndex,
+            int lastIndex)
         {
             var positionX = particles.GetPropertyValues<float>(StandardParmeProperties.PositionX.Name);
             var positionY = particles.GetPropertyValues<float>(StandardParmeProperties.PositionY.Name);

@@ -160,8 +160,7 @@ namespace Parme.Net.Tests
             initializer.Verify(x => 
                 x.InitializeParticles(
                     emitter, 
-                    It.IsAny<ParticleCollection>(),
-                    It.Is<IReadOnlyList<int>>(y => y.Count == newParticleCount)),
+                    It.IsAny<ParticleCollection>(), TODO, TODO),
                 Times.Once);
         }
 
@@ -215,8 +214,7 @@ namespace Parme.Net.Tests
             initializer.Setup(x =>
                     x.InitializeParticles(
                         It.IsAny<ParticleEmitter>(),
-                        It.IsAny<ParticleCollection>(),
-                        It.IsAny<IReadOnlyList<int>>()))
+                        It.IsAny<ParticleCollection>(), TODO, TODO))
                 .Callback<ParticleEmitter, ParticleCollection, IReadOnlyList<int>>((_, _, indices) => newParticleIndices = indices);
             
             emitter.Update(0.16f);
@@ -291,8 +289,7 @@ namespace Parme.Net.Tests
             initializer.Setup(x =>
                     x.InitializeParticles(
                         It.IsAny<ParticleEmitter>(),
-                        It.IsAny<ParticleCollection>(),
-                        It.IsAny<IReadOnlyList<int>>()))
+                        It.IsAny<ParticleCollection>(), TODO, TODO))
                 .Callback<ParticleEmitter, ParticleCollection, IReadOnlyList<int>>((_, _, indices) => newParticleIndices = indices);
             
             emitter.Update(0.16f);

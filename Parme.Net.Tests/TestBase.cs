@@ -51,7 +51,7 @@ namespace Parme.Net.Tests
             };
 
             var newIndices = new[] {1, 3, 5, 7};
-            initializer.InitializeParticles(emitter, collection, newIndices);
+            initializer.InitializeParticles(emitter, collection, TODO, TODO);
             return (collection, newIndices);
         }
     }

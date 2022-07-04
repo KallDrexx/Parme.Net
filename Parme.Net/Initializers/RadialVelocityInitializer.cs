@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 
 namespace Parme.Net.Initializers
 {
@@ -52,7 +53,10 @@ namespace Parme.Net.Initializers
             };
         }
 
-        public void InitializeParticles(ParticleEmitter emitter, ParticleCollection particles, int firstIndex,
+        public void InitializeParticles(
+            ParticleEmitter emitter, 
+            ParticleCollection particles, 
+            int firstIndex,
             int lastIndex)
         {
             var velocityX = particles.GetPropertyValues<float>(StandardParmeProperties.VelocityX.Name);
@@ -60,6 +64,25 @@ namespace Parme.Net.Initializers
 
             var minRadians = MinDegrees * (Math.PI / 180f);
             var maxRadians = MaxDegrees * (Math.PI / 180f);
+
+            var count = lastIndex - firstIndex + 1;
+            var radianRandoms = new double[count];
+            var magnitudeRandoms = new double[count];
+
+            _random.NextDoubles(radianRandoms);
+            _random.NextDoubles(magnitudeRandoms);
+
+            int x;
+            var offset = Vector<float>.Count;
+            var nearestMultiple = SimdUtils.NearestMultiple(count, offset);
+
+            for (x = 0; x < nearestMultiple; x += offset)
+            {
+                var xSlice = velocityX.Slice(x, offset);
+                var ySlice = velocityY.Slice(x, offset);
+                
+                var radians = new Vector<float>()
+            }
 
             foreach (var index in newParticleIndices)
             {

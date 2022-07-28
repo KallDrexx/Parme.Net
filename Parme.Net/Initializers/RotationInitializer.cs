@@ -40,12 +40,15 @@ namespace Parme.Net.Initializers
             };
         }
 
-        public void InitializeParticles(ParticleEmitter emitter, ParticleCollection particles, int firstIndex,
+        public void InitializeParticles(
+            ParticleEmitter emitter, 
+            ParticleCollection particles, 
+            int firstIndex,
             int lastIndex)
         {
             var rotation = particles.GetPropertyValues<float>(StandardParmeProperties.RotationInRadians.Name);
 
-            foreach (var index in newParticleIndices)
+            for (var index = firstIndex; index <= lastIndex; index++)
             {
                 rotation[index] = (float) (MinDegrees + _random.NextDouble() * (MaxDegrees - MinDegrees));
             }

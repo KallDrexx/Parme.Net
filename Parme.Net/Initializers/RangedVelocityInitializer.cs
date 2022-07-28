@@ -41,13 +41,16 @@ namespace Parme.Net.Initializers
             };
         }
 
-        public void InitializeParticles(ParticleEmitter emitter, ParticleCollection particles, int firstIndex,
+        public void InitializeParticles(
+            ParticleEmitter emitter, 
+            ParticleCollection particles, 
+            int firstIndex,
             int lastIndex)
         {
             var velocityX = particles.GetPropertyValues<float>(StandardParmeProperties.VelocityX.Name);
             var velocityY = particles.GetPropertyValues<float>(StandardParmeProperties.VelocityY.Name);
-            
-            foreach (var index in newParticleIndices)
+
+            for (var index = firstIndex; index <= lastIndex; index++)
             {
                 velocityX[index] = (float) (MinVelocity.X + _random.NextDouble() * (MaxVelocity.X - MinVelocity.X));
                 velocityY[index] = (float) (MinVelocity.Y + _random.NextDouble() * (MaxVelocity.Y - MinVelocity.Y));

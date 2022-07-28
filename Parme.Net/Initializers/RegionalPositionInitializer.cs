@@ -43,12 +43,16 @@ namespace Parme.Net.Initializers
             };
         }
 
-        public void InitializeParticles(ParticleEmitter emitter, ParticleCollection particles, int firstIndex,
+        public void InitializeParticles(
+            ParticleEmitter emitter, 
+            ParticleCollection particles, 
+            int firstIndex,
             int lastIndex)
         {
             var positionX = particles.GetPropertyValues<float>(StandardParmeProperties.PositionX.Name);
             var positionY = particles.GetPropertyValues<float>(StandardParmeProperties.PositionY.Name);
-            foreach (var index in newParticleIndices)
+           
+            for (var index = firstIndex; index <= lastIndex; index++)
             {
                 var x = MinRelativePosition.X + _random.NextDouble() * (MaxRelativePosition.X - MinRelativePosition.X);
                 var y = MinRelativePosition.Y + _random.NextDouble() * (MaxRelativePosition.Y - MinRelativePosition.Y);

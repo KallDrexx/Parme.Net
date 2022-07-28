@@ -160,7 +160,7 @@ namespace Parme.Net.Tests
             initializer.Verify(x => 
                 x.InitializeParticles(
                     emitter, 
-                    It.IsAny<ParticleCollection>(), TODO, TODO),
+                    It.IsAny<ParticleCollection>(), 0, newParticleCount - 1),
                 Times.Once);
         }
 

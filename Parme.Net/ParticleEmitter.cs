@@ -161,7 +161,11 @@ namespace Parme.Net
                 _particleCollection.ValidPropertiesToSet = properties;
                 _particleCollection.ValidPropertiesToRead = null;
             
-                initializer.InitializeParticles(this, _particleCollection, TODO, TODO);
+                initializer.InitializeParticles(
+                    this, 
+                    _particleCollection, 
+                    firstNewIndex,
+                    firstNewIndex + particlesToCreate - 1);
             }
         }
 

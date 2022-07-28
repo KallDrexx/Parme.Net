@@ -42,7 +42,10 @@ namespace Parme.Net.Initializers
             };
         }
 
-        public void InitializeParticles(ParticleEmitter emitter, ParticleCollection particles, int firstIndex,
+        public void InitializeParticles(
+            ParticleEmitter emitter, 
+            ParticleCollection particles, 
+            int firstIndex,
             int lastIndex)
         {
             float minHeight, maxHeight, minWidth, maxWidth;
@@ -73,7 +76,7 @@ namespace Parme.Net.Initializers
             var currentHeight = particles.GetPropertyValues<float>(StandardParmeProperties.CurrentHeight.Name);
             var currentWidth = particles.GetPropertyValues<float>(StandardParmeProperties.CurrentWidth.Name);
             
-            foreach (var index in newParticleIndices)
+            for (var index = firstIndex; index <= lastIndex; index++)
             {
                 var height = minHeight + _random.NextDouble() * (maxHeight - minHeight);
                 var width = minWidth + _random.NextDouble() * (maxWidth - minWidth);

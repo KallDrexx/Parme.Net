@@ -39,7 +39,10 @@ namespace Parme.Net.Initializers
             };
         }
 
-        public void InitializeParticles(ParticleEmitter emitter, ParticleCollection particles, int firstIndex,
+        public void InitializeParticles(
+            ParticleEmitter emitter, 
+            ParticleCollection particles, 
+            int firstIndex,
             int lastIndex)
         {
             var speed = particles.GetPropertyValues<float>(StandardParmeProperties.RotationalVelocity.Name);
@@ -47,7 +50,7 @@ namespace Parme.Net.Initializers
             var min = MinDegreesPerSecond * (Math.PI / 180f);
             var max = MaxDegreesPerSecond * (Math.PI / 180f);
 
-            foreach (var index in newParticleIndices)
+            for (var index = firstIndex; index <= lastIndex; index++)
             {
                 speed[index] = (float) (min + _random.NextDouble() * (max - min));
             }

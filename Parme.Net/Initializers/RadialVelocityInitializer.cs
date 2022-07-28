@@ -31,6 +31,9 @@ namespace Parme.Net.Initializers
         /// </summary>
         public int MaxDegrees { get; set; }
 
+        public float XAxisScale { get; set; } = 1f;
+        public float YAxisScale { get; set; } = 1f;
+
         public RadialVelocityInitializer(Random random)
         {
             _random = random;
@@ -66,32 +69,18 @@ namespace Parme.Net.Initializers
             var maxRadians = MaxDegrees * (Math.PI / 180f);
 
             var count = lastIndex - firstIndex + 1;
-            var radianRandoms = new double[count];
-            var magnitudeRandoms = new double[count];
-
-            _random.NextDoubles(radianRandoms);
-            _random.NextDoubles(magnitudeRandoms);
-
-            int x;
-            var offset = Vector<float>.Count;
-            var nearestMultiple = SimdUtils.NearestMultiple(count, offset);
-
-            for (x = 0; x < nearestMultiple; x += offset)
+            for (var index = firstIndex; index <= lastIndex; index++)
             {
-                var xSlice = velocityX.Slice(x, offset);
-                var ySlice = velocityY.Slice(x, offset);
-                
-                var radians = new Vector<float>()
-            }
-
-            foreach (var index in newParticleIndices)
-            {
-                var radians = minRadians + _random.NextDouble() * (maxRadians - minRadians);
-                var magnitude = MinMagnitude + _random.NextDouble() * (MaxMagnitude - MinMagnitude);
+                var randomIndex = index - firstIndex;
+                var radians = maxRadians - _random.NextDouble() * (maxRadians - minRadians);
+                var magnitude = MaxMagnitude - _random.NextDouble() * (MaxMagnitude - MinMagnitude);
                 
                 // Convert from polar coordinates to cartesian coordinates
-                velocityX[index] = (float) (magnitude * Math.Cos(radians));
-                velocityY[index] = (float) (magnitude * Math.Sin(radians));
+                var x = magnitude * Math.Cos(radians) * XAxisScale;
+                var y = magnitude * Math.Sin(radians) * YAxisScale;
+
+                velocityX[index] = (float) x;
+                velocityY[index] = (float) y;
             }
         }
     }

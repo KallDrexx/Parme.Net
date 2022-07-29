@@ -7,6 +7,9 @@ namespace Parme.Net.Tests
 {
     public abstract class TestBase
     {
+        protected const int FirstInitializedIndex = 0;
+        protected const int LastInitializedIndex = 2;
+
         protected static Mock<ParticleTrigger> MockTrigger()
         {
             var trigger = new Mock<ParticleTrigger>();
@@ -34,7 +37,7 @@ namespace Parme.Net.Tests
             return modifier;
         }
 
-        protected static (ParticleCollection collection, int[] newIndices) RunInitializer(IParticleInitializer initializer)
+        protected static ParticleCollection RunInitializer(IParticleInitializer initializer)
         {
             var config = new EmitterConfig
             {
@@ -50,9 +53,9 @@ namespace Parme.Net.Tests
                 ValidPropertiesToSet = initializer.PropertiesISet,
             };
 
-            var newIndices = new[] {1, 3, 5, 7};
-            initializer.InitializeParticles(emitter, collection, TODO, TODO);
-            return (collection, newIndices);
+            initializer.InitializeParticles(emitter, collection, FirstInitializedIndex, LastInitializedIndex);
+
+            return collection;
         }
     }
 }

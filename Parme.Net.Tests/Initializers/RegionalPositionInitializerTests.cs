@@ -32,11 +32,12 @@ namespace Parme.Net.Tests.Initializers
                 MaxRelativePosition = new Vector2(3, 4),
             };
 
-            var (collection, newIndices) = RunInitializer(initializer);
+            var collection = RunInitializer(initializer);
             
             var positionX = collection.GetPropertyValues<float>(StandardParmeProperties.PositionX.Name);
             var positionY = collection.GetPropertyValues<float>(StandardParmeProperties.PositionY.Name);
-            foreach (var index in newIndices)
+            
+            foreach (var index in Enumerable.Range(FirstInitializedIndex, LastInitializedIndex + 1))
             {
                 positionX[index].ShouldBe(3);
                 positionY[index].ShouldBe(4);
@@ -52,10 +53,12 @@ namespace Parme.Net.Tests.Initializers
                 MaxRelativePosition = new Vector2(3, 4),
             };
             
-            var (collection, newIndices) = RunInitializer(initializer);
+            var collection = RunInitializer(initializer);
+            
             var positionX = collection.GetPropertyValues<float>(StandardParmeProperties.PositionX.Name);
             var positionY = collection.GetPropertyValues<float>(StandardParmeProperties.PositionY.Name);
-            foreach (var index in Enumerable.Range(0, positionX.Length).Except(newIndices))
+            
+            foreach (var index in Enumerable.Range(FirstInitializedIndex, LastInitializedIndex + 1))
             {
                 positionX[index].ShouldBe(0);
                 positionY[index].ShouldBe(0);

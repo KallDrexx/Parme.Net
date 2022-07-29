@@ -33,13 +33,14 @@ namespace Parme.Net.Tests.Initializers
                 MaxSize = new Vector2(15, 25),
             };
 
-            var (collection, newIndices) = RunInitializer(initializer);
+            var collection = RunInitializer(initializer);
 
             var initialHeight = collection.GetPropertyValues<float>(StandardParmeProperties.InitialHeight.Name);
             var initialWidth = collection.GetPropertyValues<float>(StandardParmeProperties.InitialWidth.Name);
             var currentHeight = collection.GetPropertyValues<float>(StandardParmeProperties.CurrentHeight.Name);
             var currentWidth = collection.GetPropertyValues<float>(StandardParmeProperties.CurrentWidth.Name);
-            foreach (var index in newIndices)
+            
+            foreach (var index in Enumerable.Range(FirstInitializedIndex, LastInitializedIndex + 1))
             {
                 initialHeight[index].ShouldBeInRange(20, 25);
                 initialWidth[index].ShouldBeInRange(10, 15);
@@ -57,13 +58,14 @@ namespace Parme.Net.Tests.Initializers
                 MaxSize = new Vector2(15, 25),
             };
             
-            var (collection, newIndices) = RunInitializer(initializer);
+            var collection = RunInitializer(initializer);
 
             var initialHeight = collection.GetPropertyValues<float>(StandardParmeProperties.InitialHeight.Name);
             var initialWidth = collection.GetPropertyValues<float>(StandardParmeProperties.InitialWidth.Name);
             var currentHeight = collection.GetPropertyValues<float>(StandardParmeProperties.CurrentHeight.Name);
             var currentWidth = collection.GetPropertyValues<float>(StandardParmeProperties.CurrentWidth.Name);
-            foreach (var index in Enumerable.Range(0, collection.Count).Where(x => !newIndices.Contains(x)))
+            
+            foreach (var index in Enumerable.Range(FirstInitializedIndex, LastInitializedIndex + 1))
             {
                 initialHeight[index].ShouldBe(0);
                 initialWidth[index].ShouldBe(0);

@@ -204,26 +204,23 @@ namespace Parme.Net.Tests
             var emitter = new ParticleEmitter(allocator, config);
 
             var values = emitter.Reservation.GetPropertyValues<bool>(StandardParmeProperties.IsAlive.Name);
-            values[1] = true;
             values[3] = true;
+            values[4] = true;
             values[5] = true;
             values[7] = true;
             values[9] = true;
             
-            IReadOnlyList<int>? newParticleIndices = null;
-            initializer.Setup(x =>
+            initializer.Verify(x =>
                     x.InitializeParticles(
                         It.IsAny<ParticleEmitter>(),
-                        It.IsAny<ParticleCollection>(), TODO, TODO))
-                .Callback<ParticleEmitter, ParticleCollection, IReadOnlyList<int>>((_, _, indices) => newParticleIndices = indices);
+                        It.IsAny<ParticleCollection>(), 0, 2));
             
             emitter.Update(0.16f);
-
-            newParticleIndices.ShouldNotBeNull();
-            newParticleIndices.Count.ShouldBe(3);
-            newParticleIndices[0].ShouldBe(0);
-            newParticleIndices[1].ShouldBe(2);
-            newParticleIndices[2].ShouldBe(4);
+            
+            values = emitter.Reservation.GetPropertyValues<bool>(StandardParmeProperties.IsAlive.Name);
+            values[0].ShouldBeTrue();
+            values[1].ShouldBeTrue();
+            values[2].ShouldBeTrue();
         }
 
         [Fact]
@@ -275,34 +272,27 @@ namespace Parme.Net.Tests
             };
             
             var emitter = new ParticleEmitter(allocator, config);
-
             {
                 var values = emitter.Reservation.GetPropertyValues<bool>(StandardParmeProperties.IsAlive.Name);
-                values[1] = true;
                 values[3] = true;
+                values[4] = false;
                 values[5] = true;
                 values[7] = true;
                 values[9] = true;
             }
 
-            IReadOnlyList<int>? newParticleIndices = null;
-            initializer.Setup(x =>
-                    x.InitializeParticles(
-                        It.IsAny<ParticleEmitter>(),
-                        It.IsAny<ParticleCollection>(), TODO, TODO))
-                .Callback<ParticleEmitter, ParticleCollection, IReadOnlyList<int>>((_, _, indices) => newParticleIndices = indices);
+            initializer.Verify(x =>
+                x.InitializeParticles(
+                    It.IsAny<ParticleEmitter>(),
+                    It.IsAny<ParticleCollection>(), 0, 2));
             
             emitter.Update(0.16f);
 
-            newParticleIndices.ShouldNotBeNull();
-            newParticleIndices.Count.ShouldBe(3);
-
-            {
-                var values = emitter.Reservation.GetPropertyValues<bool>(StandardParmeProperties.IsAlive.Name);
-                values[newParticleIndices[0]].ShouldBeTrue();
-                values[newParticleIndices[1]].ShouldBeTrue();
-                values[newParticleIndices[2]].ShouldBeTrue();
-            }
+            var afterValues = emitter.Reservation.GetPropertyValues<bool>(StandardParmeProperties.IsAlive.Name);
+            afterValues[0].ShouldBeTrue();
+            afterValues[1].ShouldBeTrue();
+            afterValues[2].ShouldBeTrue();
+            afterValues[4].ShouldBeFalse();
         }
     }
 }

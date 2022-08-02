@@ -61,5 +61,15 @@
         /// How fast (in radians) the particle should be rotating
         /// </summary>
         public static readonly ParticleProperty RotationalVelocity = new ParticleProperty(typeof(float), "RotationalVelocity");
+
+        /// <summary>
+        /// The index of the texture index the particle should be rendering with
+        /// </summary>
+        public static readonly ParticleProperty TextureSectionIndex = new(typeof(byte), "TextureSectionIndex");
+
+        public static readonly ParticleProperty CurrentRed = new(typeof(byte), "CurrentRed");
+        public static readonly ParticleProperty CurrentGreen = new(typeof(byte), "CurrentGreen");
+        public static readonly ParticleProperty CurrentBlue = new(typeof(byte), "CurrentBlue");
+        public static readonly ParticleProperty CurrentAlpha = new(typeof(byte), "currentAlpha");
     }
 }

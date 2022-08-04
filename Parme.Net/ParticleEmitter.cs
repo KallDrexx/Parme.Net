@@ -56,6 +56,8 @@ namespace Parme.Net
         /// </summary>
         public float MaxParticleLifetime { get; set; }
 
+        public TextureSectionCoords[] TextureSections { get; set; } = Array.Empty<TextureSectionCoords>();
+
         public ParticleEmitter(ParticleAllocator particleAllocator, EmitterConfig config)
         {
             var initialCapacity = config?.InitialCapacity ?? 50; // TODO: attempt to estimate based on behaviors and triggers

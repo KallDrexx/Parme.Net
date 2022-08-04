@@ -66,6 +66,11 @@
         /// The index of the texture index the particle should be rendering with
         /// </summary>
         public static readonly ParticleProperty TextureSectionIndex = new(typeof(byte), "TextureSectionIndex");
+        
+        public static readonly ParticleProperty InitialRed = new(typeof(byte), "InitialRed");
+        public static readonly ParticleProperty InitialGreen = new(typeof(byte), "InitialGreen");
+        public static readonly ParticleProperty InitialBlue = new(typeof(byte), "InitialBlue");
+        public static readonly ParticleProperty InitialAlpha = new(typeof(byte), "InitialAlpha");
 
         public static readonly ParticleProperty CurrentRed = new(typeof(byte), "CurrentRed");
         public static readonly ParticleProperty CurrentGreen = new(typeof(byte), "CurrentGreen");

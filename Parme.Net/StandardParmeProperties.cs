@@ -25,22 +25,22 @@
         /// <summary>
         /// How many units wide the particle was when it was initialized
         /// </summary>
-        public static readonly ParticleProperty InitialWidth = new(typeof(int), "InitialWidth");
+        public static readonly ParticleProperty InitialWidth = new(typeof(float), "InitialWidth");
         
         /// <summary>
         /// How many units tall the particle was when it was initialized
         /// </summary>
-        public static readonly ParticleProperty InitialHeight = new(typeof(int), "InitialHeight");
+        public static readonly ParticleProperty InitialHeight = new(typeof(float), "InitialHeight");
         
         /// <summary>
         /// How many units wide the particle currently is
         /// </summary>
-        public static readonly ParticleProperty CurrentWidth = new(typeof(int), "CurrentWidth");
+        public static readonly ParticleProperty CurrentWidth = new(typeof(float), "CurrentWidth");
         
         /// <summary>
         /// How many units tall the particle currently is
         /// </summary>
-        public static readonly ParticleProperty CurrentHeight = new(typeof(int), "CurrentHeight");
+        public static readonly ParticleProperty CurrentHeight = new(typeof(float), "CurrentHeight");
         
         /// <summary>
         /// How many units per second the particle is moving along the X axis

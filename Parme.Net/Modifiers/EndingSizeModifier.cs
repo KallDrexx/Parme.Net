@@ -30,10 +30,10 @@ namespace Parme.Net.Modifiers
 
         public void Update(ParticleEmitter emitter, ParticleCollection particles, float secondsSinceLastUpdate)
         {
-            var initialHeight = particles.GetReadOnlyPropertyValues<int>(StandardParmeProperties.InitialHeight.Name);
-            var initialWidth = particles.GetReadOnlyPropertyValues<int>(StandardParmeProperties.InitialWidth.Name);
-            var currentHeight = particles.GetPropertyValues<int>(StandardParmeProperties.CurrentHeight.Name);
-            var currentWidth = particles.GetPropertyValues<int>(StandardParmeProperties.CurrentWidth.Name);
+            var initialHeight = particles.GetReadOnlyPropertyValues<float>(StandardParmeProperties.InitialHeight.Name);
+            var initialWidth = particles.GetReadOnlyPropertyValues<float>(StandardParmeProperties.InitialWidth.Name);
+            var currentHeight = particles.GetPropertyValues<float>(StandardParmeProperties.CurrentHeight.Name);
+            var currentWidth = particles.GetPropertyValues<float>(StandardParmeProperties.CurrentWidth.Name);
 
             for (var index = 0; index < particles.Count; index++)
             {

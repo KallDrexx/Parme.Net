@@ -6,8 +6,7 @@ namespace Parme.Net.Benchmarks;
 [MemoryDiagnoser]
 public class Benchmarks
 {
-    private ParticleAllocator _particleAllocator;
-    private ParticleEmitter _emitter;
+    private ParticleEmitter? _emitter;
 
     [GlobalSetup]
     public void CreateEmitter()
@@ -20,12 +19,12 @@ public class Benchmarks
     [GlobalCleanup]
     public void DisposeEmitter()
     {
-        _emitter.Dispose();
+        _emitter?.Dispose();
     }
 
     [Benchmark]
     public void BasicTest()
     {
-        _emitter.Update(1f/60);
+        _emitter!.Update(1f/60);
     }
 }

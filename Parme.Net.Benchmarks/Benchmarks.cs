@@ -9,13 +9,16 @@ namespace Parme.Net.Benchmarks;
 [MemoryDiagnoser]
 public class Benchmarks
 {
+    [Params(1, 100, 500, 1000, 5000)]
+    public int InitialCapacity { get; set; }
+    
     private ParticleEmitter? _emitter;
 
     [GlobalSetup]
     public void CreateEmitter()
     {
-        var allocator = new ParticleAllocator(1000);
-        _emitter = FireEmitter.Create(new Random(), allocator);
+        var allocator = new ParticleAllocator(10000);
+        _emitter = FireEmitter.Create(new Random(), allocator, InitialCapacity);
     }
 
 

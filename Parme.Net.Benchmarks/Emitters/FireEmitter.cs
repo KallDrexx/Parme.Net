@@ -7,11 +7,11 @@ namespace Parme.Net.Benchmarks.Emitters;
 
 public static class FireEmitter 
 {
-    public static ParticleEmitter Create(Random random, ParticleAllocator allocator)
+    public static ParticleEmitter Create(Random random, ParticleAllocator allocator, int initialCapacity)
     {
         var config = new EmitterConfig
         {
-            InitialCapacity = 100,
+            InitialCapacity = initialCapacity,
             MaxParticleLifetime = 1,
             Trigger = new TimeBasedTrigger(random)
             {

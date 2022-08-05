@@ -8,7 +8,7 @@ using Parme.Net.Triggers;
 
 namespace Parme.Net
 {
-    public class ParticleEmitter
+    public class ParticleEmitter : IDisposable
     {
         private readonly ParticleCollection _particleCollection;
         private readonly Dictionary<IParticleInitializer, IReadOnlySet<ParticleProperty>> _initializerProperties = new();
@@ -181,6 +181,11 @@ namespace Parme.Net
                     initializer.InitializeParticles(this, _particleCollection, _newParticleIndices);
                 }
             }
+        }
+
+        public void Dispose()
+        {
+            Reservation.Dispose();
         }
     }
 }

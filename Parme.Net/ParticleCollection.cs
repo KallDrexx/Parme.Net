@@ -13,12 +13,12 @@ namespace Parme.Net
         /// <summary>
         /// Defines which properties that are available to be mutated by consumers
         /// </summary>
-        public IReadOnlySet<ParticleProperty>? ValidPropertiesToSet { get; internal set; }
+        public ISet<ParticleProperty>? ValidPropertiesToSet { get; internal set; }
         
         /// <summary>
         /// Defines which properties consumers can get the values of, but cannot modify
         /// </summary>
-        public IReadOnlySet<ParticleProperty>? ValidPropertiesToRead { get; internal set; }
+        public ISet<ParticleProperty>? ValidPropertiesToRead { get; internal set; }
         
         /// <summary>
         /// The number of particles in the collection

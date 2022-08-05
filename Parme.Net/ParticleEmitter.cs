@@ -11,9 +11,9 @@ namespace Parme.Net
     public class ParticleEmitter : IDisposable
     {
         private readonly ParticleCollection _particleCollection;
-        private readonly Dictionary<IParticleInitializer, IReadOnlySet<ParticleProperty>> _initializerProperties = new();
-        private readonly Dictionary<IParticleModifier, IReadOnlySet<ParticleProperty>> _modifierUpdatedProperties = new();
-        private readonly Dictionary<IParticleModifier, IReadOnlySet<ParticleProperty>> _modifierReadableProperties = new();
+        private readonly Dictionary<IParticleInitializer, ISet<ParticleProperty>> _initializerProperties = new();
+        private readonly Dictionary<IParticleModifier, ISet<ParticleProperty>> _modifierUpdatedProperties = new();
+        private readonly Dictionary<IParticleModifier, ISet<ParticleProperty>> _modifierReadableProperties = new();
         
         private readonly List<int> _newParticleIndices = new();
         

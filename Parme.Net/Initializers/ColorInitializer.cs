@@ -30,10 +30,10 @@ namespace Parme.Net.Initializers
 
         public void InitializeParticles(ParticleEmitter emitter, ParticleCollection particles, IReadOnlyList<int> newParticleIndices)
         {
-            var red = particles.GetPropertyValues<byte>(StandardParmeProperties.CurrentRed.Name);
-            var green = particles.GetPropertyValues<byte>(StandardParmeProperties.CurrentGreen.Name);
-            var blue = particles.GetPropertyValues<byte>(StandardParmeProperties.CurrentBlue.Name);
-            var alpha = particles.GetPropertyValues<byte>(StandardParmeProperties.CurrentAlpha.Name);
+            var red = particles.GetPropertyValues<float>(StandardParmeProperties.CurrentRed.Name);
+            var green = particles.GetPropertyValues<float>(StandardParmeProperties.CurrentGreen.Name);
+            var blue = particles.GetPropertyValues<float>(StandardParmeProperties.CurrentBlue.Name);
+            var alpha = particles.GetPropertyValues<float>(StandardParmeProperties.CurrentAlpha.Name);
 
             foreach (var index in newParticleIndices)
             {

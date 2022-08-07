@@ -72,9 +72,9 @@
         public static readonly ParticleProperty InitialBlue = new(typeof(byte), "InitialBlue");
         public static readonly ParticleProperty InitialAlpha = new(typeof(byte), "InitialAlpha");
 
-        public static readonly ParticleProperty CurrentRed = new(typeof(byte), "CurrentRed");
-        public static readonly ParticleProperty CurrentGreen = new(typeof(byte), "CurrentGreen");
-        public static readonly ParticleProperty CurrentBlue = new(typeof(byte), "CurrentBlue");
-        public static readonly ParticleProperty CurrentAlpha = new(typeof(byte), "currentAlpha");
+        public static readonly ParticleProperty CurrentRed = new(typeof(float), "CurrentRed");
+        public static readonly ParticleProperty CurrentGreen = new(typeof(float), "CurrentGreen");
+        public static readonly ParticleProperty CurrentBlue = new(typeof(float), "CurrentBlue");
+        public static readonly ParticleProperty CurrentAlpha = new(typeof(float), "currentAlpha");
     }
 }

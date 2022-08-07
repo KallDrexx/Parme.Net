@@ -42,10 +42,10 @@ namespace Parme.Net.Modifiers
             var initialGreen = particles.GetReadOnlyPropertyValues<byte>(StandardParmeProperties.InitialGreen.Name);
             var initialBlue = particles.GetReadOnlyPropertyValues<byte>(StandardParmeProperties.InitialBlue.Name);
             var initialAlpha = particles.GetReadOnlyPropertyValues<byte>(StandardParmeProperties.InitialAlpha.Name);
-            var currentRed = particles.GetPropertyValues<byte>(StandardParmeProperties.CurrentRed.Name);
-            var currentGreen = particles.GetPropertyValues<byte>(StandardParmeProperties.CurrentGreen.Name);
-            var currentBlue = particles.GetPropertyValues<byte>(StandardParmeProperties.CurrentBlue.Name);
-            var currentAlpha = particles.GetPropertyValues<byte>(StandardParmeProperties.CurrentAlpha.Name);
+            var currentRed = particles.GetPropertyValues<float>(StandardParmeProperties.CurrentRed.Name);
+            var currentGreen = particles.GetPropertyValues<float>(StandardParmeProperties.CurrentGreen.Name);
+            var currentBlue = particles.GetPropertyValues<float>(StandardParmeProperties.CurrentBlue.Name);
+            var currentAlpha = particles.GetPropertyValues<float>(StandardParmeProperties.CurrentAlpha.Name);
 
             for (var index = 0; index < particles.Count; index++)
             {
@@ -54,10 +54,10 @@ namespace Parme.Net.Modifiers
                 var blue = (initialBlue[index] - EndingBlue) / emitter.MaxParticleLifetime * secondsSinceLastUpdate;
                 var alpha = (initialAlpha[index] - EndingAlpha) / emitter.MaxParticleLifetime * secondsSinceLastUpdate;
 
-                currentRed[index] -= (byte)red;
-                currentGreen[index] -= (byte)green;
-                currentBlue[index] -= (byte)blue;
-                currentAlpha[index] -= (byte)alpha;
+                currentRed[index] -= red;
+                currentGreen[index] -= green;
+                currentBlue[index] -= blue;
+                currentAlpha[index] -= alpha;
             }
         }
     }

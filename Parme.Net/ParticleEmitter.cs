@@ -55,6 +55,8 @@ namespace Parme.Net
         /// How many seconds a single particle is expected to be alive for
         /// </summary>
         public float MaxParticleLifetime { get; set; }
+        
+        public string? TextureFilePath { get; set; }
 
         public TextureSectionCoords[] TextureSections { get; set; } = Array.Empty<TextureSectionCoords>();
 
@@ -135,6 +137,22 @@ namespace Parme.Net
             }
         }
 
+        public ParticleCollection CreateParticleCollection(
+            ISet<ParticleProperty> readableProperties,
+            ISet<ParticleProperty> settableProperties)
+        {
+            return new ParticleCollection(Reservation)
+            {
+                ValidPropertiesToRead = readableProperties,
+                ValidPropertiesToSet = settableProperties,
+            };
+        }
+        
+        public void Dispose()
+        {
+            Reservation.Dispose();
+        }
+
         private void CreateNewParticles(float timeSinceLastFrame)
         {
             var particlesToCreate = Trigger.DetermineNumberOfParticlesToCreate(this, timeSinceLastFrame);
@@ -180,9 +198,6 @@ namespace Parme.Net
             }
         }
 
-        public void Dispose()
-        {
-            Reservation.Dispose();
-        }
+
     }
 }

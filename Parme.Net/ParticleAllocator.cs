@@ -122,8 +122,18 @@ namespace Parme.Net
         /// </summary>
         internal void RegisterProperty(Type type, string propertyName)
         {
-            _particleProperties.TryAdd(type, new Dictionary<string, Array>());
-            _particleProperties[type].TryAdd(propertyName, Array.CreateInstance(type, Capacity));
+            // If the property already exists for the specified type, then that's ok, we shouldn't exception.  Nothing
+            // will get overwritten
+            if (!_particleProperties.TryGetValue(type, out var typeProperties))
+            {
+                typeProperties = new Dictionary<string, Array>();
+                _particleProperties.Add(type, typeProperties);
+            }
+
+            if (!typeProperties.ContainsKey(propertyName))
+            {
+                typeProperties.Add(propertyName, Array.CreateInstance(type, Capacity));
+            }
         }
 
         private void ExpandReservationCapacity(Reservation reservation, int additionalRequested)
@@ -222,9 +232,13 @@ namespace Parme.Net
                 newLocations[moveToEndIndex.Value] = (currentIndex, currentIndex + moveToEnd!.Length - 1);
             }
             
-            foreach (var (type, dictionary) in _particleProperties)
-            foreach (var (property, oldArray) in dictionary)
+            foreach (var typeProperties in _particleProperties)
+            foreach (var properties in typeProperties.Value)
             {
+                var type = typeProperties.Key;
+                var oldArray = properties.Value;
+                var dictionary = typeProperties.Value;
+                var property = properties.Key;
                 var newArray = Array.CreateInstance(type, capacityAfterExpansion);
                 var idx = 0;
                 foreach (var reservation in _reservations)
@@ -301,9 +315,11 @@ namespace Parme.Net
             }
 
             int idx;
-            foreach (var (type, dictionary) in _particleProperties)
-            foreach (var (_, array) in dictionary)
+            foreach (var propertiesForType in _particleProperties)
+            foreach (var arraysForProperty in propertiesForType.Value)
             {
+                var type = propertiesForType.Key;
+                var array = arraysForProperty.Value;
                 Array? moveToEndHolder = null;
                 idx = 0;
                 foreach (var reservation in _reservations)

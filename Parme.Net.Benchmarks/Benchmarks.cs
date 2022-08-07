@@ -4,6 +4,7 @@ using Parme.Net.Benchmarks.Emitters;
 
 namespace Parme.Net.Benchmarks;
 
+[SimpleJob(RuntimeMoniker.Net472)]
 [SimpleJob(RuntimeMoniker.NetCoreApp31)]
 [SimpleJob(RuntimeMoniker.Net60)]
 [MemoryDiagnoser]

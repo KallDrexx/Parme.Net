@@ -77,8 +77,7 @@ namespace Parme.Net
 
             foreach (var initializer in Initializers)
             {
-                // ReSharper disable once ConstantNullCoalescingCondition (due to consumer code without nullable refs)
-                var properties = initializer.PropertiesISet ?? new HashSet<ParticleProperty>();
+                var properties = initializer.PropertiesISet;
                 _initializerProperties.Add(initializer, properties);
 
                 foreach (var property in properties)
@@ -89,12 +88,10 @@ namespace Parme.Net
 
             foreach (var modifier in Modifiers)
             {
-                // ReSharper disable once ConstantNullCoalescingCondition
-                var propertiesToUpdate = modifier.PropertiesIUpdate ?? new HashSet<ParticleProperty>();
+                var propertiesToUpdate = modifier.PropertiesIUpdate;
                 _modifierUpdatedProperties.Add(modifier, propertiesToUpdate);
                 
-                // ReSharper disable once ConstantNullCoalescingCondition
-                var propertiesToRead = modifier.PropertiesIRead ?? new HashSet<ParticleProperty>();
+                var propertiesToRead = modifier.PropertiesIRead;
                 _modifierReadableProperties.Add(modifier, propertiesToRead);
 
                 foreach (var property in propertiesToUpdate.Concat(propertiesToRead))

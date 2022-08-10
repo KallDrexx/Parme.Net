@@ -147,6 +147,20 @@ namespace Parme.Net
                 ValidPropertiesToSet = settableProperties,
             };
         }
+
+        public bool HasAnyLiveParticles()
+        {
+            var isAliveValues = Reservation.GetPropertyValues<bool>(StandardParmeProperties.IsAlive.Name);
+            for (var x = 0; x < isAliveValues.Length; x++)
+            {
+                if (isAliveValues[x])
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
         
         public void Dispose()
         {
@@ -197,7 +211,5 @@ namespace Parme.Net
                 }
             }
         }
-
-
     }
 }

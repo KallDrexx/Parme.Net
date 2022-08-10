@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using FlatRedBall;
 using FlatRedBall.Math;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Vector2 = System.Numerics.Vector2;
 
 namespace Parme.Net.Frb;
@@ -54,11 +55,12 @@ public class ParmeFrbEmitter : IStaticPositionable
     /// </summary>
     public bool ImmediatelyKillParticlesOnDestroy { get; set; }
 
-    public ParmeFrbEmitter(ParticleEmitter emitter)
+    public ParmeFrbEmitter(ParticleAllocator allocator, EmitterConfig config)
     {
-        Emitter = emitter ?? throw new ArgumentNullException(nameof(emitter));
+        Emitter = new ParticleEmitter(allocator, config);
 
-        var collection = emitter.CreateParticleCollection(
+        var collection = Emitter
+            .CreateParticleCollection(
             new HashSet<ParticleProperty>(new[]
             {
                 StandardParmeProperties.IsAlive,
@@ -98,7 +100,11 @@ public class ParmeFrbEmitter : IStaticPositionable
             Emitter.RotationInRadians = RotationOffsetInRadians;
         }
     }
-    
+
+    public void Render(ParticleCamera particleCamera, SpriteBatch spriteBatch)
+    {
+        _renderer.Render(particleCamera, spriteBatch, Emitter.TextureSections);
+    }
     
     private void SetRotatedOffsetFromAbsoluteValues(float x, float y)
     {

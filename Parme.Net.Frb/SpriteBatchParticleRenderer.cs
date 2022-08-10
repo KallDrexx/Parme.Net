@@ -25,7 +25,7 @@ public class SpriteBatchParticleRenderer
     public void Render(
         ParticleCamera camera, 
         SpriteBatch spriteBatch,
-        ref TextureSectionCoords[] textureSections)
+        TextureSectionCoords[] textureSections)
     {
         var isAlive = _particleCollection.GetReadOnlyPropertyValues<bool>(StandardParmeProperties.IsAlive.Name);
         var positionX = _particleCollection.GetReadOnlyPropertyValues<float>(StandardParmeProperties.PositionX.Name);

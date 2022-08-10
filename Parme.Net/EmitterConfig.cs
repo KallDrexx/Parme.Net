@@ -14,6 +14,7 @@ namespace Parme.Net
         public ParticleTrigger? Trigger { get; set; }
         public List<IParticleInitializer> Initializers { get; } = new();
         public List<IParticleModifier> Modifiers { get; } = new();
+        public string? TextureFilePath { get; }
 
         /// <summary>
         /// How many seconds a single particle should stay alive for

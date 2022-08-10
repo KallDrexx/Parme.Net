@@ -73,6 +73,7 @@ namespace Parme.Net
             Initializers = config.Initializers.Select(x => x.Clone()).ToArray();
             Modifiers = config.Modifiers.Select(x => x.Clone()).ToArray();
             MaxParticleLifetime = config.MaxParticleLifetime;
+            TextureFilePath = config.TextureFilePath;
             
             Reservation = particleAllocator.Reserve(initialCapacity);
             _particleCollection = new ParticleCollection(Reservation);

@@ -31,7 +31,7 @@ namespace Parme.Net.Frb.Example.Screens
             return new EmitterConfig
             {
                 InitialCapacity = 50,
-                MaxParticleLifetime = 1,
+                MaxParticleLifetime = 10,
                 Trigger = new TimeBasedTrigger(random)
                 {
                     SecondsBetweenEmissions = 0.01f,

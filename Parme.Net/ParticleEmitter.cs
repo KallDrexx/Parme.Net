@@ -126,6 +126,15 @@ namespace Parme.Net
 
         public void Update(float timeSinceLastFrame)
         {
+            var timeAliveValues = Reservation.GetPropertyValues<float>(StandardParmeProperties.TimeAlive.Name);
+            var isAlive = Reservation.GetPropertyValues<bool>(StandardParmeProperties.IsAlive.Name);
+
+            for (var index = 0; index < Reservation.Length; index++)
+            {
+                timeAliveValues[index] += timeSinceLastFrame;
+                isAlive[index] = isAlive[index] && timeAliveValues[index] > MaxParticleLifetime;
+            }
+            
             foreach (var modifier in Modifiers)
             {
                 _modifierReadableProperties.TryGetValue(modifier, out var readableProperties);
@@ -188,12 +197,14 @@ namespace Parme.Net
                 while (particlesToCreate > 0)
                 {
                     var isAliveValues = Reservation.GetPropertyValues<bool>(StandardParmeProperties.IsAlive.Name);
+                    var timeAliveValues = Reservation.GetPropertyValues<float>(StandardParmeProperties.TimeAlive.Name);
                     for (; particleIndex < isAliveValues.Length; particleIndex++)
                     {
                         if (!isAliveValues[particleIndex])
                         {
                             _newParticleIndices.Add(particleIndex);
                             isAliveValues[particleIndex] = true;
+                            timeAliveValues[particleIndex] = 0;
                             particlesToCreate--;
 
                             if (particlesToCreate <= 0)

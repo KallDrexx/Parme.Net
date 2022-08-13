@@ -78,9 +78,12 @@ namespace Parme.Net
             Reservation = particleAllocator.Reserve(initialCapacity);
             _particleCollection = new ParticleCollection(Reservation);
 
+            var propertiesToRegister = new HashSet<ParticleProperty>();
+
             foreach (var initializer in Initializers)
             {
-                var properties = initializer.PropertiesISet;
+                // ReSharper disable once NullCoalescingConditionIsAlwaysNotNullAccordingToAPIContract
+                var properties = initializer.PropertiesISet ?? new HashSet<ParticleProperty>();
                 _initializerProperties.Add(initializer, properties);
 
                 foreach (var property in properties)
@@ -91,10 +94,12 @@ namespace Parme.Net
 
             foreach (var modifier in Modifiers)
             {
-                var propertiesToUpdate = modifier.PropertiesIUpdate;
+                // ReSharper disable once NullCoalescingConditionIsAlwaysNotNullAccordingToAPIContract
+                var propertiesToUpdate = modifier.PropertiesIUpdate ?? new HashSet<ParticleProperty>();
                 _modifierUpdatedProperties.Add(modifier, propertiesToUpdate);
                 
-                var propertiesToRead = modifier.PropertiesIRead;
+                // ReSharper disable once NullCoalescingConditionIsAlwaysNotNullAccordingToAPIContract
+                var propertiesToRead = modifier.PropertiesIRead ?? new HashSet<ParticleProperty>();
                 _modifierReadableProperties.Add(modifier, propertiesToRead);
 
                 foreach (var property in propertiesToUpdate.Concat(propertiesToRead))

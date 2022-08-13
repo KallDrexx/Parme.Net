@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using System.Collections.Generic;
+using Moq;
 using Parme.Net.Initializers;
 using Parme.Net.Modifiers;
 using Parme.Net.Triggers;
@@ -22,6 +23,9 @@ namespace Parme.Net.Tests
             initializer.Setup(x => x.Clone())
                 .Returns(initializer.Object);
 
+            initializer.Setup(x => x.PropertiesISet)
+                .Returns(new HashSet<ParticleProperty>());
+
             return initializer;
         }
 
@@ -30,6 +34,12 @@ namespace Parme.Net.Tests
             var modifier = new Mock<IParticleModifier>();
             modifier.Setup(x => x.Clone())
                 .Returns(modifier.Object);
+
+            modifier.Setup(x => x.PropertiesIRead)
+                .Returns(new HashSet<ParticleProperty>());
+
+            modifier.Setup(x => x.PropertiesIUpdate)
+                .Returns(new HashSet<ParticleProperty>());
 
             return modifier;
         }

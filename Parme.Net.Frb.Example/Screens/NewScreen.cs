@@ -10,7 +10,7 @@ namespace Parme.Net.Frb.Example.Screens
     {
         void CustomInitialize()
         {
-            ParmeEmitterManager.Instance.CreateEmitter(CreateFireEmitterConfig(), null);
+            ParmeEmitterManager.Instance.CreateEmitter(CreateTestEmitterConfig(), null);
         }
 
         void CustomActivity(bool firstTimeCalled)
@@ -25,12 +25,12 @@ namespace Parme.Net.Frb.Example.Screens
         {
         }
 
-        private static EmitterConfig CreateFireEmitterConfig()
+        private static EmitterConfig CreateTestEmitterConfig()
         {
             var random = new Random();
             return new EmitterConfig
             {
-                InitialCapacity = 5000,
+                InitialCapacity = 50,
                 MaxParticleLifetime = 1,
                 Trigger = new TimeBasedTrigger(random)
                 {

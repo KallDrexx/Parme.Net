@@ -93,5 +93,24 @@ namespace Parme.Net
 
             return _reservation.GetPropertyValues<T>(propertyName);
         }
+
+        internal void RegisterProperties()
+        {
+            if (ValidPropertiesToRead != null)
+            {
+                foreach (var property in ValidPropertiesToRead)
+                {
+                    _reservation.RegisterProperty(property.Type, property.Name);
+                }
+            }
+
+            if (ValidPropertiesToSet != null)
+            {
+                foreach (var property in ValidPropertiesToSet)
+                {
+                    _reservation.RegisterProperty(property.Type, property.Name);
+                }
+            }
+        }
     }
 }

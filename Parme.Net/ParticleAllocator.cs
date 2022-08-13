@@ -423,6 +423,14 @@ namespace Parme.Net
             public Span<T> GetPropertyValues<T>(string propertyName)
                 => _particleAllocator.GetPropertyValues<T>(this, propertyName);
 
+            /// <summary>
+            ///  Allows registering particle properties through the reservation, instead of the allocator directly
+            /// </summary>
+            public void RegisterProperty(Type type, string propertyName)
+            {
+                _particleAllocator.RegisterProperty(type, propertyName);
+            }
+
             public void Dispose()
             {
                 if (!IsDisposed)

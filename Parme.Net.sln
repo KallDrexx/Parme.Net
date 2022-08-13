@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parme.Net.Benchmarks", "Par
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parme.Net.Frb", "Parme.Net.Frb\Parme.Net.Frb.csproj", "{7A48BEFC-799F-4358-9173-DC23035B215F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parme.Net.Frb.Example", "Parme.Net.Frb.Example\Parme.Net.Frb.Example.csproj", "{36A6D5C8-91BF-494A-BB70-52EC2CDB0B88}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{7A48BEFC-799F-4358-9173-DC23035B215F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A48BEFC-799F-4358-9173-DC23035B215F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A48BEFC-799F-4358-9173-DC23035B215F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36A6D5C8-91BF-494A-BB70-52EC2CDB0B88}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{36A6D5C8-91BF-494A-BB70-52EC2CDB0B88}.Debug|Any CPU.Build.0 = Debug|x86
+		{36A6D5C8-91BF-494A-BB70-52EC2CDB0B88}.Release|Any CPU.ActiveCfg = Release|x86
+		{36A6D5C8-91BF-494A-BB70-52EC2CDB0B88}.Release|Any CPU.Build.0 = Release|x86
 	EndGlobalSection
 EndGlobal

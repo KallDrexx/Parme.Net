@@ -10,7 +10,22 @@ public class SpriteBatchParticleRenderer
 {
     private readonly Texture2D _texture;
     private readonly ParticleCollection _particleCollection;
-    
+
+    public static HashSet<ParticleProperty> PropertiesIRead { get; } = new(new[]
+    {
+        StandardParmeProperties.IsAlive,
+        StandardParmeProperties.PositionX,
+        StandardParmeProperties.PositionY,
+        StandardParmeProperties.CurrentWidth,
+        StandardParmeProperties.CurrentHeight,
+        StandardParmeProperties.CurrentRed,
+        StandardParmeProperties.CurrentGreen,
+        StandardParmeProperties.CurrentBlue,
+        StandardParmeProperties.CurrentAlpha,
+        StandardParmeProperties.RotationInRadians,
+        StandardParmeProperties.TextureSectionIndex,
+    });
+
     public SpriteBatchParticleRenderer(
         string textureFilePath,
         ParticleCollection particleCollection)

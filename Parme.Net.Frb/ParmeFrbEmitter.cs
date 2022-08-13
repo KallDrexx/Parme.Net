@@ -59,21 +59,8 @@ public class ParmeFrbEmitter : IStaticPositionable
     {
         Emitter = new ParticleEmitter(allocator, config);
 
-        var collection = Emitter
-            .CreateParticleCollection(
-            new HashSet<ParticleProperty>(new[]
-            {
-                StandardParmeProperties.IsAlive,
-                StandardParmeProperties.PositionX,
-                StandardParmeProperties.PositionY,
-                StandardParmeProperties.CurrentWidth,
-                StandardParmeProperties.CurrentHeight,
-                StandardParmeProperties.CurrentRed,
-                StandardParmeProperties.CurrentGreen,
-                StandardParmeProperties.CurrentBlue,
-                StandardParmeProperties.CurrentAlpha,
-            }),
-            new HashSet<ParticleProperty>());
+        var properties = SpriteBatchParticleRenderer.PropertiesIRead;
+        var collection = Emitter.CreateParticleCollection(properties, null);
         
         _renderer = new SpriteBatchParticleRenderer(Emitter.TextureFilePath, collection);
     }

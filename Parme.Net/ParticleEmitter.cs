@@ -139,14 +139,18 @@ namespace Parme.Net
         }
 
         public ParticleCollection CreateParticleCollection(
-            ISet<ParticleProperty> readableProperties,
-            ISet<ParticleProperty> settableProperties)
+            ISet<ParticleProperty>? readableProperties,
+            ISet<ParticleProperty>? settableProperties)
         {
-            return new ParticleCollection(Reservation)
+            var collection = new ParticleCollection(Reservation)
             {
                 ValidPropertiesToRead = readableProperties,
                 ValidPropertiesToSet = settableProperties,
             };
+            
+            collection.RegisterProperties();
+            
+            return collection;
         }
 
         public bool HasAnyLiveParticles()

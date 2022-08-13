@@ -1,0 +1,282 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{36A6D5C8-91BF-494A-BB70-52EC2CDB0B88}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Parme.Net.Frb.Example</RootNamespace>
+    <FileAlignment>512</FileAlignment>
+    <MonoGamePlatform>DesktopGL</MonoGamePlatform>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <RuntimeIdentifier>win-x86</RuntimeIdentifier>
+    <TargetFrameworkProfile />
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\$(MonoGamePlatform)\$(Platform)\$(Configuration)\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;MONOGAME; DESKTOP_GL; XNA4; FRB_XNA;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\$(MonoGamePlatform)\$(Platform)\$(Configuration)\</OutputPath>
+    <DefineConstants>TRACE;MONOGAME; DESKTOP_GL; XNA4; FRB_XNA;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Icon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugWindows|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\DebugWindows\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;MONOGAME; DESKTOP_GL; XNA4; FRB_XNA; WINDOWS</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\$(MonoGamePlatform)\$(Platform)\$(Configuration)\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;MONOGAME; DESKTOP_GL; XNA4; FRB_XNA;</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\$(MonoGamePlatform)\$(Platform)\$(Configuration)\</OutputPath>
+    <DefineConstants>TRACE;MONOGAME; DESKTOP_GL; XNA4; FRB_XNA;</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="DataTypes\TileMapInfo.Generated.cs" />
+    <Compile Include="FileAliases.Generated.cs" />
+    <Compile Include="Game1.cs" />
+    <Compile Include="Game1.Generated.cs">
+      <DependentUpon>Game1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GlobalContent.Generated.cs" />
+    <Compile Include="GlueCommunication\GameConnectionManager.Generated.cs" />
+    <Compile Include="GlueControl\CommandReceiver.Generated.cs" />
+    <Compile Include="GlueControl\Dtos.Generated.cs" />
+    <Compile Include="GlueControl\Editing\CameraLogic.Generated.cs" />
+    <Compile Include="GlueControl\Editing\CopyPasteManager.Generated.cs" />
+    <Compile Include="GlueControl\Editing\EditingManager.Generated.cs" />
+    <Compile Include="GlueControl\Editing\EditorVisuals.Generated.cs" />
+    <Compile Include="GlueControl\Editing\Guides.Generated.cs" />
+    <Compile Include="GlueControl\Editing\Managers\GenerateCodeCommands.Generated.cs" />
+    <Compile Include="GlueControl\Editing\Managers\GlueCommands.Generated.cs" />
+    <Compile Include="GlueControl\Editing\Managers\GlueCommandsStateBase.Generated.cs" />
+    <Compile Include="GlueControl\Editing\Managers\GlueState.Generated.cs" />
+    <Compile Include="GlueControl\Editing\Managers\GluxCommands.Generated.cs" />
+    <Compile Include="GlueControl\Editing\Managers\ObjectFinder.Generated.cs" />
+    <Compile Include="GlueControl\Editing\Managers\RefreshCommands.Generated.cs" />
+    <Compile Include="GlueControl\Editing\Markers\MeasurementMarker.Generated.cs" />
+    <Compile Include="GlueControl\Editing\Markers\PolygonPointHandles.Generated.cs" />
+    <Compile Include="GlueControl\Editing\Markers\SelectionMarker.Generated.cs" />
+    <Compile Include="GlueControl\Editing\Markers\TileShapeCollectionMarker.Generated.cs" />
+    <Compile Include="GlueControl\Editing\MoveObjectToContainerLogic.Generated.cs" />
+    <Compile Include="GlueControl\Editing\SelectionLogic.Generated.cs" />
+    <Compile Include="GlueControl\Editing\VariableAssignmentLogic.Generated.cs" />
+    <Compile Include="GlueControl\Editing\Visuals\Arrow.Generated.cs" />
+    <Compile Include="GlueControl\Forms\ObjectCreationWindow.Generated.cs" />
+    <Compile Include="GlueControl\GlueCallsClassGenerationManager.Generated.cs" />
+    <Compile Include="GlueControl\GlueControlManager.Generated.cs" />
+    <Compile Include="GlueControl\InstanceLogic.Generated.cs" />
+    <Compile Include="GlueControl\Models\CustomVariable.Generated.cs" />
+    <Compile Include="GlueControl\Models\GlueElement.Generated.cs" />
+    <Compile Include="GlueControl\Models\GlueElementFileReference.Generated.cs" />
+    <Compile Include="GlueControl\Models\GlueProjectSave.Generated.cs" />
+    <Compile Include="GlueControl\Models\GlueProjectSaveExtensions.Generated.cs" />
+    <Compile Include="GlueControl\Models\IElementExtensionMethods.Generated.cs" />
+    <Compile Include="GlueControl\Models\INamedObjectContainer.Generated.cs" />
+    <Compile Include="GlueControl\Models\NamedObjectSave.Generated.cs" />
+    <Compile Include="GlueControl\Models\NamedObjectSaveExtensionMethods.Generated.cs" />
+    <Compile Include="GlueControl\Models\ReferencedFileSave.Generated.cs" />
+    <Compile Include="GlueControl\Models\StateSave.Generated.cs" />
+    <Compile Include="GlueControl\Models\StateSaveCategory.Generated.cs" />
+    <Compile Include="GlueControl\Runtime\DynamicEntity.Generated.cs" />
+    <Compile Include="GlueControl\Screens\EntityViewingScreen.Generated.cs" />
+    <Compile Include="Performance\IEntityFactory.Generated.cs" />
+    <Compile Include="Performance\PoolList.Generated.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Screens\NewScreen.cs" />
+    <Compile Include="Screens\NewScreen.Generated.cs">
+      <DependentUpon>NewScreen.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Setup\CameraSetup.cs" />
+    <Compile Include="TileCollisions\CollidableListVsTileShapeCollectionRelationship.cs" />
+    <Compile Include="TileCollisions\CollidableVsTileShapeCollectionRelationship.cs" />
+    <Compile Include="TileCollisions\CollisionManagerTileShapeCollectionExtensions.cs" />
+    <Compile Include="TileCollisions\TileShapeCollection.cs" />
+    <Compile Include="TileEntities\TileEntityInstantiator.cs" />
+    <Compile Include="TileGraphics\AbstractMapLayer.cs" />
+    <Compile Include="TileGraphics\AnimationChainContainer.cs" />
+    <Compile Include="TileGraphics\ExternalTileset.cs" />
+    <Compile Include="TileGraphics\LayeredTileMap.cs" />
+    <Compile Include="TileGraphics\LayeredTileMapAnimation.cs" />
+    <Compile Include="TileGraphics\MapDrawableBatch.cs" />
+    <Compile Include="TileGraphics\MapLayer.cs" />
+    <Compile Include="TileGraphics\MapTileset.cs" />
+    <Compile Include="TileGraphics\MapTilesetTile.cs" />
+    <Compile Include="TileGraphics\NamedValue.cs" />
+    <Compile Include="TileGraphics\ReducedTileMapInfo.cs" />
+    <Compile Include="TileGraphics\ReducedTileMapInfo.TiledMapSave.cs">
+      <DependentUpon>ReducedTileMapInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TileGraphics\TileAnimation.cs" />
+    <Compile Include="TileGraphics\TileAnimationFrame.cs" />
+    <Compile Include="TileGraphics\TiledMapSave.Conversion.cs" />
+    <Compile Include="TileGraphics\TiledMapSave.Serialization.cs" />
+    <Compile Include="TileGraphics\TiledMapToShapeCollectionConverter.cs" />
+    <Compile Include="TileGraphics\TileNodeNetworkCreator.cs" />
+    <Compile Include="TileGraphics\Tileset.cs" />
+    <Compile Include="TileGraphics\TilesetExtensionMethods.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="FlatRedBall.Forms, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Libraries\DesktopGl\Debug\FlatRedBall.Forms.dll</HintPath>
+    </Reference>
+    <Reference Include="FlatRedBallDesktopGL, Version=2016.3.17.461, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Libraries\DesktopGl\Debug\FlatRedBallDesktopGL.dll</HintPath>
+    </Reference>
+    <Reference Include="GumCoreXnaPc, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Libraries\DesktopGl\Debug\GumCoreXnaPc.dll</HintPath>
+    </Reference>
+    <Reference Include="MonoGame.Framework, Version=3.5.1.1679, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Libraries\DesktopGl\Debug\MonoGame.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="NVorbis, Version=0.8.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Libraries\DesktopGl\Debug\NVorbis.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Libraries\DesktopGl\Debug\OpenTK.dll</HintPath>
+    </Reference>
+    <Reference Include="StateInterpolation, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Libraries\DesktopGl\Debug\StateInterpolation.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\shader.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="Libraries\DesktopGl\Debug\FlatRedBall.Forms.dll" />
+    <None Include="Libraries\DesktopGl\Debug\GumCoreXnaPc.dll" />
+    <None Include="Libraries\DesktopGl\Debug\StateInterpolation.dll" />
+    <None Include="Libraries\DesktopGl\Release\FlatRedBall.Forms.dll" />
+    <None Include="Libraries\DesktopGl\Release\GumCoreXnaPc.dll" />
+    <None Include="Libraries\DesktopGl\Release\StateInterpolation.dll" />
+    <Content Include="MonoGame.Framework.dll.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="libopenal.1.dylib">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="libSDL2-2.0.0.dylib">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="x64\SDL2.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="x64\soft_oal.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="x86\SDL2.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="x86\soft_oal.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <EmbeddedResource Include="Icon.ico" />
+    <None Include="Libraries\DesktopGl\Debug\FlatRedBallDesktopGL.dll" />
+    <None Include="Libraries\DesktopGl\Debug\FlatRedBallDesktopGL.pdb" />
+    <None Include="Libraries\DesktopGl\Debug\Lidgren.Network.dll" />
+    <None Include="Libraries\DesktopGl\Debug\MonoGame.Framework.dll" />
+    <None Include="Libraries\DesktopGl\Debug\MonoGame.Framework.Net.dll" />
+    <None Include="Libraries\DesktopGl\Debug\NVorbis.dll" />
+    <None Include="Libraries\DesktopGl\Debug\OpenTK.dll" />
+    <None Include="Libraries\DesktopGl\Release\FlatRedBallDesktopGL.dll" />
+    <None Include="Libraries\DesktopGl\Release\FlatRedBallDesktopGL.pdb" />
+    <None Include="Libraries\DesktopGl\Release\Lidgren.Network.dll" />
+    <None Include="Libraries\DesktopGl\Release\MonoGame.Framework.dll" />
+    <None Include="Libraries\DesktopGl\Release\MonoGame.Framework.Net.dll" />
+    <None Include="Libraries\DesktopGl\Release\NVorbis.dll" />
+    <None Include="Libraries\DesktopGl\Release\OpenTK.dll" />
+    <Content Include="OpenTK.dll.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="x64\libopenal.so.1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="x64\libSDL2-2.0.so.0">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="x86\libopenal.so.1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="x86\libSDL2-2.0.so.0">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>12.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="System.Numerics.Vectors">
+      <Version>4.5.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime.Numerics">
+      <Version>4.3.0</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Parme.Net.Frb\Parme.Net.Frb.csproj">
+      <Project>{7a48befc-799f-4358-9173-dc23035b215f}</Project>
+      <Name>Parme.Net.Frb</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Parme.Net\Parme.Net.csproj">
+      <Project>{c61a7dee-7aec-4e7f-89a9-dda8a5860592}</Project>
+      <Name>Parme.Net</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

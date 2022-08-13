@@ -22,6 +22,8 @@ namespace Parme.Net.Triggers
             return new TimeBasedTrigger(_random)
             {
                 SecondsBetweenEmissions = SecondsBetweenEmissions,
+                MinParticlesToEmit = MinParticlesToEmit,
+                MaxParticlesToEmit = MaxParticlesToEmit,
             };
         }
 

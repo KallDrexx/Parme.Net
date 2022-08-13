@@ -269,6 +269,7 @@ namespace Parme.Net.Tests
         public void Can_Expand_Reservation_When_Its_The_Only_Reservation()
         {
             var allocator = new ParticleAllocator(10);
+            allocator.RegisterProperty(typeof(float), "Something");
             var reservation = allocator.Reserve(5);
             reservation.Expand(3);
             
@@ -281,6 +282,8 @@ namespace Parme.Net.Tests
         public void Can_Expand_Reservation_Into_Disposed_Gap()
         {
             var allocator = new ParticleAllocator(10);
+            allocator.RegisterProperty(typeof(float), "Something");
+            
             var first = allocator.Reserve(5);
             var second = allocator.Reserve(3);
             allocator.Reserve(2);
@@ -297,7 +300,11 @@ namespace Parme.Net.Tests
         public void Can_Expand_When_Not_Enough_Free_Space_Exists()
         {
             var allocator = new ParticleAllocator(10);
+            allocator.RegisterProperty(typeof(float), "Something");
+            allocator.RegisterProperty(typeof(float), "Something2");
+            allocator.RegisterProperty(typeof(int), "Something2");
             allocator.Reserve(3);
+            
             var reservation = allocator.Reserve(5);
             reservation.Expand(10);
             
@@ -308,6 +315,8 @@ namespace Parme.Net.Tests
         public void Can_Expand_When_Free_Space_Exists_But_No_Big_Enough_Gaps()
         {
             var allocator = new ParticleAllocator(10);
+            allocator.RegisterProperty(typeof(float), "Something");
+            
             var first = allocator.Reserve(3);
             var second = allocator.Reserve(2);
             allocator.Reserve(3);

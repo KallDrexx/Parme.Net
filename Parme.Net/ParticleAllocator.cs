@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Parme.Net
 {
@@ -231,31 +232,30 @@ namespace Parme.Net
             {
                 newLocations[moveToEndIndex.Value] = (currentIndex, currentIndex + moveToEnd!.Length - 1);
             }
-            
-            foreach (var typeProperties in _particleProperties)
-            foreach (var properties in typeProperties.Value)
+
+            foreach (var type in _particleProperties.Keys.ToArray())
             {
-                var type = typeProperties.Key;
-                var oldArray = properties.Value;
-                var dictionary = typeProperties.Value;
-                var property = properties.Key;
-                var newArray = Array.CreateInstance(type, capacityAfterExpansion);
-                var idx = 0;
-                foreach (var reservation in _reservations)
+                foreach (var property in _particleProperties[type].Keys.ToArray())
                 {
-                    var (newStart, _) = newLocations[idx];
-                    Array.ConstrainedCopy(oldArray, 
-                        reservation.StartIndex, 
-                        newArray, 
-                        newStart, 
-                        reservation.Length);
+                    var oldArray = _particleProperties[type][property];
+                    var newArray = Array.CreateInstance(type, capacityAfterExpansion);
+                    var idx = 0;
+                    foreach (var reservation in _reservations)
+                    {
+                        var (newStart, _) = newLocations[idx];
+                        Array.ConstrainedCopy(oldArray, 
+                            reservation.StartIndex, 
+                            newArray, 
+                            newStart, 
+                            reservation.Length);
 
-                    idx++;
+                        idx++;
+                    }
+
+                    _particleProperties[type][property] = newArray;
                 }
-
-                dictionary[property] = newArray;
             }
-            
+
             // Now that all the particle properties have been moved over we need to make sure the reservations point
             // to the correct spot in the new arrays.  We couldn't do this before without losing track of either the
             // old or new position.

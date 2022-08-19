@@ -39,34 +39,17 @@ namespace Parme.Net.Initializers
             return new SizeInitializer(_random)
             {
                 MinSize = MinSize,
+                MaxSize = MaxSize,
             };
         }
 
         public void InitializeParticles(ParticleEmitter emitter, ParticleCollection particles, IReadOnlyList<int> newParticleIndices)
         {
-            float minHeight, maxHeight, minWidth, maxWidth;
-            if (MinSize.Y < MaxSize.Y)
-            {
-                minHeight = MinSize.Y;
-                maxHeight = MaxSize.Y;
-            }
-            else
-            {
-                minHeight = MaxSize.Y;
-                maxHeight = MinSize.Y;
-            }
-
-            if (MinSize.X < MaxSize.X)
-            {
-                minWidth = MinSize.X;
-                maxWidth = MaxSize.X;
-            }
-            else
-            {
-                minWidth = MaxSize.X;
-                maxWidth = MinSize.X;
-            }
-
+            var minHeight = Math.Min(MinSize.Y, MaxSize.Y);
+            var maxHeight = Math.Max(MinSize.Y, MaxSize.Y);
+            var minWidth = Math.Min(MinSize.X, MaxSize.X);
+            var maxWidth = Math.Max(MinSize.X, MaxSize.X);
+            
             var initialHeight = particles.GetPropertyValues<float>(StandardParmeProperties.InitialHeight.Name);
             var initialWidth = particles.GetPropertyValues<float>(StandardParmeProperties.InitialWidth.Name);
             var currentHeight = particles.GetPropertyValues<float>(StandardParmeProperties.CurrentHeight.Name);

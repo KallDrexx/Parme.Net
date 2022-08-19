@@ -6,16 +6,25 @@ namespace Parme.Net.Triggers
     {
         private readonly Random _random;
         private float _timeSinceLastEmission;
+        private float _secondsBetweenEmissions;
 
         public TimeBasedTrigger(Random random)
         {
             _random = random;
         }
-        
+
         /// <summary>
         /// The number of seconds that should occur before another set of particles is emitted
         /// </summary>
-        public float SecondsBetweenEmissions { get; set; }
+        public float SecondsBetweenEmissions
+        {
+            get => _secondsBetweenEmissions;
+            set
+            {
+                _secondsBetweenEmissions = value;
+                _timeSinceLastEmission = value; // Cause it to trigger immediately
+            }
+        }
 
         public override ParticleTrigger Clone()
         {

@@ -132,7 +132,7 @@ namespace Parme.Net
             for (var index = 0; index < Reservation.Length; index++)
             {
                 timeAliveValues[index] += timeSinceLastFrame;
-                isAlive[index] = isAlive[index] && timeAliveValues[index] > MaxParticleLifetime;
+                isAlive[index] = isAlive[index] && timeAliveValues[index] <= MaxParticleLifetime;
             }
             
             foreach (var modifier in Modifiers)

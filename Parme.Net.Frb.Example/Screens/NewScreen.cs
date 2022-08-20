@@ -31,12 +31,12 @@ namespace Parme.Net.Frb.Example.Screens
             return new EmitterConfig
             {
                 InitialCapacity = 10,
-                MaxParticleLifetime = 5,
+                MaxParticleLifetime = 1,
                 Trigger = new TimeBasedTrigger(random)
                 {
-                    SecondsBetweenEmissions = 0.25f,
-                    MinParticlesToEmit = 1,
-                    MaxParticlesToEmit = 1,
+                    SecondsBetweenEmissions = 0.01f,
+                    MinParticlesToEmit = 0,
+                    MaxParticlesToEmit = 5,
                 },
 
                 Initializers =
@@ -58,29 +58,42 @@ namespace Parme.Net.Frb.Example.Screens
                     
                     new RangedVelocityInitializer(random)
                     {
-                        MinVelocity = new Vector2(50, 50),
-                        MaxVelocity = new Vector2(50, 50),
+                        MinVelocity = new Vector2(0, 100),
+                        MaxVelocity = new Vector2(0, 200),
                     },
                 
                     new RegionalPositionInitializer(random)
                     {
-                        // MinRelativePosition = new Vector2(-25, 25),
-                        // MaxRelativePosition = new Vector2(-20, 20),
+                        MinRelativePosition = new Vector2(-25, -20),
+                        MaxRelativePosition = new Vector2(25, 20),
                     },
                 },
 
                 Modifiers =
                 {
+                    new AccelerationModifier()
+                    {
+                        AccelerationX = 0,
+                        AccelerationY = -75,
+                    },
+                    
+                    new ConstantSizeModifier()
+                    {
+                        WidthChangePerSecond = -5,
+                        HeightChangePerSecond = -5,
+                    },
+                    
                     new EndingColorModifier()
                     {
                         EndingRed = 255,
-                        EndingGreen = 255,
-                        EndingBlue = 255,
-                        EndingAlpha = 255,
+                        EndingGreen = 165,
+                        EndingBlue = 0,
+                        EndingAlpha = 0,
                     },
                     
+                    
                     new Apply2dVelocityModifier(),
-                    new ApplyRotationalVelocityModifier(),
+                    // new ApplyRotationalVelocityModifier(),
                 }
             };
         }

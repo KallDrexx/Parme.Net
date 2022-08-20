@@ -7,10 +7,14 @@ namespace Parme.Net.Initializers
         public byte StartingRed { get; set; }
         public byte StartingGreen { get; set; }
         public byte StartingBlue { get; set; }
-        public float StartingAlpha { get; set; }
+        public byte StartingAlpha { get; set; }
         
         public HashSet<ParticleProperty> PropertiesISet { get; } = new(new[]
         {
+            StandardParmeProperties.InitialRed,
+            StandardParmeProperties.InitialGreen,
+            StandardParmeProperties.InitialBlue,
+            StandardParmeProperties.InitialAlpha,
             StandardParmeProperties.CurrentRed,
             StandardParmeProperties.CurrentGreen,
             StandardParmeProperties.CurrentBlue,
@@ -30,17 +34,25 @@ namespace Parme.Net.Initializers
 
         public void InitializeParticles(ParticleEmitter emitter, ParticleCollection particles, IReadOnlyList<int> newParticleIndices)
         {
-            var red = particles.GetPropertyValues<float>(StandardParmeProperties.CurrentRed.Name);
-            var green = particles.GetPropertyValues<float>(StandardParmeProperties.CurrentGreen.Name);
-            var blue = particles.GetPropertyValues<float>(StandardParmeProperties.CurrentBlue.Name);
-            var alpha = particles.GetPropertyValues<float>(StandardParmeProperties.CurrentAlpha.Name);
+            var initialRed = particles.GetPropertyValues<byte>(StandardParmeProperties.InitialRed.Name);
+            var initialGreen = particles.GetPropertyValues<byte>(StandardParmeProperties.InitialGreen.Name);
+            var initialBlue = particles.GetPropertyValues<byte>(StandardParmeProperties.InitialBlue.Name);
+            var initialAlpha = particles.GetPropertyValues<byte>(StandardParmeProperties.InitialAlpha.Name);
+            var currentRed = particles.GetPropertyValues<float>(StandardParmeProperties.CurrentRed.Name);
+            var currentGreen = particles.GetPropertyValues<float>(StandardParmeProperties.CurrentGreen.Name);
+            var currentBlue = particles.GetPropertyValues<float>(StandardParmeProperties.CurrentBlue.Name);
+            var currentAlpha = particles.GetPropertyValues<float>(StandardParmeProperties.CurrentAlpha.Name);
 
             foreach (var index in newParticleIndices)
             {
-                red[index] = StartingRed;
-                green[index] = StartingGreen;
-                blue[index] = StartingBlue;
-                alpha[index] = (byte)(StartingAlpha * 255);
+                initialRed[index] = StartingRed;
+                initialGreen[index] = StartingGreen;
+                initialBlue[index] = StartingBlue;
+                initialAlpha[index] = StartingAlpha;
+                currentRed[index] = StartingRed;
+                currentGreen[index] = StartingGreen;
+                currentBlue[index] = StartingBlue;
+                currentAlpha[index] = StartingAlpha;
             }
         }
     }

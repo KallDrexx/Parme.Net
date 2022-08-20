@@ -186,6 +186,13 @@ namespace Parme.Net
             Reservation.Dispose();
         }
 
+        public T? GetModifierOfType<T>() where T : class, IParticleModifier
+        {
+            return Modifiers
+                .OfType<T>()
+                .SingleOrDefault();
+        }
+
         private void CreateNewParticles(float timeSinceLastFrame)
         {
             var particlesToCreate = Trigger.DetermineNumberOfParticlesToCreate(this, timeSinceLastFrame);

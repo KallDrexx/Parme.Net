@@ -61,6 +61,8 @@ namespace Parme.Net.Frb.Example
             GlobalContent.Initialize();
             GeneratedInitialize();
 
+            FlatRedBallServices.Game.IsMouseVisible = true;
+
             base.Initialize();
         }
 

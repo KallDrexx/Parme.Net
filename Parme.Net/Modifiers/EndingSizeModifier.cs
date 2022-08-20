@@ -43,8 +43,8 @@ namespace Parme.Net.Modifiers
                 var height = (initialHeight[index] - EndingHeight) / emitter.MaxParticleLifetime *
                              secondsSinceLastUpdate;
 
-                currentWidth[index] -= (int)width;
-                currentHeight[index] -= (int)height;
+                currentWidth[index] -= width;
+                currentHeight[index] -= height;
             }
         }
     }

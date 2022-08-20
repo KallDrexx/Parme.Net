@@ -31,10 +31,10 @@ namespace Parme.Net.Frb.Example.Screens
             return new EmitterConfig
             {
                 InitialCapacity = 10,
-                MaxParticleLifetime = 1,
+                MaxParticleLifetime = 5,
                 Trigger = new TimeBasedTrigger(random)
                 {
-                    SecondsBetweenEmissions = 5f,
+                    SecondsBetweenEmissions = 0.25f,
                     MinParticlesToEmit = 1,
                     MaxParticlesToEmit = 1,
                 },
@@ -47,7 +47,7 @@ namespace Parme.Net.Frb.Example.Screens
                         StartingRed = 255,
                         StartingGreen = 165,
                         StartingBlue = 0,
-                        StartingAlpha = 1,
+                        StartingAlpha = 255,
                     },
 
                     new SizeInitializer(random)
@@ -58,14 +58,29 @@ namespace Parme.Net.Frb.Example.Screens
                     
                     new RangedVelocityInitializer(random)
                     {
-                        MinVelocity = new Vector2(10, 10),
-                        MaxVelocity = new Vector2(100, 100),
+                        MinVelocity = new Vector2(50, 50),
+                        MaxVelocity = new Vector2(50, 50),
+                    },
+                
+                    new RegionalPositionInitializer(random)
+                    {
+                        // MinRelativePosition = new Vector2(-25, 25),
+                        // MaxRelativePosition = new Vector2(-20, 20),
                     },
                 },
 
                 Modifiers =
                 {
+                    new EndingColorModifier()
+                    {
+                        EndingRed = 255,
+                        EndingGreen = 255,
+                        EndingBlue = 255,
+                        EndingAlpha = 255,
+                    },
+                    
                     new Apply2dVelocityModifier(),
+                    new ApplyRotationalVelocityModifier(),
                 }
             };
         }

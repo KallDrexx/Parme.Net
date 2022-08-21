@@ -54,12 +54,12 @@ namespace Parme.Net.Frb.Example.Screens
             return new EmitterConfig
             {
                 InitialCapacity = 10,
-                MaxParticleLifetime = 1,
+                MaxParticleLifetime = 3,
                 Trigger = new TimeBasedTrigger(random)
                 {
                     SecondsBetweenEmissions = 0.01f,
                     MinParticlesToEmit = 0,
-                    MaxParticlesToEmit = 5,
+                    MaxParticlesToEmit = 1,
                 },
 
                 Initializers =
@@ -90,6 +90,12 @@ namespace Parme.Net.Frb.Example.Screens
                         MinRelativePosition = new Vector2(-25, -20),
                         MaxRelativePosition = new Vector2(25, 20),
                     },
+                    
+                    new RotationalVelocityInitializer(random)
+                    {
+                        MinDegreesPerSecond = 2,
+                        MaxDegreesPerSecond = 2,
+                    }
                 },
 
                 Modifiers =
@@ -100,10 +106,10 @@ namespace Parme.Net.Frb.Example.Screens
                         AccelerationY = -75,
                     },
                     
-                    new ConstantSizeModifier()
+                    new EndingSizeModifier()
                     {
-                        WidthChangePerSecond = -5,
-                        HeightChangePerSecond = -5,
+                        EndingWidth = 0,
+                        EndingHeight = 0,
                     },
                     
                     new EndingColorModifier()
@@ -114,8 +120,8 @@ namespace Parme.Net.Frb.Example.Screens
                         EndingAlpha = 0,
                     },
                     
-                    
                     new Apply2dVelocityModifier(),
+                    new ApplyRotationalVelocityModifier(),
                     new RepelFromPointModifier()
                     {
                         Radius = 100,

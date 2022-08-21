@@ -26,6 +26,7 @@
         <PackageReference Include="XamlNameReferenceGenerator" Version="1.3.4" />
     </ItemGroup>
     <ItemGroup>
+      <ProjectReference Include="..\Gum\SkiaGum\SkiaGum.csproj" />
       <ProjectReference Include="..\Parme.Net\Parme.Net.csproj" />
     </ItemGroup>
 </Project>

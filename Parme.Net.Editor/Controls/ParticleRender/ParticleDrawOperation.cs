@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Concurrent;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using Avalonia;
 using Avalonia.Media;
@@ -17,30 +18,29 @@ namespace Parme.Net.Editor.Controls.ParticleRender;
 
 public class ParticleDrawOperation : ICustomDrawOperation
 {
-    private readonly FormattedText _noSkia;
-    private readonly ParticleEmitter _emitter;
+    private readonly FormattedText _noSkiaText;
+    private readonly ParticleAllocator _particleAllocator;
     private readonly SkiaParticleRenderer _particleRenderer;
     private readonly Stopwatch _stopwatch = Stopwatch.StartNew();
     private readonly LineGridRuntime _lineGrid;
+    private readonly ObservableCollection<BindableGraphicalUiElement> _gumElementsInternal = new();
+    private ParticleEmitter? _emitter;
+    private ParticleCollection? _particleCollection;
 
     public Rect Bounds { get; set; }
-    public SystemManagers SystemManagers { get; private set; }
-    private ObservableCollection<BindableGraphicalUiElement> GumElementsInternal { get; set; } = new();
+    public SystemManagers SystemManagers { get; }
+    public ConcurrentQueue<EmitterConfig?> EmitterChanges { get; } = new();
 
-    public ParticleDrawOperation(EmitterConfig config)
+    public ParticleDrawOperation()
     {
-        _noSkia = new FormattedText()
+        _noSkiaText = new FormattedText()
         {
             Text = "Current rendering API is not Skia"
         };
 
-        var allocator = new ParticleAllocator(100);
-        _emitter = new ParticleEmitter(allocator, config);
-
-        var properties = SkiaParticleRenderer.PropertiesIRead;
-        var particleCollection = _emitter.CreateParticleCollection(properties, null);
-
-        _particleRenderer = new SkiaParticleRenderer(particleCollection);
+        _particleAllocator = new ParticleAllocator(100);
+        _particleRenderer = new SkiaParticleRenderer();
+        
         SystemManagers = new SystemManagers();
         SystemManagers.Initialize();
         SystemManagers.Renderer.ClearsCanvas = false;
@@ -57,34 +57,21 @@ public class ParticleDrawOperation : ICustomDrawOperation
             CellHeight = 50,
         };
 
-        GumElementsInternal.Add(_lineGrid);
-    }
-    
-    public void ForceGumLayout()
-    {
-        var wasSuspended = GraphicalUiElement.IsAllLayoutSuspended;
-        GraphicalUiElement.IsAllLayoutSuspended = false;
-        foreach (var item in this.GumElementsInternal)
-        {
-            item.UpdateLayout();
-        }
-        GraphicalUiElement.IsAllLayoutSuspended = wasSuspended;
+        _gumElementsInternal.Add(_lineGrid);
     }
 
     public bool HitTest(Point p) => false;
     public bool Equals(ICustomDrawOperation? other) => false;
 
-    public void Dispose()
-    {
-    }
-
     public void Render(IDrawingContextImpl context)
     {
         var elapsed = _stopwatch.Elapsed.TotalSeconds;
         _stopwatch.Restart();
-        
-        _emitter.Update((float) elapsed);
-        
+
+        // If a new emitter config has been give, swap the emitter to it
+        SwitchToLatestEmitterConfig();
+
+        _emitter?.Update((float)elapsed);
         var canvas = (context as ISkiaDrawingContextImpl)?.SkCanvas;
         if (canvas != null)
         {
@@ -96,16 +83,20 @@ public class ParticleDrawOperation : ICustomDrawOperation
         }
     }
 
+    public void Dispose()
+    {
+    }
+
     private void RenderNonSkiaContext(IDrawingContextImpl context)
     {
-        context.DrawText(Brushes.Black, new Point(), _noSkia.PlatformImpl);
+        context.DrawText(Brushes.Black, new Point(), _noSkiaText.PlatformImpl);
     }
 
     private void RenderSkiaContext(SKCanvas canvas)
     {
         canvas.Save();
         canvas.Clear(SKColors.Black);
-        
+
         SystemManagers.Canvas = canvas;
 
         GraphicalUiElement.CanvasWidth = (float)Bounds.Width / SystemManagers.Renderer.Camera.Zoom;
@@ -128,10 +119,50 @@ public class ParticleDrawOperation : ICustomDrawOperation
 
         ForceGumLayout();
 
-        SystemManagers.Renderer.Draw(this.GumElementsInternal, SystemManagers);
-
-        _particleRenderer.Render(canvas, Bounds);
+        SystemManagers.Renderer.Draw(_gumElementsInternal, SystemManagers);
+        
+        if (_particleCollection != null)
+        {
+            _particleRenderer.Render(canvas, Bounds, _particleCollection);
+        }
 
         canvas.Restore();
+    }
+
+    private void ForceGumLayout()
+    {
+        var wasSuspended = GraphicalUiElement.IsAllLayoutSuspended;
+        GraphicalUiElement.IsAllLayoutSuspended = false;
+        foreach (var item in this._gumElementsInternal)
+        {
+            item.UpdateLayout();
+        }
+
+        GraphicalUiElement.IsAllLayoutSuspended = wasSuspended;
+    }
+
+    private void SwitchToLatestEmitterConfig()
+    {
+        if (EmitterChanges.IsEmpty)
+        {
+            return;
+        }
+
+        _particleCollection = null;
+        _emitter?.Dispose();
+        
+        EmitterConfig? config = null;
+        while (EmitterChanges.TryDequeue(out var nextConfig))
+        {
+            config = nextConfig;
+        }
+
+        if (config != null)
+        {
+            _emitter = new ParticleEmitter(_particleAllocator, config);
+
+            var properties = SkiaParticleRenderer.PropertiesIRead;
+            _particleCollection = _emitter.CreateParticleCollection(properties, null);
+        }
     }
 }

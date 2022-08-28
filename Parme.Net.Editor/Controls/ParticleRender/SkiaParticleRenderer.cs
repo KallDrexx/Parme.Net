@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Avalonia;
 using SkiaSharp;
 
@@ -7,8 +6,6 @@ namespace Parme.Net.Editor.Controls.ParticleRender;
 
 public class SkiaParticleRenderer
 {
-    private readonly ParticleCollection _particleCollection;
-    
     public static HashSet<ParticleProperty> PropertiesIRead { get; } = new(new[]
     {
         StandardParmeProperties.IsAlive,
@@ -24,29 +21,24 @@ public class SkiaParticleRenderer
         StandardParmeProperties.TextureSectionIndex,
     });
 
-    public SkiaParticleRenderer(ParticleCollection particleCollection)
+    public void Render(SKCanvas canvas, Rect bounds, ParticleCollection particleCollection)
     {
-        _particleCollection = particleCollection;
-    }
-
-    public void Render(SKCanvas canvas, Rect bounds)
-    {
-        var isAlive = _particleCollection.GetReadOnlyPropertyValues<bool>(StandardParmeProperties.IsAlive.Name);
-        var positionX = _particleCollection.GetReadOnlyPropertyValues<float>(StandardParmeProperties.PositionX.Name);
-        var positionY = _particleCollection.GetReadOnlyPropertyValues<float>(StandardParmeProperties.PositionY.Name);
-        var width = _particleCollection.GetReadOnlyPropertyValues<float>(StandardParmeProperties.CurrentWidth.Name);
-        var height = _particleCollection.GetReadOnlyPropertyValues<float>(StandardParmeProperties.CurrentHeight.Name);
-        var red = _particleCollection.GetReadOnlyPropertyValues<float>(StandardParmeProperties.CurrentRed.Name);
-        var green = _particleCollection.GetReadOnlyPropertyValues<float>(StandardParmeProperties.CurrentGreen.Name);
-        var blue = _particleCollection.GetReadOnlyPropertyValues<float>(StandardParmeProperties.CurrentBlue.Name);
-        var alpha = _particleCollection.GetReadOnlyPropertyValues<float>(StandardParmeProperties.CurrentAlpha.Name);
+        var isAlive = particleCollection.GetReadOnlyPropertyValues<bool>(StandardParmeProperties.IsAlive.Name);
+        var positionX = particleCollection.GetReadOnlyPropertyValues<float>(StandardParmeProperties.PositionX.Name);
+        var positionY = particleCollection.GetReadOnlyPropertyValues<float>(StandardParmeProperties.PositionY.Name);
+        var width = particleCollection.GetReadOnlyPropertyValues<float>(StandardParmeProperties.CurrentWidth.Name);
+        var height = particleCollection.GetReadOnlyPropertyValues<float>(StandardParmeProperties.CurrentHeight.Name);
+        var red = particleCollection.GetReadOnlyPropertyValues<float>(StandardParmeProperties.CurrentRed.Name);
+        var green = particleCollection.GetReadOnlyPropertyValues<float>(StandardParmeProperties.CurrentGreen.Name);
+        var blue = particleCollection.GetReadOnlyPropertyValues<float>(StandardParmeProperties.CurrentBlue.Name);
+        var alpha = particleCollection.GetReadOnlyPropertyValues<float>(StandardParmeProperties.CurrentAlpha.Name);
         var rotation =
-            _particleCollection.GetReadOnlyPropertyValues<float>(StandardParmeProperties.RotationInRadians.Name);
+            particleCollection.GetReadOnlyPropertyValues<float>(StandardParmeProperties.RotationInRadians.Name);
 
         var center = bounds.Center;
         var paint = new SKPaint();
 
-        for (var index = 0; index < _particleCollection.Count; index++)
+        for (var index = 0; index < particleCollection.Count; index++)
         {
             if (!isAlive[index])
             {

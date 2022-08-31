@@ -4,12 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:Parme.Net.Editor.ViewModels"
              xmlns:controls="clr-namespace:Parme.Net.Editor.Controls.ParticleRender"
-             xmlns:views="clr-namespace:Parme.Net.Editor.Views"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Parme.Net.Editor.Views.EmitterRenderView">
     
-    <!-- <UserControl.DataContext><vm:EmitterRenderViewModel /></UserControl.DataContext> -->
-    
-    <controls:ParticleRenderControl TestEmitterConfig="{Binding CurrentEmitterConfig}"/>
-    
+    <UserControl.DataContext><vm:EmitterRenderViewModel /></UserControl.DataContext>
+    <Grid ColumnDefinitions="*" RowDefinitions="Auto,*">
+        <TextBox Grid.Row="0" Text="{Binding Test}" />
+        <controls:ParticleRenderControl 
+            TestEmitterConfig="{Binding CurrentEmitterConfig}"
+            Grid.Row="1" />
+    </Grid>
 </UserControl>

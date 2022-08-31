@@ -8,7 +8,5 @@ public partial class EmitterRenderView : UserControl
     public EmitterRenderView()
     {
         InitializeComponent();
-
-        DataContext = new EmitterRenderViewModel();
     }
 }

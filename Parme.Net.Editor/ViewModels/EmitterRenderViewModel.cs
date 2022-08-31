@@ -1,21 +1,34 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Numerics;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
+using Parme.Net.Editor.Messages;
 using Parme.Net.Initializers;
 using Parme.Net.Modifiers;
 using Parme.Net.Triggers;
 
 namespace Parme.Net.Editor.ViewModels;
 
-public partial class EmitterRenderViewModel : ObservableObject
+public partial class EmitterRenderViewModel : ObservableObject, IRecipient<EmitterConfigChangedMessage>
 {
     [ObservableProperty] private EmitterConfig? currentEmitterConfig;
+    [ObservableProperty] private string? test;
 
     public EmitterRenderViewModel()
     {
         currentEmitterConfig = CreateTestEmitterConfig();
+        
+        PropertyChanged += OnPropertyChanged;
+        
+        WeakReferenceMessenger.Default.Register(this);
     }
-    
+
+    private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        WeakReferenceMessenger.Default.Send(new TestMessage(test));
+    }
+
     private static EmitterConfig CreateTestEmitterConfig()
     {
         var random = new Random();
@@ -92,5 +105,10 @@ public partial class EmitterRenderViewModel : ObservableObject
                 new ApplyRotationalVelocityModifier(),
             }
         };
+    }
+
+    public void Receive(EmitterConfigChangedMessage message)
+    {
+        
     }
 }

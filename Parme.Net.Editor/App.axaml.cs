@@ -1,21 +1,17 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using CommunityToolkit.Mvvm.Messaging;
-using Parme.Net.Editor.Messages;
+using Parme.Net.Editor.EmitterManagement;
 
 namespace Parme.Net.Editor
 {
     public partial class App : Application
     {
-        private TestReceiver _receiver;
+        private readonly CurrentEmitterManager _currentEmitterManager = new();
         
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
-
-            _receiver = new TestReceiver();
-            WeakReferenceMessenger.Default.Register(_receiver);
         }
 
         public override void OnFrameworkInitializationCompleted()
@@ -26,14 +22,6 @@ namespace Parme.Net.Editor
             }
 
             base.OnFrameworkInitializationCompleted();
-        }
-    }
-
-    public class TestReceiver : IRecipient<TestMessage>
-    {
-        public void Receive(TestMessage message)
-        {
-            WeakReferenceMessenger.Default.Send(new EmitterConfigChangedMessage(null));
         }
     }
 }

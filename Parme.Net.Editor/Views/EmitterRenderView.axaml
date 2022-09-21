@@ -9,7 +9,6 @@
     
     <UserControl.DataContext><vm:EmitterRenderViewModel /></UserControl.DataContext>
     <Grid ColumnDefinitions="*" RowDefinitions="Auto,*">
-        <TextBox Grid.Row="0" Text="{Binding Test}" />
         <controls:ParticleRenderControl 
             TestEmitterConfig="{Binding CurrentEmitterConfig}"
             Grid.Row="1" />

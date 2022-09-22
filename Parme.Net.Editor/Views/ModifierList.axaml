@@ -1,0 +1,29 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vms="clr-namespace:Parme.Net.Editor.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Parme.Net.Editor.Views.ModifierList">
+    
+    <UserControl.DataContext><vms:ModifierListViewModel /></UserControl.DataContext>
+    <StackPanel Orientation="Vertical">
+            <TextBlock Text="Modifiers" />
+            <StackPanel Orientation="Horizontal">
+                <Button>Add</Button>
+                <Button IsEnabled="{Binding HasItemSelected}">Remove</Button>
+                <Button IsEnabled="{Binding HasItemSelected}">Move Up</Button>
+                <Button IsEnabled="{Binding HasItemSelected}">Move Down</Button>
+            </StackPanel>
+            
+            <ListBox Height="200" 
+                     Items="{Binding Items}" 
+                     SelectedItem="{Binding SelectedItem}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding DisplayText}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+    </StackPanel>
+</UserControl>

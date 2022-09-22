@@ -3,9 +3,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:Parme.Net.Editor.Views"
+        xmlns:vm="clr-namespace:Parme.Net.Editor.ViewModels"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Parme.Net.Editor.MainWindow"
         Title="Parme.Net.Editor">
         
-        <views:EmitterRenderView />
+        <DockPanel>
+                <views:Workbench DockPanel.Dock="Top" />
+                <views:EmitterRenderView />
+        </DockPanel>
 </Window>

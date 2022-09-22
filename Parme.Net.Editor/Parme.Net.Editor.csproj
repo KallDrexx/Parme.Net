@@ -31,9 +31,6 @@
       <ProjectReference Include="..\Parme.Net\Parme.Net.csproj" />
     </ItemGroup>
     <ItemGroup>
-      <Folder Include="Views" />
-    </ItemGroup>
-    <ItemGroup>
       <Compile Update="Views\EmitterRenderView.axaml.cs">
         <DependentUpon>EmitterRenderView.axaml</DependentUpon>
       </Compile>

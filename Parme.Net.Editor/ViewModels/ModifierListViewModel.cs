@@ -11,6 +11,8 @@ namespace Parme.Net.Editor.ViewModels;
 
 public partial class ModifierListViewModel : ObservableObject, IRecipient<ModifiersChangedMessage>
 {
+    public record Item(Guid Id, string DisplayText);
+    
     private bool _isUpdating;
 
     [ObservableProperty] [NotifyPropertyChangedFor(nameof(HasItemSelected))] private Item? _selectedItem;
@@ -64,5 +66,4 @@ public partial class ModifierListViewModel : ObservableObject, IRecipient<Modifi
         }
     }
 
-    public record Item(Guid Id, string DisplayText);
 }

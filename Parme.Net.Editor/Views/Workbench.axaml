@@ -7,6 +7,7 @@
              x:Class="Parme.Net.Editor.Views.Workbench">
 
     <StackPanel Orientation="Horizontal">
+        <views:InitializerList />
         <views:ModifierList />
     </StackPanel>
 </UserControl>

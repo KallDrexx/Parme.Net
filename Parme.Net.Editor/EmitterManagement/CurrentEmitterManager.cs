@@ -20,7 +20,8 @@ public record EmitterSettings(int? InitialCapacity, float MaxParticleLifetime);
 
 public class CurrentEmitterManager : 
     IRecipient<CurrentEmitterConfigRequestMessage>,
-    IRecipient<CurrentModifiersRequestMessage>
+    IRecipient<CurrentModifiersRequestMessage>,
+    IRecipient<CurrentInitializersRequestMessage>
 {
     private EmitterSettings _settings;
     private TaggedTrigger? _trigger;
@@ -52,6 +53,9 @@ public class CurrentEmitterManager :
 
         WeakReferenceMessenger.Default
             .Send(new ModifiersChangedMessage(_modifiers.ToArray()));
+
+        WeakReferenceMessenger.Default
+            .Send(new InitializersChangedMessage(_initializers.ToArray()));
     }
 
     private EmitterConfig FormEmitterConfig()
@@ -84,6 +88,11 @@ public class CurrentEmitterManager :
     public void Receive(CurrentModifiersRequestMessage message)
     {
         message.Reply(_modifiers.ToArray());
+    }
+
+    public void Receive(CurrentInitializersRequestMessage message)
+    {
+        message.Reply(_initializers.ToArray());
     }
 
     private static EmitterConfig CreateTestEmitterConfig()

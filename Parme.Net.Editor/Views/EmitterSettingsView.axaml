@@ -1,0 +1,30 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vms="clr-namespace:Parme.Net.Editor.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Parme.Net.Editor.Views.EmitterSettingsView">
+    
+    <UserControl.DataContext><vms:EmitterSettingsViewModel /></UserControl.DataContext>
+    <StackPanel Orientation="Vertical">
+            <TextBlock Text="Settings" />
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Initial Capacity:" />
+                <TextBox Text="{Binding InitialCapacity}"/>
+            </StackPanel>
+            
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Max Lifetime:" />
+                <TextBox Text="{Binding MaxParticleLifetime}" />
+            </StackPanel>
+            
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="Trigger:" />
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{Binding TriggerDescription}" />
+                    <Button>Update</Button>
+                </StackPanel>
+            </StackPanel>
+    </StackPanel>
+</UserControl>

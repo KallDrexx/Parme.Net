@@ -10,29 +10,29 @@ using Parme.Net.Triggers;
 
 namespace Parme.Net.Editor.EmitterManagement;
 
-public record TaggedTrigger(Guid Id, ParticleTrigger Trigger);
-
 public record TaggedInitializer(Guid Id, IParticleInitializer Initializer, bool IsEnabled = true);
 
 public record TaggedModifier(Guid Id, IParticleModifier Modifier, bool IsEnabled = true);
 
-public record EmitterSettings(int? InitialCapacity, float MaxParticleLifetime);
+public record EmitterSettings(int InitialCapacity, float MaxParticleLifetime);
 
 public class CurrentEmitterManager : 
     IRecipient<CurrentEmitterConfigRequestMessage>,
     IRecipient<CurrentModifiersRequestMessage>,
-    IRecipient<CurrentInitializersRequestMessage>
+    IRecipient<CurrentInitializersRequestMessage>,
+    IRecipient<CurrentTriggerRequest>,
+    IRecipient<CurrentEmitterSettingsRequest>
 {
     private EmitterSettings _settings;
-    private TaggedTrigger? _trigger;
+    private ParticleTrigger? _trigger;
     private readonly List<TaggedInitializer> _initializers = new();
     private readonly List<TaggedModifier> _modifiers = new();
 
     public CurrentEmitterManager()
     {
         var config = CreateTestEmitterConfig();
-        _settings = new EmitterSettings(config.InitialCapacity, config.MaxParticleLifetime);
-        _trigger = new TaggedTrigger(Guid.NewGuid(), config.Trigger.Clone());
+        _settings = new EmitterSettings(config.InitialCapacity ?? 0, config.MaxParticleLifetime);
+        _trigger = config.Trigger?.Clone();
         _initializers.AddRange(config.Initializers
             .Select(x => new TaggedInitializer(Guid.NewGuid(), x.Clone())));
         
@@ -64,7 +64,7 @@ public class CurrentEmitterManager :
         {
             InitialCapacity = _settings.InitialCapacity,
             MaxParticleLifetime = _settings.MaxParticleLifetime,
-            Trigger = _trigger?.Trigger.Clone()
+            Trigger = _trigger?.Clone()
         };
 
         emitterConfig.Initializers.AddRange(_initializers
@@ -93,6 +93,16 @@ public class CurrentEmitterManager :
     public void Receive(CurrentInitializersRequestMessage message)
     {
         message.Reply(_initializers.ToArray());
+    }
+
+    public void Receive(CurrentTriggerRequest message)
+    {
+        message.Reply(_trigger?.Clone());
+    }
+
+    public void Receive(CurrentEmitterSettingsRequest message)
+    {
+        message.Reply(_settings);
     }
 
     private static EmitterConfig CreateTestEmitterConfig()

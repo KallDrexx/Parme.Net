@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using Parme.Net.Editor.EmitterManagement;
@@ -9,7 +10,10 @@ using Parme.Net.Editor.Messages;
 
 namespace Parme.Net.Editor.ViewModels;
 
-public partial class ModifierListViewModel : ObservableObject, IRecipient<ModifiersChangedMessage>
+public partial class ModifierListViewModel : ObservableObject, 
+    IRecipient<ModifiersChangedMessage>,
+    IRecipient<ItemSelectedMessage>,
+    IRecipient<TriggerSelectedMessage>
 {
     public record Item(Guid Id, string DisplayText);
     
@@ -24,7 +28,7 @@ public partial class ModifierListViewModel : ObservableObject, IRecipient<Modifi
     public ModifierListViewModel()
     {
         PropertyChanged += OnPropertyChanged;
-        WeakReferenceMessenger.Default.Register(this);
+        WeakReferenceMessenger.Default.RegisterAll(this);
         
         var modifiers = WeakReferenceMessenger.Default.Send(new CurrentModifiersRequestMessage());
         UpdateItems(modifiers.Response);
@@ -33,6 +37,23 @@ public partial class ModifierListViewModel : ObservableObject, IRecipient<Modifi
     public void Receive(ModifiersChangedMessage message)
     {
         UpdateItems(message.Value);
+    }
+
+    public void Receive(ItemSelectedMessage message)
+    {
+        if (_isUpdating)
+        {
+            return;
+        }
+
+        _isUpdating = true;
+        SelectedItem = Items.FirstOrDefault(x => x.Id == message.Value);
+        _isUpdating = false;
+    }
+
+    public void Receive(TriggerSelectedMessage message)
+    {
+        SelectedItem = null;
     }
 
     private void UpdateItems(IReadOnlyList<TaggedModifier> modifiers)
@@ -64,6 +85,14 @@ public partial class ModifierListViewModel : ObservableObject, IRecipient<Modifi
         {
             return;
         }
-    }
 
+        _isUpdating = true;
+        switch (e.PropertyName)
+        {
+            case nameof(SelectedItem):
+                WeakReferenceMessenger.Default.Send(new ItemSelectedMessage(SelectedItem?.Id));
+                break;
+        }
+        _isUpdating = false;
+    }
 }

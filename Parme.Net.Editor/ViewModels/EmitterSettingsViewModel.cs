@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel;
+using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Parme.Net.Editor.EmitterManagement;
 using Parme.Net.Editor.Messages;
@@ -16,9 +18,16 @@ public partial class EmitterSettingsViewModel : ObservableObject,
     [ObservableProperty] private float _maxParticleLifetime;
     [ObservableProperty] private string _triggerDescription = "";
     
+    public ICommand SelectTriggerCommand { get; }
+    
     public EmitterSettingsViewModel()
     {
         PropertyChanged += OnPropertyChanged;
+        SelectTriggerCommand = new RelayCommand(() =>
+        {
+            WeakReferenceMessenger.Default.Send(new TriggerSelectedMessage(null));
+        });
+        
         WeakReferenceMessenger.Default.RegisterAll(this);
 
         var trigger = WeakReferenceMessenger.Default.Send<CurrentTriggerRequest>();

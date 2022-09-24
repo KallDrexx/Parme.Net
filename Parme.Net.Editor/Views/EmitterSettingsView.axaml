@@ -19,7 +19,7 @@
                 <TextBlock Text="Trigger:" />
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="{Binding TriggerDescription}" />
-                    <Button>Update</Button>
+                    <Button Command="{Binding SelectTriggerCommand}">Update</Button>
                 </StackPanel>
             </StackPanel>
     </StackPanel>

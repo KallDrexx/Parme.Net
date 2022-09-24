@@ -14,14 +14,15 @@ public record TaggedInitializer(Guid Id, IParticleInitializer Initializer, bool 
 
 public record TaggedModifier(Guid Id, IParticleModifier Modifier, bool IsEnabled = true);
 
-public record EmitterSettings(int InitialCapacity, float MaxParticleLifetime);
+public record EmitterSettings(float MaxParticleLifetime);
 
 public class CurrentEmitterManager : 
     IRecipient<CurrentEmitterConfigRequestMessage>,
     IRecipient<CurrentModifiersRequestMessage>,
     IRecipient<CurrentInitializersRequestMessage>,
     IRecipient<CurrentTriggerRequest>,
-    IRecipient<CurrentEmitterSettingsRequest>
+    IRecipient<CurrentEmitterSettingsRequest>,
+    IRecipient<UpdatedEmitterSettings>
 {
     private EmitterSettings _settings;
     private ParticleTrigger? _trigger;
@@ -31,7 +32,7 @@ public class CurrentEmitterManager :
     public CurrentEmitterManager()
     {
         var config = CreateTestEmitterConfig();
-        _settings = new EmitterSettings(config.InitialCapacity ?? 0, config.MaxParticleLifetime);
+        _settings = new EmitterSettings(config.MaxParticleLifetime);
         _trigger = config.Trigger?.Clone();
         _initializers.AddRange(config.Initializers
             .Select(x => new TaggedInitializer(Guid.NewGuid(), x.Clone())));
@@ -42,41 +43,6 @@ public class CurrentEmitterManager :
         EmitterConfigUpdated();
         
         WeakReferenceMessenger.Default.RegisterAll(this);
-    }
-    
-    private void EmitterConfigUpdated()
-    {
-        var emitterConfig = FormEmitterConfig();
-
-        WeakReferenceMessenger.Default
-            .Send(new EmitterConfigChangedMessage(emitterConfig));
-
-        WeakReferenceMessenger.Default
-            .Send(new ModifiersChangedMessage(_modifiers.ToArray()));
-
-        WeakReferenceMessenger.Default
-            .Send(new InitializersChangedMessage(_initializers.ToArray()));
-    }
-
-    private EmitterConfig FormEmitterConfig()
-    {
-        var emitterConfig = new EmitterConfig
-        {
-            InitialCapacity = _settings.InitialCapacity,
-            MaxParticleLifetime = _settings.MaxParticleLifetime,
-            Trigger = _trigger?.Clone()
-        };
-
-        emitterConfig.Initializers.AddRange(_initializers
-            .Where(x => x.IsEnabled)
-            .Select(x => x.Initializer.Clone())
-            .ToArray());
-
-        emitterConfig.Modifiers.AddRange(_modifiers
-            .Where(x => x.IsEnabled)
-            .Select(x => x.Modifier.Clone())
-            .ToArray());
-        return emitterConfig;
     }
 
     public void Receive(CurrentEmitterConfigRequestMessage message)
@@ -103,6 +69,12 @@ public class CurrentEmitterManager :
     public void Receive(CurrentEmitterSettingsRequest message)
     {
         message.Reply(_settings);
+    }
+
+    public void Receive(UpdatedEmitterSettings message)
+    {
+        _settings = message.Value;
+        EmitterConfigUpdated();
     }
 
     private static EmitterConfig CreateTestEmitterConfig()
@@ -181,5 +153,40 @@ public class CurrentEmitterManager :
                 new ApplyRotationalVelocityModifier(),
             }
         };
+    }
+    
+    private void EmitterConfigUpdated()
+    {
+        var emitterConfig = FormEmitterConfig();
+
+        WeakReferenceMessenger.Default
+            .Send(new EmitterConfigChangedMessage(emitterConfig));
+
+        WeakReferenceMessenger.Default
+            .Send(new ModifiersChangedMessage(_modifiers.ToArray()));
+
+        WeakReferenceMessenger.Default
+            .Send(new InitializersChangedMessage(_initializers.ToArray()));
+    }
+
+    private EmitterConfig FormEmitterConfig()
+    {
+        var emitterConfig = new EmitterConfig
+        {
+            InitialCapacity = 50,
+            MaxParticleLifetime = _settings.MaxParticleLifetime,
+            Trigger = _trigger?.Clone()
+        };
+
+        emitterConfig.Initializers.AddRange(_initializers
+            .Where(x => x.IsEnabled)
+            .Select(x => x.Initializer.Clone())
+            .ToArray());
+
+        emitterConfig.Modifiers.AddRange(_modifiers
+            .Where(x => x.IsEnabled)
+            .Select(x => x.Modifier.Clone())
+            .ToArray());
+        return emitterConfig;
     }
 }

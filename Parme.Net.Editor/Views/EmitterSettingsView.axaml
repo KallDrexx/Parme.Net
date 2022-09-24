@@ -9,10 +9,6 @@
     <UserControl.DataContext><vms:EmitterSettingsViewModel /></UserControl.DataContext>
     <StackPanel Orientation="Vertical">
             <TextBlock Text="Settings" />
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Initial Capacity:" />
-                <TextBox Text="{Binding InitialCapacity}"/>
-            </StackPanel>
             
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Max Lifetime:" />

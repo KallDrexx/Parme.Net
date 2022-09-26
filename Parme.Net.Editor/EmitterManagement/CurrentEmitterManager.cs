@@ -20,9 +20,11 @@ public class CurrentEmitterManager :
     IRecipient<CurrentEmitterConfigRequestMessage>,
     IRecipient<CurrentModifiersRequestMessage>,
     IRecipient<CurrentInitializersRequestMessage>,
-    IRecipient<CurrentTriggerRequest>,
+    IRecipient<GetCurrentTriggerRequest>,
     IRecipient<CurrentEmitterSettingsRequest>,
-    IRecipient<UpdatedEmitterSettings>
+    IRecipient<UpdatedEmitterSettings>,
+    IRecipient<GetModifierDetailsRequest>,
+    IRecipient<GetInitializerDetailsRequest>
 {
     private EmitterSettings _settings;
     private ParticleTrigger? _trigger;
@@ -61,7 +63,7 @@ public class CurrentEmitterManager :
         message.Reply(_initializers.ToArray());
     }
 
-    public void Receive(CurrentTriggerRequest message)
+    public void Receive(GetCurrentTriggerRequest message)
     {
         message.Reply(_trigger?.Clone());
     }
@@ -75,6 +77,18 @@ public class CurrentEmitterManager :
     {
         _settings = message.Value;
         EmitterConfigUpdated();
+    }
+
+    public void Receive(GetModifierDetailsRequest message)
+    {
+        var modifier = _modifiers.SingleOrDefault(x => x.Id == message.ItemId);
+        message.Reply(modifier);
+    }
+
+    public void Receive(GetInitializerDetailsRequest message)
+    {
+        var initializer = _initializers.SingleOrDefault(x => x.Id == message.ItemId);
+        message.Reply(initializer);
     }
 
     private static EmitterConfig CreateTestEmitterConfig()

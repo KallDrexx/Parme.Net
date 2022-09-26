@@ -3,7 +3,7 @@ using Parme.Net.Triggers;
 
 namespace Parme.Net.Editor.Messages;
 
-public class CurrentTriggerRequest : RequestMessage<ParticleTrigger?>
+public class GetCurrentTriggerRequest : RequestMessage<ParticleTrigger?>
 {
     
 }

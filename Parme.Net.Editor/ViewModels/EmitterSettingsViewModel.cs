@@ -30,7 +30,7 @@ public partial class EmitterSettingsViewModel : ObservableObject,
         
         WeakReferenceMessenger.Default.RegisterAll(this);
 
-        var trigger = WeakReferenceMessenger.Default.Send<CurrentTriggerRequest>();
+        var trigger = WeakReferenceMessenger.Default.Send<GetCurrentTriggerRequest>();
         var settings = WeakReferenceMessenger.Default.Send<CurrentEmitterSettingsRequest>();
         
         UpdateTrigger(trigger.Response);

@@ -1,6 +1,10 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.Linq;
+using System.Reflection;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using Parme.Net.Editor.Messages;
+using Parme.Net.Editor.ViewModels.ItemProperties;
 using Parme.Net.Initializers;
 using Parme.Net.Modifiers;
 using Parme.Net.Triggers;
@@ -14,6 +18,8 @@ public partial class ItemEditorViewModel : ObservableObject,
     private const string NoItemSelected = "<No Item Selected>";
 
     [ObservableProperty] private string _itemName = NoItemSelected;
+
+    public ObservableCollection<ItemProperty> ItemProperties { get; } = new();
 
     public ItemEditorViewModel()
     {
@@ -56,15 +62,35 @@ public partial class ItemEditorViewModel : ObservableObject,
     private void UpdateFromTrigger(ParticleTrigger trigger)
     {
         ItemName = trigger.GetType().Name;
+        UpdateItemProperties(trigger);
     }
 
     private void UpdateFromModifier(IParticleModifier modifier)
     {
         ItemName = modifier.GetType().Name;
+        UpdateItemProperties(modifier);
     }
 
     private void UpdateFromInitializer(IParticleInitializer initializer)
     {
         ItemName = initializer.GetType().Name;
+        UpdateItemProperties(initializer);
+    }
+
+    private void UpdateItemProperties(object obj)
+    {
+        var properties = obj.GetType()
+            .GetProperties(BindingFlags.Instance | BindingFlags.Public)
+            .Where(x => x.Name != "PropertiesIRead")
+            .Where(x => x.Name != "PropertiesIUpdate")
+            .Where(x => x.Name != "PropertiesISet")
+            .Select(x => new NonEditableProperty(x.Name, x.GetValue(obj)?.ToString()))
+            .ToArray();
+        
+        ItemProperties.Clear();
+        foreach (var property in properties)
+        {
+            ItemProperties.Add(property);
+        }
     }
 }

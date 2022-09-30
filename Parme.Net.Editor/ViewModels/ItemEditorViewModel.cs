@@ -1,10 +1,12 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
+using Parme.Net.Editor.EmitterManagement;
 using Parme.Net.Editor.Messages;
-using Parme.Net.Editor.ViewModels.ItemProperties;
+using Parme.Net.Editor.ViewModels.ItemPropertyFields;
 using Parme.Net.Initializers;
 using Parme.Net.Modifiers;
 using Parme.Net.Triggers;
@@ -19,7 +21,7 @@ public partial class ItemEditorViewModel : ObservableObject,
 
     [ObservableProperty] private string _itemName = NoItemSelected;
 
-    public ObservableCollection<ItemProperty> ItemProperties { get; } = new();
+    public ObservableCollection<ItemPropertyField> ItemProperties { get; } = new();
 
     public ItemEditorViewModel()
     {
@@ -35,14 +37,14 @@ public partial class ItemEditorViewModel : ObservableObject,
             var modifier = WeakReferenceMessenger.Default.Send(new GetModifierDetailsRequest(message.Value.Value));
             if (modifier.Response != null)
             {
-                UpdateFromModifier(modifier.Response.Modifier);
+                UpdateFromModifier(modifier.Response);
             }
             else
             {
                 var initializer = WeakReferenceMessenger.Default.Send(new GetInitializerDetailsRequest(message.Value.Value));
                 if (initializer.Response != null)
                 {
-                    UpdateFromInitializer(initializer.Response.Initializer);
+                    UpdateFromInitializer(initializer.Response);
                 }
             }
         }
@@ -62,32 +64,39 @@ public partial class ItemEditorViewModel : ObservableObject,
     private void UpdateFromTrigger(ParticleTrigger trigger)
     {
         ItemName = trigger.GetType().Name;
-        UpdateItemProperties(trigger);
+        UpdateItemProperties(trigger, null);
     }
 
-    private void UpdateFromModifier(IParticleModifier modifier)
+    private void UpdateFromModifier(TaggedModifier item)
     {
-        ItemName = modifier.GetType().Name;
-        UpdateItemProperties(modifier);
+        ItemName = item.Modifier.GetType().Name;
+        UpdateItemProperties(item.Modifier, item.Id);
     }
 
-    private void UpdateFromInitializer(IParticleInitializer initializer)
+    private void UpdateFromInitializer(TaggedInitializer item)
     {
-        ItemName = initializer.GetType().Name;
-        UpdateItemProperties(initializer);
+        ItemName = item.Initializer.GetType().Name;
+        UpdateItemProperties(item.Initializer, item.Id);
     }
 
-    private void UpdateItemProperties(object obj)
+    private void UpdateItemProperties(object obj, Guid? itemId)
     {
+        foreach (var property in ItemProperties)
+        {
+            property.Dispose();
+        }
+        
+        ItemProperties.Clear();
+        
+        var selector = new ItemPropertyFieldSelector();
         var properties = obj.GetType()
             .GetProperties(BindingFlags.Instance | BindingFlags.Public)
             .Where(x => x.Name != "PropertiesIRead")
             .Where(x => x.Name != "PropertiesIUpdate")
             .Where(x => x.Name != "PropertiesISet")
-            .Select(x => new NonEditableProperty(x.Name, x.GetValue(obj)?.ToString()))
+            .Select(x => selector.GetItemProperty(obj, x, itemId))
             .ToArray();
         
-        ItemProperties.Clear();
         foreach (var property in properties)
         {
             ItemProperties.Add(property);

@@ -7,6 +7,7 @@ namespace Parme.Net.Editor
 {
     public partial class App : Application
     {
+        // ReSharper disable once UnusedMember.Local
         private readonly CurrentEmitterManager _currentEmitterManager = new();
         
         public override void Initialize()

@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vms="clr-namespace:Parme.Net.Editor.ViewModels"
-             xmlns:props="clr-namespace:Parme.Net.Editor.ViewModels.ItemProperties"
+             xmlns:props="clr-namespace:Parme.Net.Editor.ViewModels.ItemPropertyFields"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Parme.Net.Editor.Views.ItemEditorView">
     
@@ -12,7 +12,31 @@
         <TextBlock Text="{Binding ItemName}" />
         <ItemsControl Items="{Binding ItemProperties}">
             <ItemsControl.DataTemplates>
-                <DataTemplate DataType="{x:Type props:NonEditableProperty}">
+                <DataTemplate DataType="{x:Type props:ByteInputField}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding PropertyName}" />
+                        <TextBlock Text=": " />
+                        <TextBox Text="{Binding Value}"></TextBox>
+                    </StackPanel>
+                </DataTemplate>
+                
+                <DataTemplate DataType="{x:Type props:IntInputField}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding PropertyName}" />
+                        <TextBlock Text=": " />
+                        <TextBox Text="{Binding Value}"></TextBox>
+                    </StackPanel>
+                </DataTemplate>
+                
+                <DataTemplate DataType="{x:Type props:FloatInputField}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding PropertyName}" />
+                        <TextBlock Text=": " />
+                        <TextBox Text="{Binding Value}"></TextBox>
+                    </StackPanel>
+                </DataTemplate>
+                
+                <DataTemplate DataType="{x:Type props:NonEditablePropertyField}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="{Binding PropertyName}" />
                         <TextBlock Text=": " />

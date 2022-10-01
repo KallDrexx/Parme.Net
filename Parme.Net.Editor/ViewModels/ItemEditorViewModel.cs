@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -7,8 +8,6 @@ using CommunityToolkit.Mvvm.Messaging;
 using Parme.Net.Editor.EmitterManagement;
 using Parme.Net.Editor.Messages;
 using Parme.Net.Editor.ViewModels.ItemPropertyFields;
-using Parme.Net.Initializers;
-using Parme.Net.Modifiers;
 using Parme.Net.Triggers;
 
 namespace Parme.Net.Editor.ViewModels;
@@ -21,13 +20,16 @@ public partial class ItemEditorViewModel : ObservableObject,
 
     [ObservableProperty] private string _itemName = NoItemSelected;
 
+    public bool HasNoProperties => _itemName != NoItemSelected && ItemProperties.Count == 0;
     public ObservableCollection<ItemPropertyField> ItemProperties { get; } = new();
 
     public ItemEditorViewModel()
     {
         WeakReferenceMessenger.Default.RegisterAll(this);
+
+        ItemProperties.CollectionChanged += (sender, args) => OnPropertyChanged(nameof(HasNoProperties));
     }
-    
+
     public void Receive(ItemSelectedMessage message)
     {
         ItemName = NoItemSelected;

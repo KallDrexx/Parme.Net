@@ -62,5 +62,7 @@
                 </DataTemplate>
             </ItemsControl.DataTemplates>
         </ItemsControl>
+        
+        <TextBlock Text="&lt;No Editable Properties&gt;" IsVisible="{Binding HasNoProperties}" />
     </StackPanel>
 </UserControl>

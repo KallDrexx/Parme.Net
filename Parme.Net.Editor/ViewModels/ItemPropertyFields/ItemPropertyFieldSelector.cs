@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Reflection;
 
 namespace Parme.Net.Editor.ViewModels.ItemPropertyFields;
@@ -11,6 +12,7 @@ public class ItemPropertyFieldSelector
         { typeof(byte), (o, p, g) => new ByteInputField(p, o, g) },
         { typeof(int), (o, p, g) => new IntInputField(o, p, g) },
         { typeof(float), (o, p, g) => new FloatInputField(o, p, g) },
+        { typeof(Vector2), (o, p, g) => new Vector2InputField(o, p, g) },
     };
     
     public ItemPropertyField GetItemProperty(object instance, PropertyInfo property, Guid? itemId)

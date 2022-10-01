@@ -36,6 +36,23 @@
                     </StackPanel>
                 </DataTemplate>
                 
+                <DataTemplate DataType="{x:Type props:Vector2InputField}">
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding PropertyName}" />
+                            <TextBlock Text=": " />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="    X:" />
+                            <TextBox Text="{Binding X}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="    Y:" />
+                            <TextBox Text="{Binding Y}" />
+                        </StackPanel>
+                    </StackPanel>
+                </DataTemplate>
+                
                 <DataTemplate DataType="{x:Type props:NonEditablePropertyField}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="{Binding PropertyName}" />

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -8,6 +9,8 @@ using CommunityToolkit.Mvvm.Messaging;
 using Parme.Net.Editor.EmitterManagement;
 using Parme.Net.Editor.Messages;
 using Parme.Net.Editor.ViewModels.ItemPropertyFields;
+using Parme.Net.Initializers;
+using Parme.Net.Modifiers;
 using Parme.Net.Triggers;
 
 namespace Parme.Net.Editor.ViewModels;
@@ -16,23 +19,38 @@ public partial class ItemEditorViewModel : ObservableObject,
     IRecipient<ItemSelectedMessage>,
     IRecipient<TriggerSelectedMessage>
 {
-    private const string NoItemSelected = "<No Item Selected>";
+    private readonly KnownBehaviors _knownBehaviors = new();
+    private object? _currentObject;
+    private Guid? _currentItemId;
+    private bool _isUpdating;
+    
+    [ObservableProperty] private Type? _selectedType;
 
-    [ObservableProperty] private string _itemName = NoItemSelected;
-
-    public bool HasNoProperties => _itemName != NoItemSelected && ItemProperties.Count == 0;
     public ObservableCollection<ItemPropertyField> ItemProperties { get; } = new();
+    public ObservableCollection<Type> FullTypeList { get; } = new();
+    public bool HasItemSelected => _selectedType != null;
+    public bool HasProperties => ItemProperties.Any();
 
     public ItemEditorViewModel()
     {
         WeakReferenceMessenger.Default.RegisterAll(this);
 
-        ItemProperties.CollectionChanged += (sender, args) => OnPropertyChanged(nameof(HasNoProperties));
+        ItemProperties.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasProperties));
+        PropertyChanged += OnPropertyChanged;
     }
 
     public void Receive(ItemSelectedMessage message)
     {
-        ItemName = NoItemSelected;
+        if (_isUpdating)
+        {
+            return;
+        }
+        
+        _isUpdating = true;
+        FullTypeList.Clear();
+        SelectedType = null;
+        _currentObject = null;
+        _currentItemId = null;
 
         if (message.Value != null)
         {
@@ -50,35 +68,53 @@ public partial class ItemEditorViewModel : ObservableObject,
                 }
             }
         }
+
+        _isUpdating = false;
     }
 
     public void Receive(TriggerSelectedMessage message)
     {
-        ItemName = NoItemSelected;
+        if (_isUpdating)
+        {
+            return;
+        }
+        
+        _isUpdating = true;
+        FullTypeList.Clear();
+        SelectedType = null;
+        _currentObject = null;
+        _currentItemId = null;
         
         var trigger = WeakReferenceMessenger.Default.Send(new GetCurrentTriggerRequest());
         if (trigger.Response != null)
         {
             UpdateFromTrigger(trigger.Response);
         }
+
+        _isUpdating = false;
     }
 
     private void UpdateFromTrigger(ParticleTrigger trigger)
     {
-        ItemName = trigger.GetType().Name;
+        _currentObject = trigger;
         UpdateItemProperties(trigger, null);
+        UpdateTypeList(_knownBehaviors.TriggerTypes, trigger.GetType());
     }
 
     private void UpdateFromModifier(TaggedModifier item)
     {
-        ItemName = item.Modifier.GetType().Name;
+        _currentObject = item.Modifier;
+        _currentItemId = item.Id;
         UpdateItemProperties(item.Modifier, item.Id);
+        UpdateTypeList(_knownBehaviors.ModifierTypes, item.Modifier.GetType());
     }
 
     private void UpdateFromInitializer(TaggedInitializer item)
     {
-        ItemName = item.Initializer.GetType().Name;
+        _currentObject = item.Initializer;
+        _currentItemId = item.Id;
         UpdateItemProperties(item.Initializer, item.Id);
+        UpdateTypeList(_knownBehaviors.InitializerTypes, item.Initializer.GetType());
     }
 
     private void UpdateItemProperties(object obj, Guid? itemId)
@@ -102,6 +138,81 @@ public partial class ItemEditorViewModel : ObservableObject,
         foreach (var property in properties)
         {
             ItemProperties.Add(property);
+        }
+    }
+
+    private void UpdateTypeList(IReadOnlyList<Type> types, Type? selected)
+    {
+        FullTypeList.Clear();
+        
+        var selectedType = (Type?)null;
+        foreach (var type in types)
+        {
+            FullTypeList.Add(type);
+            if (type == selected)
+            {
+                selectedType = type;
+            }
+        }
+
+        SelectedType = selectedType;
+        OnPropertyChanged(nameof(HasItemSelected));
+    }
+
+    private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (_isUpdating)
+        {
+            return;
+        }
+
+        _isUpdating = true;
+        switch (e.PropertyName)
+        {
+            case nameof(SelectedType):
+                SelectedTypeChanged();
+                break;
+        }
+        _isUpdating = false;
+    }
+
+    private void SelectedTypeChanged()
+    {
+        if (SelectedType == null || _currentObject == null)
+        {
+            return;
+        }
+
+        switch (_currentObject)
+        {
+            case ParticleTrigger:
+                _currentObject = _knownBehaviors.GetTriggerByType(SelectedType);
+                UpdateFromTrigger((ParticleTrigger)_currentObject);
+                WeakReferenceMessenger.Default
+                    .Send(new TriggerPropertyChangedMessage((ParticleTrigger)_currentObject));
+                
+                break;
+            
+            case IParticleInitializer:
+                _currentObject = _knownBehaviors.GetInitializerByType(SelectedType);
+                var taggedInitializer = 
+                    new TaggedInitializer(_currentItemId!.Value, (IParticleInitializer)_currentObject);
+
+                UpdateFromInitializer(taggedInitializer);
+                WeakReferenceMessenger.Default.Send(new InitializerPropertyChangedMessage(taggedInitializer));
+                
+                break;
+            
+            case IParticleModifier:
+                _currentObject = _knownBehaviors.GetModifierByType(SelectedType);
+                var taggedModifier = new TaggedModifier(_currentItemId!.Value, (IParticleModifier)_currentObject);
+                UpdateFromModifier(taggedModifier);
+                WeakReferenceMessenger.Default.Send(new ModifierPropertyChangedMessage(taggedModifier));
+                
+                break;
+            
+            default:
+                throw new InvalidOperationException($"Unknown behavior type of {_currentObject.GetType()}");
         }
     }
 }

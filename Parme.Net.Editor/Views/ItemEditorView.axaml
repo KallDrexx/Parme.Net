@@ -9,7 +9,9 @@
     
     <UserControl.DataContext><vms:ItemEditorViewModel /></UserControl.DataContext>
     <StackPanel Orientation="Vertical">
-        <TextBlock Text="{Binding ItemName}" />
+        <ComboBox Items="{Binding FullTypeList}" 
+                  SelectedItem="{Binding SelectedType}" />
+        
         <ItemsControl Items="{Binding ItemProperties}">
             <ItemsControl.DataTemplates>
                 <DataTemplate DataType="{x:Type props:ByteInputField}">
@@ -62,7 +64,10 @@
                 </DataTemplate>
             </ItemsControl.DataTemplates>
         </ItemsControl>
-        
-        <TextBlock Text="&lt;No Editable Properties&gt;" IsVisible="{Binding HasNoProperties}" />
+       
+        <StackPanel IsVisible="{Binding HasItemSelected}">
+            <TextBlock Text="&lt;No Editable Properties&gt;" 
+                       IsVisible="{Binding !HasProperties}" />
+        </StackPanel>
     </StackPanel>
 </UserControl>

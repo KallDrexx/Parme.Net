@@ -27,7 +27,8 @@ public class CurrentEmitterManager :
     IRecipient<GetInitializerDetailsRequest>,
     IRecipient<TriggerPropertyChangedMessage>,
     IRecipient<InitializerPropertyChangedMessage>,
-    IRecipient<ModifierPropertyChangedMessage>
+    IRecipient<ModifierPropertyChangedMessage>,
+    IRecipient<ItemRemovedMessage>
 {
     private EmitterSettings _settings;
     private ParticleTrigger? _trigger;
@@ -102,12 +103,21 @@ public class CurrentEmitterManager :
 
     public void Receive(InitializerPropertyChangedMessage message)
     {
+        var initializerFound = false;
         for (var x = 0; x < _initializers.Count; x++)
         {
             if (_initializers[x].Id == message.Value.Id)
             {
                 _initializers[x] = message.Value;
+                initializerFound = true;
+                
+                break;
             }
+        }
+
+        if (!initializerFound)
+        {
+            _initializers.Add(message.Value);
         }
         
         EmitterConfigUpdated();
@@ -115,13 +125,29 @@ public class CurrentEmitterManager :
 
     public void Receive(ModifierPropertyChangedMessage message)
     {
+        var modifierFound = false;
         for (var x = 0; x < _modifiers.Count; x++)
         {
             if (_modifiers[x].Id == message.Value.Id)
             {
                 _modifiers[x] = message.Value;
+                modifierFound = true;
+                break;
             }
         }
+
+        if (!modifierFound)
+        {
+            _modifiers.Add(message.Value);
+        }
+        
+        EmitterConfigUpdated();
+    }
+
+    public void Receive(ItemRemovedMessage message)
+    {
+        _modifiers.RemoveAll(x => x.Id == message.Value);
+        _initializers.RemoveAll(x => x.Id == message.Value);
         
         EmitterConfigUpdated();
     }

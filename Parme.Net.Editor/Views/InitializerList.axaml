@@ -10,10 +10,16 @@
     <StackPanel Orientation="Vertical">
             <TextBlock Text="Initializers" />
             <StackPanel Orientation="Horizontal">
-                <Button>Add</Button>
-                <Button IsEnabled="{Binding HasItemSelected}">Remove</Button>
-                <Button IsEnabled="{Binding HasItemSelected}">Move Up</Button>
-                <Button IsEnabled="{Binding HasItemSelected}">Move Down</Button>
+                <Button Content="Add" Command="{Binding AddInitializerCommand}" />
+                <Button IsEnabled="{Binding HasItemSelected}"
+                        Content="Remove"
+                        Command="{Binding RemoveInitializerCommand}" />
+                
+                <Button IsEnabled="{Binding HasItemSelected}"
+                        Content="Move Up" />
+                
+                <Button IsEnabled="{Binding HasItemSelected}"
+                        Content="Move Down" />
             </StackPanel>
             
             <ListBox Height="200" 

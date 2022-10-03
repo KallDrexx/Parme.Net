@@ -9,63 +9,63 @@
     
     <UserControl.DataContext><vms:ItemEditorViewModel /></UserControl.DataContext>
     <StackPanel Orientation="Vertical">
-        <ComboBox Items="{Binding FullTypeList}" 
-                  SelectedItem="{Binding SelectedType}" />
-        
-        <ItemsControl Items="{Binding ItemProperties}">
-            <ItemsControl.DataTemplates>
-                <DataTemplate DataType="{x:Type props:ByteInputField}">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding PropertyName}" />
-                        <TextBlock Text=": " />
-                        <TextBox Text="{Binding Value}"></TextBox>
-                    </StackPanel>
-                </DataTemplate>
-                
-                <DataTemplate DataType="{x:Type props:IntInputField}">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding PropertyName}" />
-                        <TextBlock Text=": " />
-                        <TextBox Text="{Binding Value}"></TextBox>
-                    </StackPanel>
-                </DataTemplate>
-                
-                <DataTemplate DataType="{x:Type props:FloatInputField}">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding PropertyName}" />
-                        <TextBlock Text=": " />
-                        <TextBox Text="{Binding Value}"></TextBox>
-                    </StackPanel>
-                </DataTemplate>
-                
-                <DataTemplate DataType="{x:Type props:Vector2InputField}">
-                    <StackPanel Orientation="Vertical">
+        <StackPanel IsVisible="{Binding HasItemSelected}">
+            <ComboBox Items="{Binding FullTypeList}" 
+                      SelectedItem="{Binding SelectedType}" />
+            
+            <ItemsControl Items="{Binding ItemProperties}">
+                <ItemsControl.DataTemplates>
+                    <DataTemplate DataType="{x:Type props:ByteInputField}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="{Binding PropertyName}" />
                             <TextBlock Text=": " />
+                            <TextBox Text="{Binding Value}"></TextBox>
                         </StackPanel>
+                    </DataTemplate>
+                    
+                    <DataTemplate DataType="{x:Type props:IntInputField}">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="    X:" />
-                            <TextBox Text="{Binding X}" />
+                            <TextBlock Text="{Binding PropertyName}" />
+                            <TextBlock Text=": " />
+                            <TextBox Text="{Binding Value}"></TextBox>
                         </StackPanel>
+                    </DataTemplate>
+                    
+                    <DataTemplate DataType="{x:Type props:FloatInputField}">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="    Y:" />
-                            <TextBox Text="{Binding Y}" />
+                            <TextBlock Text="{Binding PropertyName}" />
+                            <TextBlock Text=": " />
+                            <TextBox Text="{Binding Value}"></TextBox>
                         </StackPanel>
-                    </StackPanel>
-                </DataTemplate>
-                
-                <DataTemplate DataType="{x:Type props:NonEditablePropertyField}">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding PropertyName}" />
-                        <TextBlock Text=": " />
-                        <TextBlock Text="{Binding DisplayValue}" />
-                    </StackPanel>
-                </DataTemplate>
-            </ItemsControl.DataTemplates>
-        </ItemsControl>
+                    </DataTemplate>
+                    
+                    <DataTemplate DataType="{x:Type props:Vector2InputField}">
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding PropertyName}" />
+                                <TextBlock Text=": " />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="    X:" />
+                                <TextBox Text="{Binding X}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="    Y:" />
+                                <TextBox Text="{Binding Y}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </DataTemplate>
+                    
+                    <DataTemplate DataType="{x:Type props:NonEditablePropertyField}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding PropertyName}" />
+                            <TextBlock Text=": " />
+                            <TextBlock Text="{Binding DisplayValue}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.DataTemplates>
+            </ItemsControl>
        
-        <StackPanel IsVisible="{Binding HasItemSelected}">
             <TextBlock Text="&lt;No Editable Properties&gt;" 
                        IsVisible="{Binding !HasProperties}" />
         </StackPanel>

@@ -24,8 +24,8 @@ namespace Parme.Net.Modifiers
 
         public void Update(ParticleEmitter emitter, ParticleCollection particles, float secondsSinceLastUpdate)
         {
-            var velocityX = particles.GetPropertyValues<float>(StandardParmeProperties.VelocityX.Name);
-            var velocityY = particles.GetPropertyValues<float>(StandardParmeProperties.VelocityY.Name);
+            var velocityX = particles.GetPropertyValues<float>(StandardParmeProperties.VelocityX);
+            var velocityY = particles.GetPropertyValues<float>(StandardParmeProperties.VelocityY);
 
             for (var index = 0; index < particles.Count; index++)
             {

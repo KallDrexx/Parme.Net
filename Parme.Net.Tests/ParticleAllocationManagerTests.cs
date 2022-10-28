@@ -6,6 +6,8 @@ namespace Parme.Net.Tests
 {
     public class ParticleAllocationManagerTests
     {
+        private readonly ParticleProperty _something = new(typeof(float), "Something");
+        
         [Fact]
         public void Can_Reserve_Block_Under_Capacity()
         {
@@ -113,7 +115,7 @@ namespace Parme.Net.Tests
             var allocator = new ParticleAllocator(10);
             var reservation = allocator.Reserve(5);
             
-            Assert.Throws<KeyNotFoundException>(() => reservation.GetPropertyValues<float>("Something"));
+            Assert.Throws<KeyNotFoundException>(() => reservation.GetPropertyValues<float>(_something));
         }
 
         [Fact]
@@ -123,7 +125,7 @@ namespace Parme.Net.Tests
             var reservation = allocator.Reserve(5);
             allocator.RegisterProperty(typeof(float), "Something");
 
-            Assert.Throws<KeyNotFoundException>(() => reservation.GetPropertyValues<bool>("Something"));
+            Assert.Throws<KeyNotFoundException>(() => reservation.GetPropertyValues<bool>(_something));
         }
 
         [Fact]
@@ -133,7 +135,7 @@ namespace Parme.Net.Tests
             var reservation = allocator.Reserve(5);
             allocator.RegisterProperty(typeof(float), "Something");
 
-            var values = reservation.GetPropertyValues<float>("Something");
+            var values = reservation.GetPropertyValues<float>(_something);
             
             values.Length.ShouldBe(5);
             values[0] = 1.1f;
@@ -142,7 +144,7 @@ namespace Parme.Net.Tests
             values[3] = 4.4f;
             values[4] = 5.5f;
             
-            var values2 = reservation.GetPropertyValues<float>("Something");
+            var values2 = reservation.GetPropertyValues<float>(_something);
             
             values2[0].ShouldBe(values[0]);
             values2[1].ShouldBe(values[1]);
@@ -159,8 +161,8 @@ namespace Parme.Net.Tests
             allocator.RegisterProperty(typeof(bool) , "Something");
             allocator.RegisterProperty(typeof(float), "Something");
 
-            var boolValues = reservation.GetPropertyValues<bool>("Something");
-            var floatValues = reservation.GetPropertyValues<float>("Something");
+            var boolValues = reservation.GetPropertyValues<bool>(_something);
+            var floatValues = reservation.GetPropertyValues<float>(_something);
         }
 
         [Fact]
@@ -177,7 +179,7 @@ namespace Parme.Net.Tests
 
             var thirdStartIndex = third.StartIndex;
             {
-                var values = third.GetPropertyValues<float>("Something");
+                var values = third.GetPropertyValues<float>(_something);
                 values[0] = 1.1f;
                 values[1] = 2.2f;
                 values[2] = 3.3f;
@@ -192,7 +194,7 @@ namespace Parme.Net.Tests
             VerifyAllAreConsecutive(first, third, fifth, sixth); // defrag actually occured
 
             third.StartIndex.ShouldNotBe(thirdStartIndex, "Expected 'third' to have moved start indexes");
-            var newValues = third.GetPropertyValues<float>("Something");
+            var newValues = third.GetPropertyValues<float>(_something);
             newValues[0].ShouldBe(1.1f);
             newValues[1].ShouldBe(2.2f);
             newValues[2].ShouldBe(3.3f);
@@ -206,7 +208,7 @@ namespace Parme.Net.Tests
 
             var first = allocator.Reserve(3);
             {
-                var values = first.GetPropertyValues<float>("Something");
+                var values = first.GetPropertyValues<float>(_something);
                 values[0] = 1.1f;
                 values[1] = 2.2f;
                 values[2] = 3.3f;
@@ -216,7 +218,7 @@ namespace Parme.Net.Tests
             
             allocator.Capacity.ShouldBeGreaterThan(5, "Expected capacity to grow");
 
-            var newValues = first.GetPropertyValues<float>("Something");
+            var newValues = first.GetPropertyValues<float>(_something);
             newValues[0].ShouldBe(1.1f);
             newValues[1].ShouldBe(2.2f);
             newValues[2].ShouldBe(3.3f);
@@ -234,14 +236,14 @@ namespace Parme.Net.Tests
             allocator.Capacity.ShouldBe(8, "Allocator capacity shouldn't have changed yet");
 
             {
-                var values = first.GetPropertyValues<float>("Something");
+                var values = first.GetPropertyValues<float>(_something);
                 values[0] = 1.1f;
                 values[1] = 2.2f;
                 values[2] = 3.3f;
             }
 
             {
-                var values = third.GetPropertyValues<float>("Something");
+                var values = third.GetPropertyValues<float>(_something);
                 values[0] = 4.4f;
                 values[1] = 5.5f;
                 values[2] = 6.6f;
@@ -251,14 +253,14 @@ namespace Parme.Net.Tests
             allocator.Reserve(3); // cause defrag or expansion, don't care which for this test
 
             {
-                var values = first.GetPropertyValues<float>("Something");
+                var values = first.GetPropertyValues<float>(_something);
                 values[0].ShouldBe(1.1f);
                 values[1].ShouldBe(2.2f);
                 values[2].ShouldBe(3.3f);
             }
 
             {
-                var values = third.GetPropertyValues<float>("Something");
+                var values = third.GetPropertyValues<float>(_something);
                 values[0].ShouldBe(4.4f);
                 values[1].ShouldBe(5.5f);
                 values[2].ShouldBe(6.6f);

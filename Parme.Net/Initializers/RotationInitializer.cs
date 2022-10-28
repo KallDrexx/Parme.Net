@@ -42,7 +42,7 @@ namespace Parme.Net.Initializers
 
         public void InitializeParticles(ParticleEmitter emitter, ParticleCollection particles, IReadOnlyList<int> newParticleIndices)
         {
-            var rotation = particles.GetPropertyValues<float>(StandardParmeProperties.RotationInRadians.Name);
+            var rotation = particles.GetPropertyValues<float>(StandardParmeProperties.RotationInRadians);
 
             foreach (var index in newParticleIndices)
             {

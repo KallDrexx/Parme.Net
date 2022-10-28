@@ -34,8 +34,8 @@ namespace Parme.Net.Tests.Initializers
 
             var (collection, newIndices) = RunInitializer(initializer);
             
-            var positionX = collection.GetPropertyValues<float>(StandardParmeProperties.PositionX.Name);
-            var positionY = collection.GetPropertyValues<float>(StandardParmeProperties.PositionY.Name);
+            var positionX = collection.GetPropertyValues<float>(StandardParmeProperties.PositionX);
+            var positionY = collection.GetPropertyValues<float>(StandardParmeProperties.PositionY);
             foreach (var index in newIndices)
             {
                 positionX[index].ShouldBe(3);
@@ -53,8 +53,8 @@ namespace Parme.Net.Tests.Initializers
             };
             
             var (collection, newIndices) = RunInitializer(initializer);
-            var positionX = collection.GetPropertyValues<float>(StandardParmeProperties.PositionX.Name);
-            var positionY = collection.GetPropertyValues<float>(StandardParmeProperties.PositionY.Name);
+            var positionX = collection.GetPropertyValues<float>(StandardParmeProperties.PositionX);
+            var positionY = collection.GetPropertyValues<float>(StandardParmeProperties.PositionY);
             foreach (var index in Enumerable.Range(0, positionX.Length).Except(newIndices))
             {
                 positionX[index].ShouldBe(0);

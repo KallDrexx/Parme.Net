@@ -26,8 +26,8 @@ namespace Parme.Net.Modifiers
 
         public void Update(ParticleEmitter emitter, ParticleCollection particles, float secondsSinceLastUpdate)
         {
-            var width = particles.GetPropertyValues<float>(StandardParmeProperties.CurrentWidth.Name);
-            var height = particles.GetPropertyValues<float>(StandardParmeProperties.CurrentHeight.Name);
+            var width = particles.GetPropertyValues<float>(StandardParmeProperties.CurrentWidth);
+            var height = particles.GetPropertyValues<float>(StandardParmeProperties.CurrentHeight);
 
             for (var index = 0; index < particles.Count; index++)
             {

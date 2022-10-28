@@ -7,6 +7,8 @@ namespace Parme.Net.Tests
 {
     public class ParticleEmitterTests : TestBase
     {
+        private readonly ParticleProperty _testProperty = new(typeof(bool), "Test1");
+        
         [Fact]
         public void Mandatory_Properties_Are_Automatically_Registered()
         {
@@ -22,12 +24,12 @@ namespace Parme.Net.Tests
             var emitter = new ParticleEmitter(allocator, config);
 
             var reservation = emitter.Reservation;
-            reservation.GetPropertyValues<bool>(StandardParmeProperties.IsAlive.Name);
-            reservation.GetPropertyValues<float>(StandardParmeProperties.PositionX.Name);
-            reservation.GetPropertyValues<float>(StandardParmeProperties.PositionY.Name);
-            reservation.GetPropertyValues<float>(StandardParmeProperties.TimeAlive.Name);
-            reservation.GetPropertyValues<float>(StandardParmeProperties.CurrentWidth.Name);
-            reservation.GetPropertyValues<float>(StandardParmeProperties.CurrentHeight.Name);
+            reservation.GetPropertyValues<bool>(StandardParmeProperties.IsAlive);
+            reservation.GetPropertyValues<float>(StandardParmeProperties.PositionX);
+            reservation.GetPropertyValues<float>(StandardParmeProperties.PositionY);
+            reservation.GetPropertyValues<float>(StandardParmeProperties.TimeAlive);
+            reservation.GetPropertyValues<float>(StandardParmeProperties.CurrentWidth);
+            reservation.GetPropertyValues<float>(StandardParmeProperties.CurrentHeight);
         }
         
         [Fact]
@@ -92,7 +94,7 @@ namespace Parme.Net.Tests
             
             var emitter = new ParticleEmitter(allocator, config);
 
-            emitter.Reservation.GetPropertyValues<bool>("Test1");
+            emitter.Reservation.GetPropertyValues<bool>(_testProperty);
         }
 
         [Fact]
@@ -112,7 +114,7 @@ namespace Parme.Net.Tests
             };
             
             var emitter = new ParticleEmitter(allocator, config);
-            emitter.Reservation.GetPropertyValues<bool>("Test1");
+            emitter.Reservation.GetPropertyValues<bool>(_testProperty);
         }
 
         [Fact]
@@ -132,7 +134,7 @@ namespace Parme.Net.Tests
             };
             
             var emitter = new ParticleEmitter(allocator, config);
-            emitter.Reservation.GetPropertyValues<bool>("Test1");
+            emitter.Reservation.GetPropertyValues<bool>(_testProperty);
         }
 
         [Fact]
@@ -204,7 +206,7 @@ namespace Parme.Net.Tests
             
             var emitter = new ParticleEmitter(allocator, config);
 
-            var values = emitter.Reservation.GetPropertyValues<bool>(StandardParmeProperties.IsAlive.Name);
+            var values = emitter.Reservation.GetPropertyValues<bool>(StandardParmeProperties.IsAlive);
             values[1] = true;
             values[3] = true;
             values[5] = true;
@@ -248,7 +250,7 @@ namespace Parme.Net.Tests
             
             var emitter = new ParticleEmitter(allocator, config);
 
-            var values = emitter.Reservation.GetPropertyValues<bool>(StandardParmeProperties.IsAlive.Name);
+            var values = emitter.Reservation.GetPropertyValues<bool>(StandardParmeProperties.IsAlive);
             for (var x = 0; x <= 10 - newParticleCount; x++)
             {
                 values[x] = true;
@@ -279,7 +281,7 @@ namespace Parme.Net.Tests
             var emitter = new ParticleEmitter(allocator, config);
 
             {
-                var values = emitter.Reservation.GetPropertyValues<bool>(StandardParmeProperties.IsAlive.Name);
+                var values = emitter.Reservation.GetPropertyValues<bool>(StandardParmeProperties.IsAlive);
                 values[1] = true;
                 values[3] = true;
                 values[5] = true;
@@ -301,7 +303,7 @@ namespace Parme.Net.Tests
             newParticleIndices.Count.ShouldBe(3);
 
             {
-                var values = emitter.Reservation.GetPropertyValues<bool>(StandardParmeProperties.IsAlive.Name);
+                var values = emitter.Reservation.GetPropertyValues<bool>(StandardParmeProperties.IsAlive);
                 values[newParticleIndices[0]].ShouldBeTrue();
                 values[newParticleIndices[1]].ShouldBeTrue();
                 values[newParticleIndices[2]].ShouldBeTrue();

@@ -162,8 +162,8 @@ namespace Parme.Net.Frb.Example.Screens
                     return;
                 }
                 
-                var positionX = particles.GetPropertyValues<float>(StandardParmeProperties.PositionX.Name);
-                var positionY = particles.GetPropertyValues<float>(StandardParmeProperties.PositionY.Name);
+                var positionX = particles.GetPropertyValues<float>(StandardParmeProperties.PositionX);
+                var positionY = particles.GetPropertyValues<float>(StandardParmeProperties.PositionY);
 
                 for (var index = 0; index < particles.Count; index++)
                 {

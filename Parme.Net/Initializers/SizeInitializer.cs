@@ -50,10 +50,10 @@ namespace Parme.Net.Initializers
             var minWidth = Math.Min(MinSize.X, MaxSize.X);
             var maxWidth = Math.Max(MinSize.X, MaxSize.X);
             
-            var initialHeight = particles.GetPropertyValues<float>(StandardParmeProperties.InitialHeight.Name);
-            var initialWidth = particles.GetPropertyValues<float>(StandardParmeProperties.InitialWidth.Name);
-            var currentHeight = particles.GetPropertyValues<float>(StandardParmeProperties.CurrentHeight.Name);
-            var currentWidth = particles.GetPropertyValues<float>(StandardParmeProperties.CurrentWidth.Name);
+            var initialHeight = particles.GetPropertyValues<float>(StandardParmeProperties.InitialHeight);
+            var initialWidth = particles.GetPropertyValues<float>(StandardParmeProperties.InitialWidth);
+            var currentHeight = particles.GetPropertyValues<float>(StandardParmeProperties.CurrentHeight);
+            var currentWidth = particles.GetPropertyValues<float>(StandardParmeProperties.CurrentWidth);
             
             foreach (var index in newParticleIndices)
             {

@@ -20,7 +20,7 @@ namespace Parme.Net.Tests
                 ValidPropertiesToSet = new HashSet<ParticleProperty>(new[] {property})
             };
 
-            var result = collection.GetPropertyValues<bool>(property.Name);
+            var result = collection.GetPropertyValues<bool>(property);
             result.Length.ShouldBe(reservation.Length);
         }
 
@@ -39,7 +39,7 @@ namespace Parme.Net.Tests
                 ValidPropertiesToSet = new HashSet<ParticleProperty>(new[] {property1})
             };
 
-            Assert.ThrowsAny<Exception>(() => collection.GetPropertyValues<bool>(property2.Name));
+            Assert.ThrowsAny<Exception>(() => collection.GetPropertyValues<bool>(property2));
         }
         
         [Fact]
@@ -55,7 +55,7 @@ namespace Parme.Net.Tests
                 ValidPropertiesToRead = new HashSet<ParticleProperty>(new[] {property})
             };
 
-            var result = collection.GetReadOnlyPropertyValues<bool>(property.Name);
+            var result = collection.GetReadOnlyPropertyValues<bool>(property);
             result.Length.ShouldBe(reservation.Length);
         }
 
@@ -74,7 +74,7 @@ namespace Parme.Net.Tests
                 ValidPropertiesToSet = new HashSet<ParticleProperty>(new[] {property1})
             };
 
-            Assert.ThrowsAny<Exception>(() => collection.GetReadOnlyPropertyValues<bool>(property2.Name));
+            Assert.ThrowsAny<Exception>(() => collection.GetReadOnlyPropertyValues<bool>(property2));
         }
     }
 }

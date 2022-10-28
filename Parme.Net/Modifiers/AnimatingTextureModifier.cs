@@ -21,8 +21,8 @@ namespace Parme.Net.Modifiers
 
         public void Update(ParticleEmitter emitter, ParticleCollection particles, float secondsSinceLastUpdate)
         {
-            var timeAlive = particles.GetPropertyValues<float>(StandardParmeProperties.TimeAlive.Name);
-            var textureSections = particles.GetPropertyValues<byte>(StandardParmeProperties.TextureSectionIndex.Name);
+            var timeAlive = particles.GetPropertyValues<float>(StandardParmeProperties.TimeAlive);
+            var textureSections = particles.GetPropertyValues<byte>(StandardParmeProperties.TextureSectionIndex);
 
             for (var index = 0; index < particles.Count; index++)
             {

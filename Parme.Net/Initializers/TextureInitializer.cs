@@ -35,7 +35,7 @@ namespace Parme.Net.Initializers
             IReadOnlyList<int> newParticleIndices)
         {
             var textureSectionIndices =
-                particles.GetPropertyValues<byte>(StandardParmeProperties.TextureSectionIndex.Name);
+                particles.GetPropertyValues<byte>(StandardParmeProperties.TextureSectionIndex);
             
             foreach (var index in newParticleIndices)
             {

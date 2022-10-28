@@ -43,8 +43,8 @@ namespace Parme.Net.Initializers
 
         public void InitializeParticles(ParticleEmitter emitter, ParticleCollection particles, IReadOnlyList<int> newParticleIndices)
         {
-            var velocityX = particles.GetPropertyValues<float>(StandardParmeProperties.VelocityX.Name);
-            var velocityY = particles.GetPropertyValues<float>(StandardParmeProperties.VelocityY.Name);
+            var velocityX = particles.GetPropertyValues<float>(StandardParmeProperties.VelocityX);
+            var velocityY = particles.GetPropertyValues<float>(StandardParmeProperties.VelocityY);
             
             foreach (var index in newParticleIndices)
             {

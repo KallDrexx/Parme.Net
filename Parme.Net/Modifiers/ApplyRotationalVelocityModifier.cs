@@ -21,8 +21,8 @@ public class ApplyRotationalVelocityModifier : IParticleModifier
 
     public void Update(ParticleEmitter emitter, ParticleCollection particles, float secondsSinceLastUpdate)
     {
-        var velocity = particles.GetReadOnlyPropertyValues<float>(StandardParmeProperties.RotationalVelocity.Name);
-        var rotation = particles.GetPropertyValues<float>(StandardParmeProperties.RotationInRadians.Name);
+        var velocity = particles.GetReadOnlyPropertyValues<float>(StandardParmeProperties.RotationalVelocity);
+        var rotation = particles.GetPropertyValues<float>(StandardParmeProperties.RotationInRadians);
 
         for (var index = 0; index < particles.Count; index++)
         {

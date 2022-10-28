@@ -38,14 +38,14 @@ namespace Parme.Net.Modifiers
 
         public void Update(ParticleEmitter emitter, ParticleCollection particles, float secondsSinceLastUpdate)
         {
-            var initialRed = particles.GetReadOnlyPropertyValues<byte>(StandardParmeProperties.InitialRed.Name);
-            var initialGreen = particles.GetReadOnlyPropertyValues<byte>(StandardParmeProperties.InitialGreen.Name);
-            var initialBlue = particles.GetReadOnlyPropertyValues<byte>(StandardParmeProperties.InitialBlue.Name);
-            var initialAlpha = particles.GetReadOnlyPropertyValues<byte>(StandardParmeProperties.InitialAlpha.Name);
-            var currentRed = particles.GetPropertyValues<float>(StandardParmeProperties.CurrentRed.Name);
-            var currentGreen = particles.GetPropertyValues<float>(StandardParmeProperties.CurrentGreen.Name);
-            var currentBlue = particles.GetPropertyValues<float>(StandardParmeProperties.CurrentBlue.Name);
-            var currentAlpha = particles.GetPropertyValues<float>(StandardParmeProperties.CurrentAlpha.Name);
+            var initialRed = particles.GetReadOnlyPropertyValues<byte>(StandardParmeProperties.InitialRed);
+            var initialGreen = particles.GetReadOnlyPropertyValues<byte>(StandardParmeProperties.InitialGreen);
+            var initialBlue = particles.GetReadOnlyPropertyValues<byte>(StandardParmeProperties.InitialBlue);
+            var initialAlpha = particles.GetReadOnlyPropertyValues<byte>(StandardParmeProperties.InitialAlpha);
+            var currentRed = particles.GetPropertyValues<float>(StandardParmeProperties.CurrentRed);
+            var currentGreen = particles.GetPropertyValues<float>(StandardParmeProperties.CurrentGreen);
+            var currentBlue = particles.GetPropertyValues<float>(StandardParmeProperties.CurrentBlue);
+            var currentAlpha = particles.GetPropertyValues<float>(StandardParmeProperties.CurrentAlpha);
 
             for (var index = 0; index < particles.Count; index++)
             {

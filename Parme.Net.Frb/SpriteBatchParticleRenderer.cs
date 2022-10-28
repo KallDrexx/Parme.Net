@@ -42,20 +42,20 @@ public class SpriteBatchParticleRenderer
         SpriteBatch spriteBatch,
         TextureSectionCoords[] textureSections)
     {
-        var isAlive = _particleCollection.GetReadOnlyPropertyValues<bool>(StandardParmeProperties.IsAlive.Name);
-        var positionX = _particleCollection.GetReadOnlyPropertyValues<float>(StandardParmeProperties.PositionX.Name);
-        var positionY = _particleCollection.GetReadOnlyPropertyValues<float>(StandardParmeProperties.PositionY.Name);
-        var width = _particleCollection.GetReadOnlyPropertyValues<float>(StandardParmeProperties.CurrentWidth.Name);
-        var height = _particleCollection.GetReadOnlyPropertyValues<float>(StandardParmeProperties.CurrentHeight.Name);
-        var red = _particleCollection.GetReadOnlyPropertyValues<float>(StandardParmeProperties.CurrentRed.Name);
-        var green = _particleCollection.GetReadOnlyPropertyValues<float>(StandardParmeProperties.CurrentGreen.Name);
-        var blue = _particleCollection.GetReadOnlyPropertyValues<float>(StandardParmeProperties.CurrentBlue.Name);
-        var alpha = _particleCollection.GetReadOnlyPropertyValues<float>(StandardParmeProperties.CurrentAlpha.Name);
+        var isAlive = _particleCollection.GetReadOnlyPropertyValues<bool>(StandardParmeProperties.IsAlive);
+        var positionX = _particleCollection.GetReadOnlyPropertyValues<float>(StandardParmeProperties.PositionX);
+        var positionY = _particleCollection.GetReadOnlyPropertyValues<float>(StandardParmeProperties.PositionY);
+        var width = _particleCollection.GetReadOnlyPropertyValues<float>(StandardParmeProperties.CurrentWidth);
+        var height = _particleCollection.GetReadOnlyPropertyValues<float>(StandardParmeProperties.CurrentHeight);
+        var red = _particleCollection.GetReadOnlyPropertyValues<float>(StandardParmeProperties.CurrentRed);
+        var green = _particleCollection.GetReadOnlyPropertyValues<float>(StandardParmeProperties.CurrentGreen);
+        var blue = _particleCollection.GetReadOnlyPropertyValues<float>(StandardParmeProperties.CurrentBlue);
+        var alpha = _particleCollection.GetReadOnlyPropertyValues<float>(StandardParmeProperties.CurrentAlpha);
         var rotation =
-            _particleCollection.GetReadOnlyPropertyValues<float>(StandardParmeProperties.RotationInRadians.Name);
+            _particleCollection.GetReadOnlyPropertyValues<float>(StandardParmeProperties.RotationInRadians);
         
         var textureSectionIndex =
-            _particleCollection.GetReadOnlyPropertyValues<byte>(StandardParmeProperties.TextureSectionIndex.Name);
+            _particleCollection.GetReadOnlyPropertyValues<byte>(StandardParmeProperties.TextureSectionIndex);
         
         for (var index = 0; index < _particleCollection.Count; index++)
         {

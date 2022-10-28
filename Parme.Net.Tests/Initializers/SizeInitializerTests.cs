@@ -35,10 +35,10 @@ namespace Parme.Net.Tests.Initializers
 
             var (collection, newIndices) = RunInitializer(initializer);
 
-            var initialHeight = collection.GetPropertyValues<float>(StandardParmeProperties.InitialHeight.Name);
-            var initialWidth = collection.GetPropertyValues<float>(StandardParmeProperties.InitialWidth.Name);
-            var currentHeight = collection.GetPropertyValues<float>(StandardParmeProperties.CurrentHeight.Name);
-            var currentWidth = collection.GetPropertyValues<float>(StandardParmeProperties.CurrentWidth.Name);
+            var initialHeight = collection.GetPropertyValues<float>(StandardParmeProperties.InitialHeight);
+            var initialWidth = collection.GetPropertyValues<float>(StandardParmeProperties.InitialWidth);
+            var currentHeight = collection.GetPropertyValues<float>(StandardParmeProperties.CurrentHeight);
+            var currentWidth = collection.GetPropertyValues<float>(StandardParmeProperties.CurrentWidth);
             foreach (var index in newIndices)
             {
                 initialHeight[index].ShouldBeInRange(20, 25);
@@ -59,10 +59,10 @@ namespace Parme.Net.Tests.Initializers
             
             var (collection, newIndices) = RunInitializer(initializer);
 
-            var initialHeight = collection.GetPropertyValues<float>(StandardParmeProperties.InitialHeight.Name);
-            var initialWidth = collection.GetPropertyValues<float>(StandardParmeProperties.InitialWidth.Name);
-            var currentHeight = collection.GetPropertyValues<float>(StandardParmeProperties.CurrentHeight.Name);
-            var currentWidth = collection.GetPropertyValues<float>(StandardParmeProperties.CurrentWidth.Name);
+            var initialHeight = collection.GetPropertyValues<float>(StandardParmeProperties.InitialHeight);
+            var initialWidth = collection.GetPropertyValues<float>(StandardParmeProperties.InitialWidth);
+            var currentHeight = collection.GetPropertyValues<float>(StandardParmeProperties.CurrentHeight);
+            var currentWidth = collection.GetPropertyValues<float>(StandardParmeProperties.CurrentWidth);
             foreach (var index in Enumerable.Range(0, collection.Count).Where(x => !newIndices.Contains(x)))
             {
                 initialHeight[index].ShouldBe(0);

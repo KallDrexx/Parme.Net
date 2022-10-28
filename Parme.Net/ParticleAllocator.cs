@@ -416,19 +416,27 @@ namespace Parme.Net
             /// to exist.  If the property was registered for a type that doesn't match `T` then it will be the same
             /// as if that property was never registered.
             /// </summary>
-            /// <param name="propertyName">Case sensitive name of the property to get values for</param>
+            /// <param name="property">The property to get values for</param>
             /// <typeparam name="T">The type of values the property contains</typeparam>
             /// <returns>Returns the values of the properties only for particles managed by this reservation</returns>
             /// <exception cref="KeyNotFoundException">The property name is not registered for the specified type</exception>
-            public Span<T> GetPropertyValues<T>(string propertyName)
-                => _particleAllocator.GetPropertyValues<T>(this, propertyName);
+            public Span<T> GetPropertyValues<T>(ParticleProperty property)
+            {
+                if (typeof(T) != property.Type)
+                {
+                    var message = $"Passed in property has type of {property.Type} but type {typeof(T)} was requested";
+                    throw new InvalidOperationException(message);
+                }
+                
+                return _particleAllocator.GetPropertyValues<T>(this, property.Name);
+            }
 
             /// <summary>
             ///  Allows registering particle properties through the reservation, instead of the allocator directly
             /// </summary>
-            public void RegisterProperty(Type type, string propertyName)
+            public void RegisterProperty(ParticleProperty property)
             {
-                _particleAllocator.RegisterProperty(type, propertyName);
+                _particleAllocator.RegisterProperty(property.Type, property.Name);
             }
 
             public void Dispose()
@@ -437,7 +445,7 @@ namespace Parme.Net
                 {
                     // Mark all particles we are releasing as dead to prevent accidental renderings when a new 
                     // reservation allocates to them.
-                    var isAlive = GetPropertyValues<bool>(StandardParmeProperties.IsAlive.Name);
+                    var isAlive = GetPropertyValues<bool>(StandardParmeProperties.IsAlive);
                     for (var index = StartIndex; index <= LastUsedIndex; index++)
                     {
                         isAlive[index] = false;

@@ -41,7 +41,7 @@ namespace Parme.Net.Initializers
 
         public void InitializeParticles(ParticleEmitter emitter, ParticleCollection particles, IReadOnlyList<int> newParticleIndices)
         {
-            var speed = particles.GetPropertyValues<float>(StandardParmeProperties.RotationalVelocity.Name);
+            var speed = particles.GetPropertyValues<float>(StandardParmeProperties.RotationalVelocity);
 
             var min = MinDegreesPerSecond * (Math.PI / 180f);
             var max = MaxDegreesPerSecond * (Math.PI / 180f);

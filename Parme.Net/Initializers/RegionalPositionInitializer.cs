@@ -45,8 +45,8 @@ namespace Parme.Net.Initializers
 
         public void InitializeParticles(ParticleEmitter emitter, ParticleCollection particles, IReadOnlyList<int> newParticleIndices)
         {
-            var positionX = particles.GetPropertyValues<float>(StandardParmeProperties.PositionX.Name);
-            var positionY = particles.GetPropertyValues<float>(StandardParmeProperties.PositionY.Name);
+            var positionX = particles.GetPropertyValues<float>(StandardParmeProperties.PositionX);
+            var positionY = particles.GetPropertyValues<float>(StandardParmeProperties.PositionY);
             foreach (var index in newParticleIndices)
             {
                 var x = MinRelativePosition.X + _random.NextDouble() * (MaxRelativePosition.X - MinRelativePosition.X);

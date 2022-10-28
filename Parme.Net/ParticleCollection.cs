@@ -38,7 +38,7 @@ namespace Parme.Net
         /// and when this happens the result of this method call will point to old values in memory.  Not only will
         /// this cause memory leaks, any updates will not affect the real particles.
         /// </summary>
-        /// <param name="propertyName">Name of the property to get values for</param>
+        /// <param name="property">The property to get values for</param>
         /// <typeparam name="T">The type for the property.  This must match the type the property was registered with</typeparam>
         /// <returns>Collection of values for each particle in the collection</returns>
         /// <exception cref="InvalidOperationException">
@@ -47,18 +47,18 @@ namespace Parme.Net
         /// non-deterministic, as it might sometimes succeed and sometimes fail depending on what other emitters or
         /// behaviors have been created prior to this operation.
         /// </exception>
-        public Span<T> GetPropertyValues<T>(string propertyName)
+        public Span<T> GetPropertyValues<T>(ParticleProperty property)
         {
-            if (ValidPropertiesToSet?.Contains(new ParticleProperty(typeof(T), propertyName)) != true)
+            if (ValidPropertiesToSet?.Contains(new ParticleProperty(typeof(T), property.Name)) != true)
             {
-                var message = $"This particle collection does not have '{propertyName}' as a valid property for type " +
+                var message = $"This particle collection does not have '{property.Name}' as a valid property for type " +
                               $"'{typeof(T).Name}'.  Make sure the particle behavior has registered this property for this" +
                               $"operation";
                 
                 throw new InvalidOperationException(message);
             }
 
-            return _reservation.GetPropertyValues<T>(propertyName);
+            return _reservation.GetPropertyValues<T>(property);
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace Parme.Net
         /// and when this happens the result of this method call will point to old values in memory.  Not only will
         /// this cause memory leaks, any updates will not affect the real particles.
         /// </summary>
-        /// <param name="propertyName">Name of the property to get values for</param>
+        /// <param name="property">The property to get values for</param>
         /// <typeparam name="T">The type for the property.  This must match the type the property was registered with</typeparam>
         /// <returns>Collection of values for each particle in the collection</returns>
         /// <exception cref="InvalidOperationException">
@@ -78,20 +78,20 @@ namespace Parme.Net
         /// non-deterministic, as it might sometimes succeed and sometimes fail depending on what other emitters or
         /// behaviors have been created prior to this operation.
         /// </exception>
-        public ReadOnlySpan<T> GetReadOnlyPropertyValues<T>(string propertyName)
+        public ReadOnlySpan<T> GetReadOnlyPropertyValues<T>(ParticleProperty property)
         {
-            var propertyToFind = new ParticleProperty(typeof(T), propertyName);
+            var propertyToFind = new ParticleProperty(typeof(T), property.Name);
             
             if (ValidPropertiesToRead?.Contains(propertyToFind) != true)
             {
-                var message = $"This particle collection does not have '{propertyName}' as a valid property for type " +
+                var message = $"This particle collection does not have '{property.Name}' as a valid property for type " +
                               $"'{typeof(T).Name}'.  Make sure the particle behavior has registered this property for this" +
                               $"operation";
                 
                 throw new InvalidOperationException(message);
             }
 
-            return _reservation.GetPropertyValues<T>(propertyName);
+            return _reservation.GetPropertyValues<T>(property);
         }
 
         internal void RegisterProperties()
@@ -100,7 +100,7 @@ namespace Parme.Net
             {
                 foreach (var property in ValidPropertiesToRead)
                 {
-                    _reservation.RegisterProperty(property.Type, property.Name);
+                    _reservation.RegisterProperty(property);
                 }
             }
 
@@ -108,7 +108,7 @@ namespace Parme.Net
             {
                 foreach (var property in ValidPropertiesToSet)
                 {
-                    _reservation.RegisterProperty(property.Type, property.Name);
+                    _reservation.RegisterProperty(property);
                 }
             }
         }

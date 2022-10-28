@@ -435,6 +435,14 @@ namespace Parme.Net
             {
                 if (!IsDisposed)
                 {
+                    // Mark all particles we are releasing as dead to prevent accidental renderings when a new 
+                    // reservation allocates to them.
+                    var isAlive = GetPropertyValues<bool>(StandardParmeProperties.IsAlive.Name);
+                    for (var index = StartIndex; index <= LastUsedIndex; index++)
+                    {
+                        isAlive[index] = false;
+                    }
+                    
                     _particleAllocator.Release(this);
                     IsDisposed = true;
                     StartIndex = -1;

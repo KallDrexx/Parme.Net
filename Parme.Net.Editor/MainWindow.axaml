@@ -10,6 +10,7 @@
         
         <DockPanel>
                 <views:Workbench DockPanel.Dock="Top" />
+                <views:WarningsView DockPanel.Dock="Bottom" />
                 <views:ItemEditorView DockPanel.Dock="Left" />
                 <views:EmitterRenderView />
         </DockPanel>

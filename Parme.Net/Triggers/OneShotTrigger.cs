@@ -16,14 +16,21 @@ namespace Parme.Net.Triggers
 
         public override ParticleTrigger Clone()
         {
-            return new OneShotTrigger(_random);
+            return new OneShotTrigger(_random)
+            {
+                MinParticlesToEmit = MinParticlesToEmit,
+                MaxParticlesToEmit = MaxParticlesToEmit,
+            };
         }
 
         public override int DetermineNumberOfParticlesToCreate(ParticleEmitter particleEmitter, float timeSinceLastFrame)
         {
             particleEmitter.IsEmittingNewParticles = false;
 
-            return _random.Next(MinParticlesToEmit, MaxParticlesToEmit + 1);
+            var min = Math.Min(MinParticlesToEmit, MaxParticlesToEmit);
+            var max = Math.Max(MinParticlesToEmit, MaxParticlesToEmit);
+
+            return _random.Next(min, max + 1);
         }
     }
 }

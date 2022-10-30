@@ -71,7 +71,16 @@ public class ParticleDrawOperation : ICustomDrawOperation
         // If a new emitter config has been give, swap the emitter to it
         SwitchToLatestEmitterConfig();
 
-        _emitter?.Update((float)elapsed);
+        if (_emitter != null)
+        {
+            _emitter.Update((float)elapsed);
+            if (!_emitter.IsEmittingNewParticles && !_emitter.HasAnyLiveParticles())
+            {
+                _emitter.IsEmittingNewParticles = true;
+                _emitter.Update((float)elapsed);
+            }
+        }
+        
         var canvas = (context as ISkiaDrawingContextImpl)?.SkCanvas;
         if (canvas != null)
         {

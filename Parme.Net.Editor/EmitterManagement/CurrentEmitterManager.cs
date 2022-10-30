@@ -199,6 +199,12 @@ public class CurrentEmitterManager :
                 {
                     MinDegreesPerSecond = 180,
                     MaxDegreesPerSecond = 180,
+                },
+                
+                new RotationInitializer(random)
+                {
+                    MinDegrees = 0,
+                    MaxDegrees = 0,
                 }
             },
 

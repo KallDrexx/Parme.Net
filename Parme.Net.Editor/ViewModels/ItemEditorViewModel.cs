@@ -180,19 +180,20 @@ public partial class ItemEditorViewModel : ObservableObject,
 
     private void UpdateTypeList(IReadOnlyList<Type> types, Type? selected)
     {
-        FullTypeList.Clear();
-        
-        var selectedType = (Type?)null;
-        foreach (var type in types)
+        // There seems to be some bug in Avalonia's combo box, where when you change the selected type but you clear
+        // and update the full type list to have the same items again, changing the selected item seems to blank out
+        // the combo box's display. The way to work around this seems to be to not update the full type list if we
+        // don't have to.
+        if (FullTypeList.Count != types.Count || FullTypeList.Any(x => !types.Contains(x)))
         {
-            FullTypeList.Add(type);
-            if (type == selected)
+            FullTypeList.Clear();
+            foreach (var type in types)
             {
-                selectedType = type;
+                FullTypeList.Add(type);
             }
         }
 
-        SelectedType = selectedType;
+        SelectedType = selected;
         OnPropertyChanged(nameof(HasItemSelected));
     }
 

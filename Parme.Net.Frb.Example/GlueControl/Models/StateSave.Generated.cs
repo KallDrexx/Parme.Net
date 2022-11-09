@@ -3,7 +3,7 @@
 #define SpriteHasTolerateMissingAnimations
 using Parme.Net.Frb.Example;
 
- using FlatRedBall.Content.Instructions;
+﻿using FlatRedBall.Content.Instructions;
 using System;
 using System.Collections.Generic;
 using System.Linq;

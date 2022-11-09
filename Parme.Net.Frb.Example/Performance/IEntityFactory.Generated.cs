@@ -10,7 +10,7 @@ namespace Parme.Net.Frb.Example.Performance
         object CreateNew(float x = 0, float y = 0);
         object CreateNew(Microsoft.Xna.Framework.Vector3 position);
         object CreateNew(FlatRedBall.Graphics.Layer layer);
-
+        int NewInstancesCreatedThisScreen { get; }
         void Initialize(string contentManager);
         void ClearListsToAddTo();
 
@@ -36,6 +36,12 @@ namespace Parme.Net.Frb.Example.Performance
             return Factories.ToList();
         }
 
+        /// <summary>
+        /// Gets a Factory for the unqualified entity name. For example, to get a factory for an Entity named 
+        /// "Enemy", pass the argument "Enemy" without the prefix "Entities/"
+        /// </summary>
+        /// <param name="entityName">The unqualified Entity name.</param>
+        /// <returns>An IFactory instance for the argument entity name.</returns>
         public static IEntityFactory Get(string entityName)
         {
             if (FactoryDictionary.ContainsKey(entityName))
@@ -49,6 +55,8 @@ namespace Parme.Net.Frb.Example.Performance
                 return factory;
             }
         }
+
+        public static IEntityFactory Get(Type type) => Get(type.Name);
 
         static Type[] typesInThisAssembly;
         public static IEntityFactory FindFactory(string entityType)
@@ -108,6 +116,23 @@ namespace Parme.Net.Frb.Example.Performance
                         var value = propertyInfo.GetValue(null, null);
                         return value as IEntityFactory;
                     }).ToList();
+        }
+
+        static StringBuilder creationReportBuilder = new StringBuilder();
+        public static string GetCreationReport(bool includeFactoriesWith0Instances = false)
+        {
+            creationReportBuilder.Clear();
+            var allFactories = GetAllFactories()
+                .OrderByDescending(item => item.NewInstancesCreatedThisScreen);
+            foreach (var factory in allFactories)
+            {
+                if (includeFactoriesWith0Instances || factory.NewInstancesCreatedThisScreen > 0)
+                {
+                    creationReportBuilder.AppendLine($"{factory.GetType().Name}:{factory.NewInstancesCreatedThisScreen:N0}");
+                }
+            }
+
+            return creationReportBuilder.ToString();
         }
     }
 }

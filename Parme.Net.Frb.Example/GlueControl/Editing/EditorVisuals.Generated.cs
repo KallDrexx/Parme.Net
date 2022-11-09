@@ -3,7 +3,7 @@
 #define SpriteHasTolerateMissingAnimations
 using Parme.Net.Frb.Example;
 
- using FlatRedBall;
+﻿using FlatRedBall;
 using FlatRedBall.Graphics;
 using FlatRedBall.Math.Geometry;
 using Microsoft.Xna.Framework;
@@ -60,6 +60,7 @@ namespace GlueControl.Editing
             DefaultLayer = SpriteManager.TopLayer;
         }
 
+        #region Draw specific shapes
         public static Text Text(string text, Vector3 position, Color? color = null)
         {
             if (position.Z == Camera.Main.Z)
@@ -342,6 +343,31 @@ namespace GlueControl.Editing
             return pathPolygon;
         }
 
+        #endregion
+
+        public static void DrawRepositionDirections(AxisAlignedRectangle rectangle)
+        {
+            if (rectangle.RepositionDirections.HasFlag(RepositionDirections.Up))
+            {
+                EditorVisuals.Arrow(rectangle.Position, rectangle.Position.AddY(rectangle.Height / 2));
+            }
+
+            if (rectangle.RepositionDirections.HasFlag(RepositionDirections.Down))
+            {
+                EditorVisuals.Arrow(rectangle.Position, rectangle.Position.AddY(-rectangle.Height / 2));
+            }
+
+            if (rectangle.RepositionDirections.HasFlag(RepositionDirections.Left))
+            {
+                EditorVisuals.Arrow(rectangle.Position, rectangle.Position.AddX(-rectangle.Width / 2));
+            }
+
+            if (rectangle.RepositionDirections.HasFlag(RepositionDirections.Right))
+            {
+                EditorVisuals.Arrow(rectangle.Position, rectangle.Position.AddX(rectangle.Width / 2));
+            }
+        }
+
         public static List<FlatRedBall.Math.Geometry.Point> GetPoints(Path pathInstance, bool flipHorizontally)
         {
             var points = new List<FlatRedBall.Math.Geometry.Point>();
@@ -463,6 +489,11 @@ namespace GlueControl.Editing
         public void Update()
         {
             TryResetEveryFrameValues();
+
+            if (FlatRedBall.Screens.ScreenManager.CurrentScreen?.IsActivityFinished == true)
+            {
+                DestroyContainedObjects();
+            }
         }
 
         public void UpdateDependencies()

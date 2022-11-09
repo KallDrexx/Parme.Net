@@ -3,7 +3,7 @@
 #define SpriteHasTolerateMissingAnimations
 using Parme.Net.Frb.Example;
 
- using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml.Serialization;
@@ -30,6 +30,12 @@ namespace GlueControl.Models
         public ReferencedFileSave GetReferencedFileSave(string fileName)
         {
             return IElementExtensionMethods.GetReferencedFileSave(this, fileName);
+        }
+
+        public List<CustomVariable> CustomVariables
+        {
+            get;
+            set;
         }
 
         public bool IsOnOwnLayer
@@ -93,6 +99,17 @@ namespace GlueControl.Models
             get;
             set;
         } = new List<NamedObjectSave>();
+
+        public List<PropertySave> Properties
+        {
+            get;
+            set;
+        } = new List<PropertySave>();
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 
     public class EntitySave : GlueElement
@@ -123,6 +140,20 @@ namespace GlueControl.Models
         {
             get { return mBaseEntity; }
             set { mBaseEntity = value; }
+        }
+
+        [XmlIgnore]
+        [JsonIgnore]
+        public bool IsManuallyUpdated
+        {
+            get
+            {
+                return Properties.GetValue<bool>(nameof(IsManuallyUpdated));
+            }
+            set
+            {
+                Properties.SetValue(nameof(IsManuallyUpdated), value);
+            }
         }
     }
 

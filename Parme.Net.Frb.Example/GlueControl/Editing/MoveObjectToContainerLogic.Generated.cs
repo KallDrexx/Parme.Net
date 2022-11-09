@@ -3,7 +3,7 @@
 #define SpriteHasTolerateMissingAnimations
 using Parme.Net.Frb.Example;
 
- using FlatRedBall.Math;
+﻿using FlatRedBall.Math;
 using FlatRedBall.Math.Geometry;
 using FlatRedBall.Screens;
 using System;

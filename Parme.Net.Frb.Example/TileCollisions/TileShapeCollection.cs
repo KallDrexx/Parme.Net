@@ -1,14 +1,45 @@
-﻿using FlatRedBall.Math;
+#define PreVersion
+#define HasFormsObject
+#define AddedGeneratedGame1
+#define ListsHaveAssociateWithFactoryBool
+#define GumGueHasGetAnimation
+#define GumHasMIsLayoutSuspendedPublic
+#define CsvInheritanceSupport
+#define IPositionedSizedObjectInEngine
+#define NugetPackageInCsproj
+#define SupportsEditMode
+#define SupportsShapeCollectionAddToManagerMakeAutomaticallyUpdated
+#define ScreensHaveActivityEditMode
+#define SupportsNamedSubcollisions
+#define GlueSavedToJson
+#define IEntityInFrb
+#define SeparateJsonFilesForElements
+#define GumSupportsAchxAnimation
+#define StartupInGeneratedGame
+#define RemoveAutoLocalizationOfVariables
+#define SpriteHasUseAnimationTextureFlip
+#define RemoveIsScrollableEntityList
+#define HasGetGridLine
+#define HasScreenManagerAfterScreenDestroyed
+#define ScreenManagerHasPersistentPolygons
+#define ShapeManagerCollideAgainstClosest
+#define SpriteHasTolerateMissingAnimations
+#define AnimationLayerHasName
+#define IPlatformer
+#define GumDefaults2
+
+
+using FlatRedBall.Math;
 using FlatRedBall.Math.Geometry;
 using FlatRedBall.TileGraphics;
 using FlatRedBall.Utilities;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using AARect = FlatRedBall.Math.Geometry.AxisAlignedRectangle;
-
 namespace FlatRedBall.TileCollisions
 {
     public partial class TileShapeCollection : INameable
@@ -26,7 +57,8 @@ namespace FlatRedBall.TileCollisions
         /// The bottommost edge of the map. This will correspond with the bottom edge of an AxisAlignedRectangle.
         /// </summary>
         public float BottomSeedY = 0;
-        float mGridSize;
+        float mGridSizeX;
+        float mGridSizeY;
         bool mVisible = true;
 
 
@@ -55,7 +87,7 @@ namespace FlatRedBall.TileCollisions
 
         public float GridSize
         {
-            get { return mGridSize; }
+            get { return mGridSizeX; }
             set
             {
 #if DEBUG
@@ -66,11 +98,41 @@ namespace FlatRedBall.TileCollisions
 #endif
 
 
-                mGridSize = value;
-                mShapes.MaxAxisAlignedRectanglesScale = mGridSize;
-                mShapes.MaxPolygonRadius = mGridSize;
+                mGridSizeX = value;
+                mGridSizeY = value;
+#if ShapeCollectionHasMaxAxisAlignedRectanglesRadiusX
+                mShapes.MaxAxisAlignedRectanglesRadiusX = mGridSizeX;
+                mShapes.MaxAxisAlignedRectanglesRadiusY = mGridSizeY;
+#else
+                mShapes.MaxAxisAlignedRectanglesScale = mGridSizeX;
+#endif
+                mShapes.MaxPolygonRadius = mGridSizeX;
             }
         }
+
+#if ShapeCollectionHasMaxAxisAlignedRectanglesRadiusX
+        public float GridSizeX
+        {
+            get => mGridSizeX;
+            set
+            {
+                mGridSizeX = value;
+                mShapes.MaxAxisAlignedRectanglesRadiusX = mGridSizeX;
+                mShapes.MaxPolygonRadius = mGridSizeX;
+            }
+        }
+
+        public float GridSizeY
+        {
+            get => mGridSizeY;
+            set
+            {
+                mGridSizeY = value;
+                mShapes.MaxAxisAlignedRectanglesRadiusY = mGridSizeY;
+                mShapes.MaxPolygonRadius = mGridSizeY;
+            }
+        }
+#endif
 
         public PositionedObjectList<AxisAlignedRectangle> Rectangles
         {
@@ -140,7 +202,7 @@ namespace FlatRedBall.TileCollisions
 
         public bool AdjustRepositionDirectionsOnAddAndRemove { get; set; } = true;
 
-        #endregion
+#endregion
 
         public TileShapeCollection()
         {
@@ -161,7 +223,11 @@ namespace FlatRedBall.TileCollisions
             // 2. Downgrade to a version of Glue prior to July 2021 which will not include this method
             // 3. Re-compile your own version of the plugin for Glue and modify this code
             // 4. Remove this parameter by hand whenever this file is re-generated. This is painful!
+#if SupportsNamedSubcollisions
             this.mShapes.AddToManagers(layer, makeAutomaticallyUpdated: false);
+#else
+            this.mShapes.AddToManagers(layer);
+#endif
         }
 
         public void AttachTo(PositionedObject newParent, bool changeRelative = true)
@@ -236,12 +302,12 @@ namespace FlatRedBall.TileCollisions
         {
             return mShapes.CollideAgainst(line, true, mSortAxis);
         }
-
+#if ShapeManagerCollideAgainstClosest
         public bool CollideAgainstClosest(Line line)
         {
             return mShapes.CollideAgainstClosest(line, SortAxis, GridSize);
         }
-
+#endif
         public bool CollideAgainst(ICollidable collidable)
         {
             return mShapes.CollideAgainst(collidable.Collision, true, mSortAxis);
@@ -255,6 +321,39 @@ namespace FlatRedBall.TileCollisions
 
             return toReturn;
         }
+
+#if IStackableInEngine
+        public bool CollideAgainstSolid<T>(T item) where T : PositionedObject, ICollidable, IStackable
+        {
+            if (this.CollideAgainst(item))
+            {
+                var collidedTileRetangles = this.LastCollisionAxisAlignedRectangles;
+
+                for (int i = 0; i < collidedTileRetangles.Count; i++)
+                {
+                    var tileRect = collidedTileRetangles[i];
+
+                    var itemPositionBefore = item.Position;
+
+
+                    item.CollideAgainstBounce(tileRect, 0, 1, 0);
+
+                    var positionAfter = item.Position;
+
+                    var change = positionAfter - itemPositionBefore;
+
+                    if (change.X != 0 || change.Y != 0)
+                    {
+                        item.LockVectorsTemp.Add(change.Normalized());
+                    }
+                }
+
+                return true;
+            }
+            return false;
+        }
+
+#endif
 
         public bool CollideAgainstBounce(ICollidable collidable, float elasticity)
         {
@@ -458,6 +557,10 @@ namespace FlatRedBall.TileCollisions
             }
         }
 
+        /// <summary>
+        /// Adds all shapes from the argument TileShapeCollection into this TileShapeCollection and updates RepositionDirections on all contained AxisAlignedRectangles
+        /// </summary>
+        /// <param name="source">The source from which to copy the shapes.</param>
         public void InsertShapes(TileShapeCollection source)
         {
             foreach (var rectangle in source.Rectangles)
@@ -620,8 +723,8 @@ namespace FlatRedBall.TileCollisions
             var worldX = positionedObject.Position.X;
             var worldY = positionedObject.Position.Y;
 
-            var xIndex = MathFunctions.RoundToInt((worldX - collectionLeft) / mGridSize);
-            var yIndex = MathFunctions.RoundToInt((worldY - collectionBottom) / mGridSize);
+            var xIndex = MathFunctions.RoundToInt((worldX - collectionLeft) / mGridSizeX);
+            var yIndex = MathFunctions.RoundToInt((worldY - collectionBottom) / mGridSizeY);
 
             bool ValueAt(int xIndexInner, int yIndexInner)
             {
@@ -1145,8 +1248,8 @@ namespace FlatRedBall.TileCollisions
                 }
 
                 // now we know the mins and maxes
-                var numberOfXTiles = 1 + MathFunctions.RoundToInt((maxX - minX) / mGridSize);
-                var numberOfYTiles = 1 + MathFunctions.RoundToInt((maxY - minY) / mGridSize);
+                var numberOfXTiles = 1 + MathFunctions.RoundToInt((maxX - minX) / mGridSizeX);
+                var numberOfYTiles = 1 + MathFunctions.RoundToInt((maxY - minY) / mGridSizeY);
 
                 left = minX;
                 bottom = minY;
@@ -1161,8 +1264,8 @@ namespace FlatRedBall.TileCollisions
                 {
                     var rect = mShapes.AxisAlignedRectangles[i];
 
-                    var xIndex = MathFunctions.RoundToInt((rect.Position.X - minX) / mGridSize);
-                    var yIndex = MathFunctions.RoundToInt((rect.Position.Y - minY) / mGridSize);
+                    var xIndex = MathFunctions.RoundToInt((rect.Position.X - minX) / mGridSizeX);
+                    var yIndex = MathFunctions.RoundToInt((rect.Position.Y - minY) / mGridSizeY);
 
                     var index = xIndex + yIndex * numberOfXTiles;
 
@@ -1805,5 +1908,4 @@ namespace FlatRedBall.TileCollisions
                 removeTilesOnAdd);
         }
     }
-
 }

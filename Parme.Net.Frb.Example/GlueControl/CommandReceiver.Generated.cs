@@ -3,7 +3,7 @@
 #define SpriteHasTolerateMissingAnimations
 using Parme.Net.Frb.Example;
 
- using GlueControl.Dtos;
+﻿using GlueControl.Dtos;
 using GlueControl.Editing;
 using Microsoft.Xna.Framework;
 
@@ -815,6 +815,11 @@ namespace GlueControl
 #if SpriteHasTolerateMissingAnimations
                     Sprite.TolerateMissingAnimations = true;
 #endif
+                    if(!CameraSetup.Data.AllowWindowResizing)
+                    {
+                        CameraSetup.Data.AllowWindowResizing = true;
+                        CameraSetup.ResetWindow();
+                    }
                 }
 
                 FlatRedBall.TileEntities.TileEntityInstantiator.CreationFunction = (entityNameGameType) => InstanceLogic.Self.CreateEntity(entityNameGameType);
@@ -833,6 +838,30 @@ namespace GlueControl
 
 
         #region Move to Container
+
+        private static MoveObjectToContainerDtoResponse HandleDto(MoveObjectToContainerListDto dto)
+        {
+            MoveObjectToContainerDtoResponse toReturn = null;
+
+            foreach (var item in dto.Changes)
+            {
+                var result = HandleDto(item);
+
+                if (toReturn == null)
+                {
+                    toReturn = result;
+                }
+
+                if (result.WasObjectMoved == false)
+                {
+                    toReturn = result;
+                }
+            }
+
+
+            return toReturn;
+
+        }
 
         private static MoveObjectToContainerDtoResponse HandleDto(MoveObjectToContainerDto dto)
         {
@@ -1064,6 +1093,13 @@ namespace GlueControl
         }
 
         #endregion
+
+        private static void HandleDto(ForceGameResolution dto)
+        {
+            CameraSetup.Data.ResolutionWidth = dto.Width;
+            CameraSetup.Data.ResolutionHeight = dto.Height;
+            CameraSetup.ResetWindow();
+        }
 
         private static void HandleDto(GlueViewSettingsDto dto)
         {

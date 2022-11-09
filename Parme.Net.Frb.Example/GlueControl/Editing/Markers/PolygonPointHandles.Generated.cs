@@ -3,7 +3,7 @@
 #define SpriteHasTolerateMissingAnimations
 using Parme.Net.Frb.Example;
 
- using FlatRedBall;
+﻿using FlatRedBall;
 using FlatRedBall.Math.Geometry;
 using System;
 using System.Collections.Generic;
@@ -47,7 +47,7 @@ namespace GlueControl.Editing
             UpdatePointsToItem(itemAsPolygon, selectionMarker);
 
             ///////////Early Out//////////////
-            if (!Visible || selectionMarker.CanMoveItem == false)
+            if (!Visible || selectionMarker.CanMoveItem == false || FlatRedBallServices.Game.IsActive == false)
                 return;
             ////////End Early Out/////////////
 

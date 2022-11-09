@@ -9,7 +9,7 @@ using Vector2 = System.Numerics.Vector2;
 
 namespace Parme.Net.Frb.Example.Screens
 {
-    public partial class NewScreen
+    public partial class MouseInteractionDemoScreen
     {
         private ParmeFrbEmitter _fireEmitter;
         
@@ -47,7 +47,7 @@ namespace Parme.Net.Frb.Example.Screens
         static void CustomLoadStaticContent(string contentManagerName)
         {
         }
-
+        
         private static EmitterConfig CreateTestEmitterConfig()
         {
             var random = new Random();

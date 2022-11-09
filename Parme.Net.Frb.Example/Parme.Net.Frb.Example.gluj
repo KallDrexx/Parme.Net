@@ -9,7 +9,7 @@
   "GlobalFiles": [],
   "GlobalContentSettingsSave": {},
   "SyncedProjects": [],
-  "StartUpScreen": "Screens\\NewScreen",
+  "StartUpScreen": "Screens\\MouseInteractionDemoScreen",
   "ResolutionPresets": [],
   "PerformanceSettingsSave": {},
   "IgnoredDirectories": [],
@@ -37,7 +37,7 @@
   "FileVersion": 20,
   "ScreenReferences": [
     {
-      "Name": "Screens\\NewScreen"
+      "Name": "Screens\\MouseInteractionDemoScreen"
     }
   ],
   "EntityReferences": [],

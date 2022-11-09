@@ -1,4 +1,36 @@
-﻿using FlatRedBall;
+#define PreVersion
+#define HasFormsObject
+#define AddedGeneratedGame1
+#define ListsHaveAssociateWithFactoryBool
+#define GumGueHasGetAnimation
+#define GumHasMIsLayoutSuspendedPublic
+#define CsvInheritanceSupport
+#define IPositionedSizedObjectInEngine
+#define NugetPackageInCsproj
+#define SupportsEditMode
+#define SupportsShapeCollectionAddToManagerMakeAutomaticallyUpdated
+#define ScreensHaveActivityEditMode
+#define SupportsNamedSubcollisions
+#define GlueSavedToJson
+#define IEntityInFrb
+#define SeparateJsonFilesForElements
+#define GumSupportsAchxAnimation
+#define StartupInGeneratedGame
+#define RemoveAutoLocalizationOfVariables
+#define SpriteHasUseAnimationTextureFlip
+#define RemoveIsScrollableEntityList
+#define HasGetGridLine
+#define HasScreenManagerAfterScreenDestroyed
+#define ScreenManagerHasPersistentPolygons
+#define ShapeManagerCollideAgainstClosest
+#define SpriteHasTolerateMissingAnimations
+#define AnimationLayerHasName
+#define IPlatformer
+#define GumDefaults2
+
+
+
+using FlatRedBall;
 using FlatRedBall.Math.Collision;
 using FlatRedBall.Math.Geometry;
 using FlatRedBall.TileCollisions;
@@ -156,7 +188,11 @@ namespace FlatRedBall.Math.Collision
         /// <returns></returns>
         public static bool DoFirstCollisionLineVsShapeCollection(Line line, TileShapeCollection tileShapeCollection)
         {
+#if ShapeManagerCollideAgainstClosest
             return tileShapeCollection.CollideAgainstClosest(line);
+#else
+            return false;
+#endif
         }
     }
 
@@ -205,35 +241,62 @@ namespace FlatRedBall.Math.Collision
                 {
                     skippedFrames = 0;
 
-                    var didCollide = false;
-                    // todo - tile shape collections need to report their deep collision, they don't currently:
-                    if (CollisionType == CollisionType.EventOnlyCollision)
-                    {
-                        didCollide = data.CollideAgainstConsiderSubCollisionEventOnly(singleObject, CollisionLimit);
-                    }
-                    else if (CollisionType == CollisionType.MoveCollision)
-                    {
-                        didCollide = data.CollideAgainstConsiderSubCollisionMove(singleObject);
-                    }
-                    else if (CollisionType == CollisionType.BounceCollision)
-                    {
-                        didCollide = data.CollideAgainstConsiderSubCollisionBounce(singleObject, bounceElasticity);
-                    }
-                    else
-                    {
-                        throw new NotImplementedException();
-                    }
+#if CollisionRelationshipManualPhysics
+                    bool didCollide = DoCollisionPhysicsInner(ArePhysicsAppliedAutomatically == false);
+#else
+                    bool didCollide = DoCollisionPhysicsInner(false);
+#endif
+
 
                     if (didCollide)
                     {
                         CollisionOccurred?.Invoke(singleObject, data.TileShapeCollection);
 
                         didCollisionOccur = true;
+
+#if ICollidableHasItemsCollidedAgainst
+                        singleObject.ItemsCollidedAgainst.Add(data.TileShapeCollection.Name);
+#endif
                     }
                 }
             }
 
             return didCollisionOccur;
+        }
+
+        public bool DoCollisionPhysics()
+        {
+            return DoCollisionPhysicsInner(false);
+        }
+
+        private bool DoCollisionPhysicsInner(bool eventOnly)
+        {
+            var didCollide = false;
+            // todo - tile shape collections need to report their deep collision, they don't currently:
+            if (eventOnly || CollisionType == CollisionType.EventOnlyCollision)
+            {
+                didCollide = data.CollideAgainstConsiderSubCollisionEventOnly(singleObject, CollisionLimit);
+            }
+            else if (CollisionType == CollisionType.MoveCollision)
+            {
+                didCollide = data.CollideAgainstConsiderSubCollisionMove(singleObject);
+            }
+            else if (CollisionType == CollisionType.BounceCollision)
+            {
+                didCollide = data.CollideAgainstConsiderSubCollisionBounce(singleObject, bounceElasticity);
+            }
+#if CollisionRelationshipsSupportMoveSoft
+            else if (CollisionType == CollisionType.MoveSoftCollision)
+            {
+                throw new NotImplementedException("soft collision against tile shape collections is not currently supported");
+            }
+#endif
+            else
+            {
+                throw new NotImplementedException();
+            }
+
+            return didCollide;
         }
     }
 }

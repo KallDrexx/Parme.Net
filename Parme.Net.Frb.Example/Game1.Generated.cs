@@ -1,6 +1,4 @@
 using System.Linq;
-using Parme.Net.Frb.Example.Screens;
-
 namespace Parme.Net.Frb.Example
 {
     public partial class Game1
@@ -20,7 +18,7 @@ namespace Parme.Net.Frb.Example
                 CameraSetup.Data.AllowWindowResizing = changeResize.Value;
             }
             CameraSetup.SetupCamera(FlatRedBall.Camera.Main, graphics);
-            System.Type startScreenType = typeof(NewScreen);
+            System.Type startScreenType = typeof(Parme.Net.Frb.Example.Screens.MouseInteractionDemoScreen);
             var commandLineArgs = System.Environment.GetCommandLineArgs();
             if (commandLineArgs.Length > 0)
             {

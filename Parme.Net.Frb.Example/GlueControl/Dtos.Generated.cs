@@ -257,6 +257,11 @@ namespace GlueControl.Dtos
             return $"Move {ElementName}.{ObjectName} to container {ContainerName}";
         }
     }
+
+    public class MoveObjectToContainerListDto
+    {
+        public List<MoveObjectToContainerDto> Changes { get; set; } = new List<MoveObjectToContainerDto>();
+    }
     #endregion
 
     #region MoveObjectToContainerDtoResponse
@@ -379,6 +384,12 @@ namespace GlueControl.Dtos
         public bool IsBorderless { get; set; }
     }
     #endregion
+
+    public class ForceGameResolution
+    {
+        public int Width { get; set; }
+        public int Height { get; set; }
+    }
 
     #region GlueViewSettingsDto
     public class GlueViewSettingsDto

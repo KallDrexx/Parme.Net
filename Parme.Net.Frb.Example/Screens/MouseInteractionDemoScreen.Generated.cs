@@ -10,17 +10,17 @@ using System.Collections.Generic;
 using System.Text;
 namespace Parme.Net.Frb.Example.Screens
 {
-    public partial class NewScreen : FlatRedBall.Screens.Screen
+    public partial class MouseInteractionDemoScreen : FlatRedBall.Screens.Screen
     {
         #if DEBUG
         static bool HasBeenLoadedWithGlobalContentManager = false;
         #endif
         
-        public NewScreen () 
-        	: this ("NewScreen")
+        public MouseInteractionDemoScreen () 
+        	: this ("MouseInteractionDemoScreen")
         {
         }
-        public NewScreen (string contentManagerName) 
+        public MouseInteractionDemoScreen (string contentManagerName) 
         	: base (contentManagerName)
         {
         }

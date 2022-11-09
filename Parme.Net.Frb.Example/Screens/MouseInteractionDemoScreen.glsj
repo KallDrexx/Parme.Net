@@ -3,6 +3,6 @@
     "GLUE"
   ],
   "Source": "GLUE",
-  "Name": "Screens\\NewScreen",
+  "Name": "Screens\\MouseInteractionDemoScreen",
   "CustomClassesForExport": []
 }

@@ -3,7 +3,7 @@
 #define SpriteHasTolerateMissingAnimations
 using Parme.Net.Frb.Example;
 
- using FlatRedBall.Gui;
+﻿using FlatRedBall.Gui;
 using GlueControl.Editing;
 using Microsoft.Xna.Framework;
 using System;

@@ -3,7 +3,7 @@
 #define SpriteHasTolerateMissingAnimations
 using Parme.Net.Frb.Example;
 
- using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -30,6 +30,7 @@ namespace GlueControl.Models
             AddedGeneratedGame1 = 2,
             ListsHaveAssociateWithFactoryBool = 3,
             GumGueHasGetAnimation = 4,
+            GumHasMIsLayoutSuspendedPublic = 4,
             HasFormsObject = 4, // Not sure if this is exact, but it should be maybe around here. This will make old projects work
             CsvInheritanceSupport = 5,
             NugetPackageInCsproj = 6,

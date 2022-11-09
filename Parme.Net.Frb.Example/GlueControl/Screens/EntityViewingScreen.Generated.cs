@@ -26,6 +26,9 @@ namespace GlueControl.Screens
 
         bool isViewingAbstractEntity;
 
+        System.Collections.Generic.List<System.Collections.IList> FactoryLists = new System.Collections.Generic.List<System.Collections.IList>();
+        System.Collections.Generic.List<System.Collections.IList> ListsNeedingManualUpdates = new System.Collections.Generic.List<System.Collections.IList>();
+
         #endregion
 
         public EntityViewingScreen() : base(nameof(EntityViewingScreen))
@@ -37,12 +40,39 @@ namespace GlueControl.Screens
         {
             base.Initialize(addToManagers);
 
+            CreateFactoryLists();
+
             if (addToManagers)
             {
                 AddToManagers();
             }
 
             BeforeCustomInitialize?.Invoke();
+        }
+
+        private void CreateFactoryLists()
+        {
+            foreach (var factory in Parme.Net.Frb.Example.Performance.FactoryManager.GetAllFactories())
+            {
+                var factoryType = factory.GetType();
+                var createNewMethod = factoryType.GetMethod("CreateNew", new Type[] { typeof(Microsoft.Xna.Framework.Vector3) });
+                var genericType = createNewMethod.ReturnType;
+
+                var listType = typeof(FlatRedBall.Math.PositionedObjectList<>).MakeGenericType(genericType);
+
+                var listInstance = System.Activator.CreateInstance(listType) as System.Collections.IList;
+
+                factory.ListsToAddTo.Add(listInstance);
+                FactoryLists.Add(listInstance);
+
+                var glueElementName = CommandReceiver.GameElementTypeToGlueElement(genericType.FullName);
+                var element = Managers.ObjectFinder.Self.GetEntitySave(glueElementName);
+
+                if (element?.IsManuallyUpdated == true)
+                {
+                    ListsNeedingManualUpdates.Add(listInstance);
+                }
+            }
         }
 
         public override void ActivityEditMode()
@@ -65,6 +95,14 @@ namespace GlueControl.Screens
                     {
                         entity.ActivityEditMode();
                     }
+                }
+                foreach (var list in ListsNeedingManualUpdates)
+                {
+                    foreach (var item in list)
+                    {
+                        (item as FlatRedBall.Entities.IEntity)?.ActivityEditMode();
+                    }
+
                 }
                 base.ActivityEditMode();
             }
@@ -120,10 +158,29 @@ namespace GlueControl.Screens
 
             CurrentEntity?.Destroy();
 
+            // there could be entities which normally would end up in a screen list (like bullets or particles) which do not have a matching list here. Therefore, we should
+            // destroy all destroyables:
+            for (int i = SpriteManager.ManagedPositionedObjects.Count - 1; i > -1; i--)
+            {
+                var item = SpriteManager.ManagedPositionedObjects[i] as IDestroyable;
+                item?.Destroy();
+            }
+
+            // There could be objects that aren't destroyed 
+            foreach (var list in this.FactoryLists)
+            {
+                for (int i = list.Count - 1; i > -1; i--)
+                {
+                    var item = list[i] as IDestroyable;
+                    item?.Destroy();
+                }
+            }
+
             foreach (var factory in Parme.Net.Frb.Example.Performance.FactoryManager.GetAllFactories())
             {
                 factory.Destroy();
             }
+
 
             base.Destroy();
         }

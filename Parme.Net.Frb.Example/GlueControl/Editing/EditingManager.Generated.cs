@@ -396,32 +396,39 @@ namespace GlueControl.Editing
                 itemsOverLastFrame.AddRange(itemsOver);
                 var itemSelectedBefore = ItemSelected;
 
-                if (itemGrabbed == null && ItemsSelected.All(item => item is TileShapeCollection == false))
+
+                // Vic says - not sure how much should be inside the IsActive check
+                if (FlatRedBallServices.Game.IsActive)
                 {
-                    SelectionLogic.DoDragSelectLogic();
+                    if (itemGrabbed == null && ItemsSelected.All(item => item is TileShapeCollection == false))
+                    {
+                        SelectionLogic.DoDragSelectLogic();
+                    }
+                    SelectionLogic.GetItemsOver(itemsSelected, itemsOver, SelectedMarkers, GuiManager.Cursor.PrimaryDoublePush, ElementEditingMode);
                 }
 
-                SelectionLogic.GetItemsOver(itemsSelected, itemsOver, SelectedMarkers, GuiManager.Cursor.PrimaryDoublePush, ElementEditingMode);
 
                 var didChangeItemOver = itemsOverLastFrame.Any(item => !itemsOver.Contains(item)) ||
                     itemsOver.Any(item => !itemsOverLastFrame.Contains(item));
 
-                DoGrabLogic();
+                if (FlatRedBallServices.Game.IsActive)
+                {
+                    DoGrabLogic();
 
-                DoRectangleSelectLogic();
+                    DoRectangleSelectLogic();
 
-                DoReleaseLogic();
+                    DoReleaseLogic();
 
-                DoHotkeyLogic();
+                    DoHotkeyLogic();
 
-                CameraLogic.DoActivity();
+                    CameraLogic.DoActivity();
 
-                DoForwardBackActivity();
+                    DoForwardBackActivity();
+                }
 
                 UpdateMarkers(didChangeItemOver);
 
                 UpdateMeasurementMarker();
-
             }
             else
             {
@@ -470,7 +477,7 @@ namespace GlueControl.Editing
 
             }
 
-            if (cursor.PrimaryPush)
+            if (cursor.PrimaryPush && cursor.IsInWindow())
             {
                 var itemOver = itemsOver.FirstOrDefault();
                 itemGrabbed = itemOver as IStaticPositionable;
@@ -731,7 +738,7 @@ namespace GlueControl.Editing
                     NamedObjectSave nos = null;
                     if (itemOver?.Name != null)
                     {
-                        nos = CurrentGlueElement.AllNamedObjects.FirstOrDefault(item => item.InstanceName == itemOver.Name);
+                        nos = CurrentGlueElement?.AllNamedObjects.FirstOrDefault(item => item.InstanceName == itemOver.Name);
                     }
 
                     var didSelect = false;

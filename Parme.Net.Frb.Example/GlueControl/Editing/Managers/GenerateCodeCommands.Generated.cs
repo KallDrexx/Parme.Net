@@ -3,7 +3,7 @@
 #define SpriteHasTolerateMissingAnimations
 using Parme.Net.Frb.Example;
 
- using GlueControl.Dtos;
+﻿using GlueControl.Dtos;
 using GlueControl.Models;
 using System;
 using System.Collections.Generic;

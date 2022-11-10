@@ -50,6 +50,7 @@ namespace Parme.Net.Frb.Example.Screens
 
         void CustomDestroy()
         {
+            ParmeEmitterManager.Instance.DestroyActiveEmitterGroups();
         }
 
         static void CustomLoadStaticContent(string contentManagerName)

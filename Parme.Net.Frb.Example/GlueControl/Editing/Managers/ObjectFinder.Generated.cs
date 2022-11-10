@@ -1,4 +1,5 @@
-﻿#define SupportsEditMode
+﻿#define IncludeSetVariable
+#define SupportsEditMode
 #define ScreenManagerHasPersistentPolygons
 #define SpriteHasTolerateMissingAnimations
 using Parme.Net.Frb.Example;

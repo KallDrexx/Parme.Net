@@ -2,3 +2,4 @@
 [Oo]bj/
 *.idea/
 *.user
+.vs/*

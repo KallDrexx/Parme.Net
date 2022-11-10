@@ -106,6 +106,8 @@ namespace Parme.Net.Frb.Example.Screens
         {
             bool oldShapeManagerSuppressAdd = FlatRedBall.Math.Geometry.ShapeManager.SuppressAddingOnVisibilityTrue;
             FlatRedBall.Math.Geometry.ShapeManager.SuppressAddingOnVisibilityTrue = true;
+            FanRightInstance.ForceVelocityX = 200f;
+            FanRightInstance.ForceVelocityY = 0f;
             if (FanRightInstance.Parent == null)
             {
                 FanRightInstance.X = -50f;
@@ -130,8 +132,8 @@ namespace Parme.Net.Frb.Example.Screens
             {
                 FanRightInstance.RelativeZ = 0f;
             }
-            FanRightInstance.ForceVelocityX = 200f;
-            FanRightInstance.ForceVelocityY = 0f;
+            FanLeftInstance.ForceVelocityX = -200f;
+            FanLeftInstance.ForceVelocityY = 0f;
             FanLeftInstance.TextInstanceDisplayText = "<- Fan";
             if (FanLeftInstance.Parent == null)
             {
@@ -149,8 +151,6 @@ namespace Parme.Net.Frb.Example.Screens
             {
                 FanLeftInstance.RelativeY = 100f;
             }
-            FanLeftInstance.ForceVelocityX = -200f;
-            FanLeftInstance.ForceVelocityY = 0f;
             FlatRedBall.Math.Geometry.ShapeManager.SuppressAddingOnVisibilityTrue = oldShapeManagerSuppressAdd;
         }
         public virtual void AddToManagersBottomUp () 
@@ -170,6 +170,8 @@ namespace Parme.Net.Frb.Example.Screens
                 FanRightInstance.AssignCustomVariables(true);
                 FanLeftInstance.AssignCustomVariables(true);
             }
+            FanRightInstance.ForceVelocityX = 200f;
+            FanRightInstance.ForceVelocityY = 0f;
             if (FanRightInstance.Parent == null)
             {
                 FanRightInstance.X = -50f;
@@ -194,8 +196,8 @@ namespace Parme.Net.Frb.Example.Screens
             {
                 FanRightInstance.RelativeZ = 0f;
             }
-            FanRightInstance.ForceVelocityX = 200f;
-            FanRightInstance.ForceVelocityY = 0f;
+            FanLeftInstance.ForceVelocityX = -200f;
+            FanLeftInstance.ForceVelocityY = 0f;
             FanLeftInstance.TextInstanceDisplayText = "<- Fan";
             if (FanLeftInstance.Parent == null)
             {
@@ -213,8 +215,6 @@ namespace Parme.Net.Frb.Example.Screens
             {
                 FanLeftInstance.RelativeY = 100f;
             }
-            FanLeftInstance.ForceVelocityX = -200f;
-            FanLeftInstance.ForceVelocityY = 0f;
         }
         public virtual void ConvertToManuallyUpdated () 
         {

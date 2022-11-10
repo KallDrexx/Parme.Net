@@ -1,3 +1,4 @@
+#define IncludeSetVariable
 #define SupportsEditMode
 #define ScreenManagerHasPersistentPolygons
 #define SpriteHasTolerateMissingAnimations

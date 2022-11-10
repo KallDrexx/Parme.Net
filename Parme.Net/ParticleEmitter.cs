@@ -237,6 +237,14 @@ namespace Parme.Net
                     
                     initializer.InitializeParticles(this, _particleCollection, _newParticleIndices);
                 }
+
+                var positionX = Reservation.GetPropertyValues<float>(StandardParmeProperties.PositionX);
+                var positionY = Reservation.GetPropertyValues<float>(StandardParmeProperties.PositionY);
+                foreach (var index in _newParticleIndices)
+                {
+                    positionX[index] += WorldCoordinates.X;
+                    positionY[index] += WorldCoordinates.Y;
+                }
             }
         }
     }

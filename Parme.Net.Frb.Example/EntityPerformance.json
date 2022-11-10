@@ -1,0 +1,18 @@
+{
+  "EntityManagementValueList": [
+    {
+      "Name": "Entities\\Fan",
+      "SelectedProperties": [],
+      "InstanceManagementValuesList": [
+        {
+          "SelectedProperties": [],
+          "Name": "TextInstance"
+        },
+        {
+          "SelectedProperties": [],
+          "Name": "AxisAlignedRectangleInstance"
+        }
+      ]
+    }
+  ]
+}

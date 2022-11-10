@@ -1,2 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<objecttypes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+<objecttypes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <objecttype name="FanRight">
+    <property name="ForceVelocityX" type="float" />
+    <property name="ForceVelocityY" type="float" />
+    <property name="TextInstanceDisplayText" type="string" default="Fan-&gt;" />
+    <property name="ForceAreaWidth" type="float" default="200" />
+    <property name="ForceAreaHeight" type="float" default="100" />
+  </objecttype>
+</objecttypes>

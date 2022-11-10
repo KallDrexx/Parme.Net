@@ -9,7 +9,7 @@
   "GlobalFiles": [],
   "GlobalContentSettingsSave": {},
   "SyncedProjects": [],
-  "StartUpScreen": "Screens\\MouseInteractionDemoScreen",
+  "StartUpScreen": "Screens\\ForceCollisionDemoScreen",
   "ResolutionPresets": [],
   "PerformanceSettingsSave": {},
   "IgnoredDirectories": [],
@@ -37,10 +37,17 @@
   "FileVersion": 20,
   "ScreenReferences": [
     {
+      "Name": "Screens\\ForceCollisionDemoScreen"
+    },
+    {
       "Name": "Screens\\MouseInteractionDemoScreen"
     }
   ],
-  "EntityReferences": [],
+  "EntityReferences": [
+    {
+      "Name": "Entities\\FanRight"
+    }
+  ],
   "PluginData": {
     "RequiredPlugins": []
   },

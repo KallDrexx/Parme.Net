@@ -180,6 +180,26 @@ namespace Parme.Net
 
             return false;
         }
+
+        public T? GetBehavior<T>() where T : class
+        {
+            if (typeof(IParticleInitializer).IsAssignableFrom(typeof(T)))
+            {
+                return Initializers.OfType<T>().FirstOrDefault();
+            }
+
+            if (typeof(IParticleModifier).IsAssignableFrom(typeof(T)))
+            {
+                return Modifiers.OfType<T>().FirstOrDefault();
+            }
+
+            if (Trigger is T trigger)
+            {
+                return trigger;
+            }
+
+            return null;
+        }
         
         public void Dispose()
         {

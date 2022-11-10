@@ -69,6 +69,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="DataTypes\TileMapInfo.Generated.cs" />
+    <Compile Include="Entities\FanRight.cs" />
+    <Compile Include="Entities\FanRight.Generated.cs">
+      <DependentUpon>FanRight.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Factories\FanRightFactory.Generated.cs" />
     <Compile Include="FileAliases.Generated.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Game1.Generated.cs">
@@ -120,6 +125,10 @@
     <Compile Include="Performance\PoolList.Generated.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Screens\ForceCollisionDemoScreen.cs" />
+    <Compile Include="Screens\ForceCollisionDemoScreen.Generated.cs">
+      <DependentUpon>ForceCollisionDemoScreen.cs</DependentUpon>
+    </Compile>
     <Compile Include="Screens\MouseInteractionDemoScreen.cs" />
     <Compile Include="Screens\MouseInteractionDemoScreen.Generated.cs">
       <DependentUpon>MouseInteractionDemoScreen.cs</DependentUpon>

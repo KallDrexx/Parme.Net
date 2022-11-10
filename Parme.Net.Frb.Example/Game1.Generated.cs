@@ -18,7 +18,7 @@ namespace Parme.Net.Frb.Example
                 CameraSetup.Data.AllowWindowResizing = changeResize.Value;
             }
             CameraSetup.SetupCamera(FlatRedBall.Camera.Main, graphics);
-            System.Type startScreenType = typeof(Parme.Net.Frb.Example.Screens.MouseInteractionDemoScreen);
+            System.Type startScreenType = typeof(Parme.Net.Frb.Example.Screens.ForceCollisionDemoScreen);
             var commandLineArgs = System.Environment.GetCommandLineArgs();
             if (commandLineArgs.Length > 0)
             {

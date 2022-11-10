@@ -1,0 +1,120 @@
+{
+  "Tags": [
+    "GLUE"
+  ],
+  "Source": "GLUE",
+  "NamedObjects": [
+    {
+      "InstanceName": "FanRightInstance",
+      "SourceClassType": "Entities\\FanRight",
+      "Properties": [
+        {
+          "Name": "AssociateWithFactory",
+          "Value": true,
+          "Type": "Boolean"
+        },
+        {
+          "Name": "SourceType",
+          "Value": 1,
+          "Type": "SourceType"
+        }
+      ],
+      "InstructionSaves": [
+        {
+          "Type": "float",
+          "Member": "X",
+          "Value": -50.0,
+          "Time": 0.0
+        },
+        {
+          "Type": "float",
+          "Member": "Y",
+          "Value": -100.0,
+          "Time": 0.0
+        },
+        {
+          "Type": "float",
+          "Member": "Z",
+          "Value": 0.0,
+          "Time": 0.0
+        },
+        {
+          "Type": "float",
+          "Member": "ForceVelocityX",
+          "Value": 200.0,
+          "Time": 0.0
+        },
+        {
+          "Type": "float",
+          "Member": "ForceVelocityY",
+          "Value": 0.0,
+          "Time": 0.0
+        }
+      ],
+      "SourceType": 1,
+      "SourceFile": "Entities\\FanRight",
+      "AttachToContainer": true,
+      "GenerateTimedEmit": true
+    },
+    {
+      "InstanceName": "FanLeftInstance",
+      "SourceClassType": "Entities\\FanRight",
+      "Properties": [
+        {
+          "Name": "AssociateWithFactory",
+          "Value": true,
+          "Type": "Boolean"
+        },
+        {
+          "Name": "SourceType",
+          "Value": 1,
+          "Type": "SourceType"
+        }
+      ],
+      "InstructionSaves": [
+        {
+          "Type": "float",
+          "Member": "ForceAreaX",
+          "Value": -200.0,
+          "Time": 0.0
+        },
+        {
+          "Type": "string",
+          "Member": "TextInstanceDisplayText",
+          "Value": "<- Fan",
+          "Time": 0.0
+        },
+        {
+          "Type": "float",
+          "Member": "X",
+          "Value": 50.0,
+          "Time": 0.0
+        },
+        {
+          "Type": "float",
+          "Member": "Y",
+          "Value": 100.0,
+          "Time": 0.0
+        },
+        {
+          "Type": "float",
+          "Member": "ForceVelocityX",
+          "Value": -200.0,
+          "Time": 0.0
+        },
+        {
+          "Type": "float",
+          "Member": "ForceVelocityY",
+          "Value": 0.0,
+          "Time": 0.0
+        }
+      ],
+      "SourceType": 1,
+      "SourceFile": "Entities\\FanRight",
+      "AttachToContainer": true,
+      "GenerateTimedEmit": true
+    }
+  ],
+  "Name": "Screens\\ForceCollisionDemoScreen",
+  "CustomClassesForExport": []
+}
